@@ -112,7 +112,7 @@ class GP_Translation_Helpers {
 			.translation-helpers h3 {
 				margin-top: 5px;
 			}
-			.additional-info {
+			.helpers-content {
 				overflow-y: scroll;
 				max-height: 800px;
 			}
