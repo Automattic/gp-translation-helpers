@@ -4,8 +4,9 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 	public $priority = 2;
 
-	const POST_TYPE = 'gmd_original';
+	const POST_TYPE = 'gth_original';
 	const POST_STATUS = 'publish';
+	const LINK_TAXONOMY = 'gp_original_id_to_post_id';
 
 	function __construct() {
 
@@ -19,15 +20,25 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			'publicly_queryable'    => false,
 			'rewrite'               => false,
 			'show_in_rest'          => true,
-			'supports'              => array( 'custom-fields' ),
 		);
 		register_post_type( SELF::POST_TYPE, $post_type_args );
+
+		register_taxonomy(
+			self::LINK_TAXONOMY,
+			SELF::POST_TYPE,
+			array(
+				'public' => false,
+				'rewrite' => false,
+				'show_ui' => false,
+			)
+		);
+
 
 		add_filter( 'disable_highlander_comments', '__return_true' );
 	}
 
 	function get_output() {
-		$gmd_post_id = $this->get_gmd_post( $this->data['original_id'] );
+		$gmd_post_id = $this->get_shadow_post( $this->data['original_id'] );
 
 		$output = '<ul>';
 		$output .= wp_list_comments(array(
@@ -57,11 +68,16 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		);
 	}
 
-	public function get_gmd_post( $original_id ) {
+	public function get_shadow_post( $original_id ) {
 		$gp_posts = get_posts(
 			array(
-				'meta_key' => 'gp_original_id',
-				'meta_value' => $original_id,
+				'tax_query' => array(
+					array(
+						'taxonomy' => self::LINK_TAXONOMY,
+						'terms' => $original_id,
+						'field' => 'slug',
+					),
+				),
 				'post_type' => self::POST_TYPE,
 				'posts_per_page' => 1,
 				'post_status' => self::POST_STATUS,
@@ -73,8 +89,8 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			$post_id = wp_insert_post(
 				array(
 					'post_type' => SELF::POST_TYPE,
-					'meta_input' => array(
-						'gp_original_id' => $original_id,
+					'tax_input' => array(
+						self::LINK_TAXONOMY => array( $original_id ),
 					),
 					'post_status' => self::POST_STATUS,
 					'comment_status' => 'open',
