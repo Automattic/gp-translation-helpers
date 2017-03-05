@@ -1,7 +1,5 @@
 <?php
 
-require_once( dirname( __FILE__ ) . '/helpers/abstract-helper.php' );
-
 class GP_Route_Translation_Helpers extends GP_Route {
 
 	private $helpers = array();
@@ -31,6 +29,8 @@ class GP_Route_Translation_Helpers extends GP_Route {
 	}
 
 	function load_helpers() {
+		require_once( dirname( __FILE__ ) . '/helpers/abstract-helper.php' );
+
 		$helpers = glob( dirname( __FILE__ ) . '/helpers/helper-*.php' );
 		foreach ( $helpers as $helper ) {
 			require_once( $helper );
