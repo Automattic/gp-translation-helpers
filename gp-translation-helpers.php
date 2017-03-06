@@ -133,7 +133,7 @@ class GP_Translation_Helpers {
 		$project = $projects . '/' . $path;
 		$locale = '(' . implode( '|', wp_list_pluck( GP_Locales::locales(), 'slug' ) ) . ')';
 		$set = "$project/$locale/$dir";
-		$id = '(\d+)(-\d+)?';
+		$id = '(\d+)-?(\d+)?';
 
 		GP::$router->prepend( "/$set/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'translation_helpers' ), 'get' );
 	}
