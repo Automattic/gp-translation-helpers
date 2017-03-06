@@ -10,9 +10,15 @@ class GP_Route_Translation_Helpers extends GP_Route {
 	}
 
 	function translation_helpers( $project_path, $locale_slug, $set_slug, $original_id, $translation_id = null ) {
+		$project = GP::$project->by_path( $project_path );
+		if ( ! $project ) {
+			$this->die_with_404();
+		}
 
 		$args = array(
+			'project_id' => $project->id,
 			'locale_slug' => $locale_slug,
+			'set_slug' => $set_slug,
 			'original_id' => $original_id,
 			'translation_id' => $translation_id,
 		);
@@ -25,7 +31,6 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			}
 		}
 
-		// TODO: jsonize.
 		echo wp_json_encode( $sections );
 	}
 }
@@ -85,9 +90,11 @@ class GP_Translation_Helpers {
 		return $helpers;
 	}
 
-	public function translation_helpers( $t, $locale ) {
+	public function translation_helpers( $t, $translation_set ) {
 		$args = array(
-			'locale_slug' => $locale->lslug,
+			'project_id' => $t->project_id,
+			'locale_slug' => $translation_set->locale,
+			'set_slug' => $translation_set->slug,
 			'original_id' => $t->original_id,
 			'translation_id' => $t->translation_id,
 		);
