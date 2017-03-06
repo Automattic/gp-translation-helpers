@@ -25,7 +25,7 @@ $gp.translation_helpers = (
 						$helpers.addClass('loaded').removeClass('loading');
 						$.each( data, function( id, html ){
 							$( '#'  + id ).find('.loading').hide();
-							$( '#'  + id ).append( html )	;
+							$( '#'  + id ).prepend( html )	;
 						} );
 
 					}

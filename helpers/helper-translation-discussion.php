@@ -35,8 +35,8 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			)
 		);
 
-
 		add_filter( 'disable_highlander_comments', '__return_true' );
+		remove_filter( 'comment_text', 'comment_like_button', 12, 2 );
 	}
 
 	private function get_comments( $gmd_post_id ) {
