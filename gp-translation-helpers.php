@@ -5,7 +5,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 	private $helpers = array();
 
 	function __construct() {
-		$this->load_helpers();
+		$this->helpers = GP_Translation_Helpers::load_helpers();
 		$this->template_path = dirname( __FILE__ ) . '/templates/';
 	}
 
@@ -20,36 +20,21 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$sections = array();
 		foreach ( $this->helpers as $translation_helper ) {
 			$translation_helper->init( $args );
-			$sections[ $translation_helper->get_priority() ] = $translation_helper->get_output();
-		}
-
-		ksort( $sections );
-
-		gp_tmpl_load( 'translation-helpers', array( 'sections' => $sections ), $this->template_path );
-	}
-
-	function load_helpers() {
-		require_once( dirname( __FILE__ ) . '/helpers/abstract-helper.php' );
-
-		$helpers = glob( dirname( __FILE__ ) . '/helpers/helper-*.php' );
-		foreach ( $helpers as $helper ) {
-			require_once( $helper );
-		}
-
-		$classes = get_declared_classes();
-		foreach ( $classes as $declared_class ) {
-			$reflect = new ReflectionClass( $declared_class );
-			if ( $reflect->isSubclassOf( 'GP_Translation_Helper' ) ) {
-				$this->helpers[] = new $declared_class;
+			if ( $translation_helper->has_async_content() ) {
+				$sections[ $translation_helper->get_div_id() ] = $translation_helper->get_async_output();
 			}
 		}
-	}
 
+		// TODO: jsonize.
+		echo wp_json_encode( $sections );
+	}
 }
 
 class GP_Translation_Helpers {
 
+
 	public $id = 'translation-helpers';
+	private $helpers = array();
 
 	private static $instance = null;
 
@@ -66,9 +51,57 @@ class GP_Translation_Helpers {
 	}
 
 	public function __construct() {
+		$this->helpers = self::load_helpers();
+
 		add_action( 'gp_head',           array( $this, 'css' ), 10 );
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
 		add_action( 'gp_pre_tmpl_load',  array( $this, 'pre_tmpl_load' ), 10, 2 );
+
+		add_filter(  'gp_translation_row_editor_clospan', function( $colspan ) {
+			return ( $colspan - 2 );
+		});
+
+		add_action( 'gp_translation_row_editor_columns', array( $this, 'translation_helpers' ), 10, 2 );
+	}
+
+	public static function load_helpers() {
+		require_once( dirname( __FILE__ ) . '/helpers/abstract-helper.php' );
+
+		$helpers_files = glob( dirname( __FILE__ ) . '/helpers/helper-*.php' );
+		foreach ( $helpers_files as $helper ) {
+			require_once( $helper );
+		}
+
+		$helpers = array();
+
+		$classes = get_declared_classes();
+		foreach ( $classes as $declared_class ) {
+			$reflect = new ReflectionClass( $declared_class );
+			if ( $reflect->isSubclassOf( 'GP_Translation_Helper' ) ) {
+				$helpers[] = new $declared_class;
+			}
+		}
+
+		return $helpers;
+	}
+
+	public function translation_helpers( $t, $locale ) {
+		$args = array(
+			'locale_slug' => $locale->lslug,
+			'original_id' => $t->original_id,
+			'translation_id' => $t->translation_id,
+		);
+
+		$sections = array();
+		foreach ( $this->helpers as $translation_helper ) {
+			$translation_helper->init( $args );
+			$sections[ $translation_helper->get_priority() ] = $translation_helper->get_initial_output();
+		}
+
+		l( $sections );
+
+		ksort( $sections );
+		gp_tmpl_load( 'translation-helpers', array( 'sections' => $sections ), dirname( __FILE__ ) . '/templates/' );
 	}
 
 	public function pre_tmpl_load( $template, $args ) {
@@ -109,8 +142,22 @@ class GP_Translation_Helpers {
 				padding:10px;
 				border:0;
 			}
-			.translation-helpers h3 {
+			.translation-helpers .loading {
+				background: url(https://s0.wp.com/wp-content/mu-plugins/notes/images/loading.gif) no-repeat left center;
+				background-size: 20px;
+				padding-left: 24px;
+			}
+			.translations .translation-helpers > h3 {
 				margin-top: 5px;
+				margin-bottom: 10px;
+			}
+			.translation-helpers h4 {
+				margin-bottom: 0.5em;
+				font-size: 1.1em;
+				padding: .25em .5em;
+			}
+			.helper {
+				padding: .25em .5em;
 			}
 			.helpers-content {
 				overflow-y: scroll;

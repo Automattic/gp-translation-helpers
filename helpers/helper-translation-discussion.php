@@ -3,12 +3,14 @@
 class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 	public $priority = 2;
+	public $title = 'Discussion';
+	public $has_async_content = true;
 
 	const POST_TYPE = 'gth_original';
 	const POST_STATUS = 'publish';
 	const LINK_TAXONOMY = 'gp_original_id_to_post_id';
 
-	function __construct() {
+	function after_constructor() {
 
 		$post_type_args = array(
 			'show_ui'               => false,
@@ -36,30 +38,6 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 		add_filter( 'disable_highlander_comments', '__return_true' );
 	}
-
-	function get_output() {
-		$gmd_post_id = $this->get_shadow_post( $this->data['original_id'] );
-
-		$output = '<ul>';
-		$output .= wp_list_comments(array(
-			'reverse_top_level' => false, //Show the latest comments at the top of the list
-			'echo' => false,
-		), $this->get_comments( $gmd_post_id ) );
-		$output .= '</ul>';
-
-		// TODO: output buffering? we should find something better.
-		ob_start();
-		comment_form(
-			array(
-				'title_reply_before' => '<h6 class="original-comment-reply-title">',
-				'title_reply_after' => '</h6>',
-		), $gmd_post_id );
-		$output .= ob_get_contents();
-		ob_end_clean();
-
-		return $output;
-	}
-
 
 	private function get_comments( $gmd_post_id ) {
 		$comments_query = new WP_Comment_Query();
@@ -102,5 +80,40 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 		return $post_id;
 	}
+
+	public function get_output() {
+		$gmd_post_id = $this->get_shadow_post( $this->data['original_id'] );
+		// TODO: output buffering? we should find something better.
+		ob_start();
+		comment_form(
+			array(
+				'title_reply_before' => ' ',
+				'title_reply_after' => ' ',
+				'title_reply' => ' ',
+				'logged_in_as' => '',
+			),
+			$gmd_post_id
+		);
+		$output = ob_get_contents();
+		ob_end_clean();
+
+		$output = '<div class="loading">Loading comments&hellip;</div>' . $output;
+
+		return $output;
+	}
+
+
+	function get_async_output() {
+		$gmd_post_id = $this->get_shadow_post( $this->data['original_id'] );
+
+		$output = '<ul>';
+		$output .= wp_list_comments( array(
+			'reverse_top_level' => false, //Show the latest comments at the top of the list
+			'echo' => false,
+		), $this->get_comments( $gmd_post_id ) );
+		$output .= '</ul>';
+		return $output;
+	}
+
 
 }

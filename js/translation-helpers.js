@@ -3,37 +3,37 @@ $gp.translation_helpers = (
 		return {
 			init: function( table ) {
 				$gp.translation_helpers.table = table;
-				$gp.translation_helpers.datatd = $('<td colspan="2" class="translation-helpers">Loading...</td>');
+			//	$gp.translation_helpers.datatd = $('<td colspan="2" class="translation-helpers">Loading...</td>');
 				$gp.translation_helpers.install_hooks();
 			},
 			install_hooks: function() {
 				$( $gp.translation_helpers.table )
-					.on( 'beforeShow', '.editor', $gp.translation_helpers.hooks.appendTd );
+					.on( 'beforeShow', '.editor', $gp.translation_helpers.hooks.fetch );
 			},
-			appendTd : function( $element ) {
-				if ( $element.find('.translation-helpers').length > 0 ) {
+			fetch : function( $element ) {
+				var originalId  = $element.find('.translation-helpers').parent().attr( 'row');
+				var $helpers = $element.find('.translation-helpers');
+
+				if ( $helpers.hasClass('loaded') ) {
 					return;
 				}
-				var $first_td = $element.find('td:first');
-				var row_id  = $element.attr('row');
-				if ( $first_td.attr('colspan') > 3 ) {
-					$first_td.attr('colspan', ( $first_td.attr('colspan') - 2 ) );
-				}
-				$gp.translation_helpers.fetch( row_id, $element );
 
-				$element.append( $gp.translation_helpers.datatd.clone()  );
-			},
-			fetch : function( originalId, $element ) {
-				$.get(
+				$helpers.addClass('loading');
+				$.getJSON(
 					$gp_translation_helpers_settings.th_url + '/'  + originalId,
 					function( data ){
-						$element.find('.translation-helpers').html( data );
+						$helpers.addClass('loaded').removeClass('loading');
+						$.each( data, function( id, html ){
+							$( '#'  + id ).find('.loading').hide();
+							$( '#'  + id ).append( html )	;
+						} );
+
 					}
 				);
 			},
 			hooks: {
-				appendTd: function() {
-					$gp.translation_helpers.appendTd( $( this ) );
+				fetch: function() {
+					$gp.translation_helpers.fetch( $( this ) );
 					return false;
 				}
 			}
