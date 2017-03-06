@@ -26,7 +26,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$sections = array();
 		foreach ( $this->helpers as $translation_helper ) {
 			$translation_helper->init( $args );
-			if ( $translation_helper->has_async_content() ) {
+			if ( $translation_helper->has_async_content() && $translation_helper->is_active() ) {
 				$sections[ $translation_helper->get_div_id() ] = $translation_helper->get_async_output();
 			}
 		}
@@ -96,7 +96,7 @@ class GP_Translation_Helpers {
 			'locale_slug' => $translation_set->locale,
 			'set_slug' => $translation_set->slug,
 			'original_id' => $t->original_id,
-			'translation_id' => $t->translation_id,
+			'translation_id' => $t->id,
 		);
 
 		$sections = array();
@@ -104,8 +104,6 @@ class GP_Translation_Helpers {
 			$translation_helper->init( $args );
 			$sections[ $translation_helper->get_priority() ] = $translation_helper->get_initial_output();
 		}
-
-		l( $sections );
 
 		ksort( $sections );
 		gp_tmpl_load( 'translation-helpers', array( 'sections' => $sections ), dirname( __FILE__ ) . '/templates/' );

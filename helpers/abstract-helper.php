@@ -42,12 +42,22 @@ abstract class GP_Translation_Helper {
 	}
 
 	public function get_initial_output() {
+
+		if ( ! $this->is_active() ) {
+			return;
+
+		}
+
 		$output = '<h4>' . esc_html( $this->title ) . '</h4>';
 		$output .= sprintf( '<div class="%s helper" id="%s">', esc_attr( $this->get_div_classname() ), esc_attr( $this->get_div_id() ) );
 		$output .= $this->get_output();
 		$output .= '</div>';
 
 		return $output;
+	}
+
+	public function is_active() {
+		return true;
 	}
 
 	abstract public function get_output();
