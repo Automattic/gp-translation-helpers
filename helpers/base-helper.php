@@ -1,5 +1,5 @@
 <?php
-abstract class GP_Translation_Helper {
+class GP_Translation_Helper {
 
 	public final function __construct() {
 		$required_properties = array(
