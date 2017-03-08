@@ -1,6 +1,17 @@
 <?php
+
+/**
+ * Class GP_Translation_Helper
+ *
+ * Base class, extended by all other Helpers.
+ */
 class GP_Translation_Helper {
 
+	/**
+	 * GP_Translation_Helper constructor.
+	 *
+	 * Will throw a LogicException if the title property is not set.
+	 */
 	public final function __construct() {
 		$required_properties = array(
 			'title',
@@ -17,18 +28,38 @@ class GP_Translation_Helper {
 		}
 	}
 
+	/**
+	 * Sets the data coming from the route.
+	 * i.e original_id, path, tec
+	 * @param array $args
+	 */
 	public function set_data( $args ) {
 		$this->data = $args;
 	}
 
+	/**
+	 * Get the priority of a helper. Defaults to 1 if not set.
+	 * @return int
+	 */
 	public function get_priority() {
 		return isset( $this->priority ) ? $this->priority : 1;
 	}
 
+	/**
+	 * Does a helper also loads content asynchronously?
+	 * Defaults to false, but uses the class property if set.
+	 *
+	 * @return bool
+	 */
 	public function has_async_content() {
 		return isset( $this->has_async_content ) ? $this->has_async_content : false;
 	}
 
+	/**
+	 * Get the class name for the helper div.
+	 *
+	 * @return string
+	 */
 	public function get_div_classname() {
 		if ( isset( $this->classname ) ) {
 			return $this->classname;
@@ -37,6 +68,10 @@ class GP_Translation_Helper {
 		return sanitize_html_class( str_replace( '_' , '-', strtolower( get_class( $this ) ) ), 'default-translation-helper' );
 	}
 
+	/**
+	 * Get the html id for the div
+	 * @return string
+	 */
 	public function get_div_id() {
 		$div_id = $this->get_div_classname() . '-' . $this->data['original_id'];
 
@@ -47,18 +82,29 @@ class GP_Translation_Helper {
 		return $div_id;
 	}
 
+	/**
+	 * Return the title of the helper
+	 * @return string
+	 */
 	public function get_title() {
 		return $this->title;
 	}
 
-	public function get_initial_output() {
-		return $this->get_output();
-	}
-
+	/**
+	 * Should the helper be active?
+	 * Overwrite in the inheriting class to make this vary depending on class args.
+	 *
+	 * @return bool
+	 */
 	public function activate() {
 		return true;
 	}
 
+	/**
+	 * Set the count of items returned by the helper.
+	 *
+	 * @param mixed $list
+	 */
 	public function set_count( $list ) {
 		if ( is_array( $list ) ) {
 			$this->count = count( $list );
@@ -67,14 +113,31 @@ class GP_Translation_Helper {
 		}
 	}
 
+	/**
+	 * Get the number of items returned by the helper.
+	 *
+	 * @return int
+	 */
 	public function get_count() {
 		return isset( $this->count ) ? $this->count : 0;
 	}
 
+	/**
+	 * Content/string to return when a helper has no results.
+	 *
+	 * @return string
+	 */
 	public function empty_content() {
 		return 'No results found.';
 	}
 
+	/**
+	 * Default callback to render items returned by the helper.
+	 *
+	 * @param array $items
+	 *
+	 * @return string
+	 */
 	public function async_output_callback( $items ) {
 		$output = '<ul>';
 		foreach ( $items as $item ) {
@@ -84,6 +147,11 @@ class GP_Translation_Helper {
 		return $output;
 	}
 
+	/**
+	 * Get content that is returned asynchronously.
+	 *
+	 * @return string
+	 */
 	public function get_async_output() {
 		$items = $this->get_async_content();
 		$this->set_count( $items );
@@ -97,15 +165,30 @@ class GP_Translation_Helper {
 		return $output;
 	}
 
+	/**
+	 * Get the (non-async) output for the helper.
+	 *
+	 * @return string
+	 */
 	public function get_output() {
 		return '<div class="loading">Loading&hellip;</div>';
 	}
 
+	/**
+	 * Get additional css required by the helper
+	 *
+	 * @return bool|string
+	 */
 	public function get_css() {
-		return;
+		return false;
 	}
 
+	/**
+	 * Get additional js required by the helper
+	 *
+	 * @return bool|string
+	 */
 	public function get_js() {
-		return;
+		return false;
 	}
 }
