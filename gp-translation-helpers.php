@@ -82,6 +82,9 @@ class GP_Translation_Helpers {
 		});
 
 
+		wp_register_style( 'gp-translation-helpers', plugins_url( 'css/translation-helpers.css', __FILE__ ) );
+		gp_enqueue_style( 'gp-translation-helpers' );
+
 		wp_register_script( 'gp-translation-helpers', plugins_url( './js/translation-helpers.js', __FILE__ ), array( 'gp-editor' ), '2017-02-09' );
 		gp_enqueue_scripts( array( 'gp-translation-helpers' ) );
 
@@ -170,66 +173,6 @@ class GP_Translation_Helpers {
 	public function css_and_js() {
 		?>
 		<style>
-			.editor td {
-				vertical-align: top;
-			}
-			#translations .translation-helpers {
-				width: 600px;
-				padding: .5em 0 0;
-				border: 0;
-				border-top:1px solid #eee;
-			}
-			.translation-helpers h4 {
-				margin-bottom: 0.5em;
-				font-size: 1.1em;
-				padding: .25em .5em;
-			}
-			.helpers-tabs {
-				margin: 0px;
-				padding: 0px;
-				list-style: none;
-				border-bottom: 2px solid #ccc;
-				white-space: nowrap;
-			}
-			.helpers-tabs li {
-				background: #eee;
-				color: #222;
-				display: inline-block;
-				padding: 10px 15px;
-				cursor: pointer;
-				margin: 0 1px 0 0;
-				border-top: 1px solid #eee;
-			}
-			.helpers-tabs li.current {
-				background-color: transparent;
-				margin: 0 0 -2px -1px;
-				border: 1px solid #ccc;
-				border-bottom: 2px solid #f8ffec;
-				font-weight: bold;
-			}
-			.helpers-tabs li:first-child.current {
-				border-left: 0;
-			}
-			.loading .helpers-tabs {
-				padding-right: 28px;
-				background: transparent url(https://s0.wp.com/wp-content/mu-plugins/notes/images/loading.gif) no-repeat right 4px center;
-				background-size: 20px;
-			}
-			.helper {
-				overflow-y: scroll;
-				max-height: 800px;
-				display: none;
-				padding: 1em;
-				min-height: 200px;
-			}
-			.helper.current {
-				display: inherit;
-			}
-			.helpers-tabs li .count {
-				display: inline-block;
-				padding-left: 4px;
-				opacity: 0.6;
-			}
 			<?php
 			foreach ( $this->helpers as $translation_helper ) {
 				$css = $translation_helper->get_css();
