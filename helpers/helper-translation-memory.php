@@ -6,11 +6,12 @@ class Helper_Translation_Memory extends GP_Translation_Helper {
 	public $title = 'Translation Memory';
 	public $has_async_content = true;
 
-	function get_async_content() {
-		if ( ! class_exists( 'GP_Translation_Memory' ) ) {
-			return false;
-		}
 
+	function activate() {
+		return class_exists( 'GP_Translation_Memory' );
+	}
+
+	function get_async_content() {
 		$original = GP::$original->get( $this->data['original_id'] );
 		if ( ! $original ) {
 			return false;
@@ -41,5 +42,9 @@ class Helper_Translation_Memory extends GP_Translation_Helper {
 
 	function empty_content() {
 		return 'No suggestions found!';
+	}
+
+	function get_css() {
+		return GP_Translation_Memory::get_css();
 	}
 }

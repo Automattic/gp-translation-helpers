@@ -23,4 +23,9 @@
 	}
 	?>
 	</div>
+	<?php if ( '' !== $css ) : ?>
+	<style>
+		<?php echo $css; ?>
+	</style>
+	<?php endif; ?>
 </td>

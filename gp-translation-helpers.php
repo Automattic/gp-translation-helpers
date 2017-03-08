@@ -118,6 +118,7 @@ class GP_Translation_Helpers {
 			'translation_id' => $t->id,
 		);
 
+		$css = '';
 		$sections = array();
 		foreach ( $this->helpers as $translation_helper ) {
 			$translation_helper->init( $args );
@@ -133,13 +134,18 @@ class GP_Translation_Helpers {
 				'id' => $translation_helper->get_div_id(),
 				'priority' => $translation_helper->get_priority(),
 			);
+
+			$helper_css = $translation_helper->get_css();
+			if ( $helper_css ) {
+				$css .= $helper_css . "\n";
+			}
 		}
 
 		usort( $sections, function( $s1, $s2 ) {
 			return $s1['priority'] > $s2['priority'];
 		});
 
-		gp_tmpl_load( 'translation-helpers', array( 'sections' => $sections ), dirname( __FILE__ ) . '/templates/' );
+		gp_tmpl_load( 'translation-helpers', array( 'sections' => $sections, 'css' => $css ), dirname( __FILE__ ) . '/templates/' );
 	}
 
 

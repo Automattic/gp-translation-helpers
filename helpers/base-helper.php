@@ -91,4 +91,8 @@ class GP_Translation_Helper {
 	public function get_output() {
 		return '<div class="loading">Loading&hellip;</div>';
 	}
+
+	public function get_css() {
+		return;
+	}
 }
