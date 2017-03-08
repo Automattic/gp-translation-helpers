@@ -23,10 +23,12 @@ $gp.translation_helpers = (
 					$gp_translation_helpers_settings.th_url + '/'  + originalId,
 					function( data ){
 						$helpers.addClass('loaded').removeClass('loading');
-						$.each( data, function( id, html ){
-							jQuery('.helpers-tabs li[data-tab="' + id +'"]').removeClass('loading');
+						$.each( data, function( id, result ){
+							var $tab = jQuery('.helpers-tabs li[data-tab="' + id +'"]');
+							$tab.removeClass('loading');
+							$tab.find('.count').text( '(' + result.count + ')' );
 							$( '#'  + id ).find('.loading').remove();
-							$( '#'  + id ).append( html );
+							$( '#'  + id ).append( result.content );
 						} );
 
 					}

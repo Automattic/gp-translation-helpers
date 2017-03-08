@@ -6,8 +6,9 @@ class Helper_History extends GP_Translation_Helper {
 	public $title = 'History';
 	public $has_async_content = true;
 
-	function get_async_output() {
+	function get_async_content() {
 		$translation_set = GP::$translation_set->by_project_id_slug_and_locale( $this->data['project_id'], $this->data['set_slug'], $this->data['locale_slug'] );
+
 		if ( ! $translation_set ) {
 			return;
 		}
@@ -20,6 +21,12 @@ class Helper_History extends GP_Translation_Helper {
 			'id DESC'
 		);
 
+		$this->set_count( $translations );
+
+		return $translations;
+	}
+
+	function async_output_callback( $translations ) {
 		if ( $translations ) {
 			$output = '<table>';
 			$output .= '<thead>';
@@ -30,6 +37,10 @@ class Helper_History extends GP_Translation_Helper {
 			}
 		}
 		return $output;
+	}
+
+	function empty_content() {
+		return 'No translation history for this string';
 	}
 
 	function get_output() {

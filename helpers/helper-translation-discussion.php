@@ -102,17 +102,25 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		return $output;
 	}
 
-
-	function get_async_output() {
+	function get_async_content() {
 		$gmd_post_id = $this->get_shadow_post( $this->data['original_id'] );
+		$comments = $this->get_comments( $gmd_post_id );
+		$this->set_count( $comments );
+		return $comments;
+	}
 
+	function async_output_callback( $comments ) {
 		$output = '<ul>';
 		$output .= wp_list_comments( array(
 			'reverse_top_level' => false, //Show the latest comments at the top of the list
 			'echo' => false,
-		), $this->get_comments( $gmd_post_id ) );
+		), $comments );
 		$output .= '</ul>';
 		return $output;
+	}
+
+	function empty_content() {
+		return 'No comments yet. Feel free to add one!';
 	}
 
 

@@ -26,9 +26,12 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$sections = array();
 		foreach ( $this->helpers as $translation_helper ) {
 			$translation_helper->init( $args );
-			if ( $translation_helper->has_async_content() && $translation_helper->is_active() ) {
-				$sections[ $translation_helper->get_div_id() ] = $translation_helper->get_async_output();
-			}
+			if ( $translation_helper->has_async_content() && $translation_helper->activate() ) {
+				$sections[ $translation_helper->get_div_id() ] = array(
+					'content' => $translation_helper->get_async_output(),
+					'count' => $translation_helper->get_count(),
+				);
+			};
 		}
 
 		echo wp_json_encode( $sections );
@@ -118,6 +121,11 @@ class GP_Translation_Helpers {
 		$sections = array();
 		foreach ( $this->helpers as $translation_helper ) {
 			$translation_helper->init( $args );
+
+			if ( ! $translation_helper->activate() ) {
+				continue;
+			}
+
 			$sections[ $translation_helper->get_priority() ] = array(
 				'title' => $translation_helper->get_tab_title(),
 				'content' => $translation_helper->get_initial_output(),
@@ -175,6 +183,10 @@ class GP_Translation_Helpers {
 				max-height: 800px;
 			}
 
+			.helpers-content h3 {
+				margin-top: 0.5em;
+			}
+
 			.helpers-tabs {
 				margin: 0px;
 				padding: 0px;
@@ -203,12 +215,18 @@ class GP_Translation_Helpers {
 				display: none;
 				border: 2px solid #eee;
 				border-top: none;
-				padding: .5em;
+				padding: 1em .5em 1em;
 				min-height: 200px;
 			}
 
 			.helper.current {
 				display: inherit;
+			}
+
+			.helpers-tabs li .count {
+				display: inline-block;
+				padding-left: 4px;
+				opacity: 0.6;
 			}
 
 		</style>

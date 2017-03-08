@@ -49,8 +49,43 @@ abstract class GP_Translation_Helper {
 		return $this->get_output();
 	}
 
-	public function is_active() {
+	public function activate() {
 		return true;
+	}
+
+	public function set_count( $list ) {
+		$list = (array) $list;
+		$this->count = count( $list );
+	}
+
+	public function get_count() {
+		return isset( $this->count ) ? $this->count : 0;
+	}
+
+	public function empty_content() {
+		return 'No results found.';
+	}
+
+	public function async_output_callback( $items ) {
+		$output = '<ul>';
+		foreach ( $items as $item ) {
+			$output .= '<li>' . $item . '</li>';
+		}
+		$output .= '</ul>';
+		return $output;
+	}
+
+	public function get_async_output() {
+		$items = $this->get_async_content();
+		$this->set_count( $items );
+
+		if ( ! $items ) {
+			return $this->empty_content();
+
+		}
+
+		$output = $this->async_output_callback( $items );
+		return $output;
 	}
 
 	abstract public function get_output();
