@@ -3,7 +3,6 @@ $gp.translation_helpers = (
 		return {
 			init: function( table ) {
 				$gp.translation_helpers.table = table;
-			//	$gp.translation_helpers.datatd = $('<td colspan="2" class="translation-helpers">Loading...</td>');
 				$gp.translation_helpers.install_hooks();
 			},
 			install_hooks: function() {

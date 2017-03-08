@@ -18,7 +18,6 @@ class Helper_User_Info extends GP_Translation_Helper {
 	}
 
 	function get_async_output() {
-
 		$translations = GP::$translation->find_many_no_map( array( 'user_id' => $this->translation->user_id  ) );
 		$translations_by_status = array();
 		foreach ( $translations as $translation ) {
