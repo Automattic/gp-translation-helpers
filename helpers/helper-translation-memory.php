@@ -47,4 +47,17 @@ class Helper_Translation_Memory extends GP_Translation_Helper {
 	function get_css() {
 		return GP_Translation_Memory::get_css();
 	}
+
+	function get_js() {
+		return <<<JS
+jQuery( function( $ ) {
+	$( '#translations').on( 'click', 'a.copy-suggestion', function() {
+		var original_text = $(this).prev( '.translation' ).text();
+		original_text = original_text.replace( /<span class=.invisibles.*?<\/span>/g, '' );
+		$(this).parents('.editor').find( 'textarea' ).val( original_text ).focus();
+		new Image().src = document.location.protocol+'//pixel.wp.com/g.gif?v=wpcom-no-pv&x_gp-translation-memory=copy&baba='+Math.random();
+	} );
+} );
+JS;
+	}
 }

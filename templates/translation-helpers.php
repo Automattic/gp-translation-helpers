@@ -28,4 +28,9 @@
 		<?php echo $css; ?>
 	</style>
 	<?php endif; ?>
+	<?php if ( '' !== $js ) : ?>
+	<script>
+		<?php echo $js; ?>
+	</script>
+	<?php endif; ?>
 </td>

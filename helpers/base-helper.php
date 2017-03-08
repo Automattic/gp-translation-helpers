@@ -95,4 +95,8 @@ class GP_Translation_Helper {
 	public function get_css() {
 		return;
 	}
+
+	public function get_js() {
+		return;
+	}
 }
