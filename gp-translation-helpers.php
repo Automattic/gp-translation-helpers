@@ -183,11 +183,6 @@ class GP_Translation_Helpers {
 				padding: .25em .5em;
 			}
 
-			.helpers-content {
-				overflow-y: scroll;
-				max-height: 800px;
-			}
-
 			.translation-helpers .helpers-content h3 {
 				margin-top: 0.5em;
 			}
@@ -224,6 +219,8 @@ class GP_Translation_Helpers {
 			}
 
 			.helper {
+				overflow-y: scroll;
+				max-height: 800px;
 				display: none;
 				border: 2px solid #eee;
 				border-top: none;

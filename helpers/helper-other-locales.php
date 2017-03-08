@@ -13,20 +13,24 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 		}
 
 		$translations  = GP::$translation->find_many_no_map( array( 'status' => 'current', 'original_id' => $this->data['original_id'] ) );
-		foreach ( $translations as $key => $translation ) {
+		$translations_by_locale = array();
+		foreach ( $translations as $translation ) {
+			$_set = GP::$translation_set->get( $translation->translation_set_id );
 			if ( $translation->translation_set_id === $translation_set->id ) {
-				unset( $translations[ $key ] );
+				continue;
 			}
+			$translations_by_locale[ $_set->locale ] = $translation;
 		}
 
-		return $translations;
+		ksort( $translations_by_locale );
+
+		return $translations_by_locale;
 	}
 
 	function async_output_callback( $translations ) {
-		$output = '<ul>';
-		foreach ( $translations as $translation ) {
-			$_set = GP::$translation_set->get( $translation->translation_set_id );
-			$output .= sprintf( '<li> <em>%s</em>: %s</li>', $_set->locale, $translation->translation_0 );
+		$output = '<ul class="other-locales">';
+		foreach ( $translations as $locale => $translation ) {
+			$output .= sprintf( '<li><span class="locale">%s</span>%s</li>', $locale, esc_translation( $translation->translation_0 ) );
 		}
 		$output .= '</ul>';
 		return $output;
@@ -34,5 +38,28 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 
 	function empty_content() {
 		return 'No other locales have translated this string yet.';
+	}
+
+	function get_css() {
+		return <<<CSS
+		.other-locales {
+			list-style: none;
+		}
+		.other-locales li {
+			clear:both;
+			margin-bottom: 6px;
+		}
+		.other-locales .locale {
+			display: inline-block;
+			padding: 1px 6px 0 0;
+			margin-right: 6px;
+			background: #00DA12;
+			width: 40px;
+			text-align: right;
+			float: left;
+			color: #fff;
+		}
+CSS;
+
 	}
 }

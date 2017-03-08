@@ -54,8 +54,11 @@ class GP_Translation_Helper {
 	}
 
 	public function set_count( $list ) {
-		$list = (array) $list;
-		$this->count = count( $list );
+		if ( is_array( $list ) ) {
+			$this->count = count( $list );
+		} else {
+			$this->count = $list ? 1 : 0;
+		}
 	}
 
 	public function get_count() {
