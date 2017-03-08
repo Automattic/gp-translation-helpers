@@ -56,17 +56,33 @@ class GP_Translation_Helpers {
 	}
 
 	public function __construct() {
-		$this->helpers = self::load_helpers();
-
-		add_action( 'gp_head',           array( $this, 'css' ), 10 );
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
 		add_action( 'gp_pre_tmpl_load',  array( $this, 'pre_tmpl_load' ), 10, 2 );
+	}
+
+	public function pre_tmpl_load( $template, $args ) {
+		if ( 'translations' !== $template ) {
+			return;
+		}
+
+		$this->helpers = self::load_helpers();
+
+		$translation_helpers_settings = array(
+			'th_url' => gp_url_project( $args['project'], gp_url_join( $args['locale_slug'],  $args['translation_set_slug'], '-get-translation-helpers' ) ),
+		);
+
+		add_action( 'gp_head',           array( $this, 'css' ), 10 );
+		add_action( 'gp_translation_row_editor_columns', array( $this, 'translation_helpers' ), 10, 2 );
 
 		add_filter(  'gp_translation_row_editor_clospan', function( $colspan ) {
 			return ( $colspan - 2 );
 		});
 
-		add_action( 'gp_translation_row_editor_columns', array( $this, 'translation_helpers' ), 10, 2 );
+
+		wp_register_script( 'gp-translation-helpers', plugins_url( './js/translation-helpers.js', __FILE__ ), array( 'gp-editor' ), '2017-02-09' );
+		gp_enqueue_scripts( array( 'gp-translation-helpers' ) );
+
+		wp_localize_script( 'gp-translation-helpers', '$gp_translation_helpers_settings',  $translation_helpers_settings );
 	}
 
 	public static function load_helpers() {
@@ -102,27 +118,19 @@ class GP_Translation_Helpers {
 		$sections = array();
 		foreach ( $this->helpers as $translation_helper ) {
 			$translation_helper->init( $args );
-			$sections[ $translation_helper->get_priority() ] = $translation_helper->get_initial_output();
+			$sections[ $translation_helper->get_priority() ] = array(
+				'title' => $translation_helper->get_tab_title(),
+				'content' => $translation_helper->get_initial_output(),
+				'classname' => $translation_helper->get_div_classname(),
+				'id' => $translation_helper->get_div_id(),
+				'has_async_content' => $translation_helper->has_async_content(),
+			);
 		}
 
 		ksort( $sections );
 		gp_tmpl_load( 'translation-helpers', array( 'sections' => $sections ), dirname( __FILE__ ) . '/templates/' );
 	}
 
-	public function pre_tmpl_load( $template, $args ) {
-		if ( 'translations' !== $template ) {
-			return;
-		}
-
-		$translation_helpers_settings = array(
-			'th_url' => gp_url_project( $args['project'], gp_url_join( $args['locale_slug'],  $args['translation_set_slug'], '-get-translation-helpers' ) ),
-		);
-
-		wp_register_script( 'gp-translation-helpers', plugins_url( './js/translation-helpers.js', __FILE__ ), array( 'gp-editor' ), '2017-02-09' );
-		gp_enqueue_scripts( array( 'gp-translation-helpers' ) );
-
-		wp_localize_script( 'gp-translation-helpers', '$gp_translation_helpers_settings',  $translation_helpers_settings );
-	}
 
 	function register_routes() {
 		$dir = '([^_/][^/]*)';
