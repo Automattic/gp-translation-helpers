@@ -138,7 +138,7 @@ class GP_Translation_Helpers {
 
 			$sections[] = array(
 				'title' => $translation_helper->get_title(),
-				'content' => $translation_helper->get_initial_output(),
+				'content' => $translation_helper->get_output(),
 				'classname' => $translation_helper->get_div_classname(),
 				'id' => $translation_helper->get_div_id(),
 				'priority' => $translation_helper->get_priority(),

@@ -3,7 +3,7 @@
 class Helper_Other_Locales extends GP_Translation_Helper {
 
 	public $priority = 3;
-	public $title = 'In other locales';
+	public $title = 'Other locales';
 	public $has_async_content = true;
 
 	function get_async_content() {
@@ -42,24 +42,22 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 
 	function get_css() {
 		return <<<CSS
-		.other-locales {
-			list-style: none;
-		}
-		.other-locales li {
-			clear:both;
-			margin-bottom: 6px;
-		}
-		.other-locales .locale {
-			display: inline-block;
-			padding: 1px 6px 0 0;
-			margin-right: 6px;
-			background: #00DA12;
-			width: 40px;
-			text-align: right;
-			float: left;
-			color: #fff;
-		}
+	.other-locales {
+		list-style: none;
+	}
+	.other-locales li {
+		clear:both;
+	}
+	.other-locales .locale {
+		display: inline-block;
+		padding: 1px 6px 0 0;
+		margin: 1px 6px 1px 0;
+		background: #00DA12;
+		width: 40px;
+		text-align: right;
+		float: left;
+		color: #fff;
+	}
 CSS;
-
 	}
 }

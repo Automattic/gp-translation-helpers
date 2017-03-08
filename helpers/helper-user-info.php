@@ -27,7 +27,7 @@ class Helper_User_Info extends GP_Translation_Helper {
 	function async_output_callback( $translations ) {
 
 		$user = get_userdata( $this->data['translation']->user_id );
-		$output = "<b>User</b>: {$user->display_name}<br/>";
+		$output = "<b>User</b>: {$user->display_name} ({$user->user_login})<br/>";
 
 		$total = count( $translations );
 		$translations_by_status = array();
