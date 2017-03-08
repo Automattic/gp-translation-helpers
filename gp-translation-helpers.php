@@ -60,15 +60,18 @@ class GP_Translation_Helpers {
 
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
+		add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
+	}
+
+	public function before_request( $class_name, $last_method ) {
+		if (  'GP_Route_Translation' !== $class_name || 'translations_get' !== $last_method ) {
+			return;
+		}
+
 		add_action( 'gp_pre_tmpl_load',  array( $this, 'pre_tmpl_load' ), 10, 2 );
 	}
 
 	public function pre_tmpl_load( $template, $args ) {
-		$route = GP::$current_route;
-		if ( ! $route || 'GP_Route_Translation' !== $route->class_name || 'translations_get' !== $route->last_method_called ) {
-			return;
-		}
-
 		if ( 'translations' !== $template ) {
 			return;
 		}
@@ -78,7 +81,6 @@ class GP_Translation_Helpers {
 		$translation_helpers_settings = array(
 			'th_url' => gp_url_project( $args['project'], gp_url_join( $args['locale_slug'],  $args['translation_set_slug'], '-get-translation-helpers' ) ),
 		);
-
 
 		add_action( 'gp_head',           array( $this, 'css_and_js' ), 10 );
 		add_action( 'gp_translation_row_editor_columns', array( $this, 'translation_helpers' ), 10, 2 );
