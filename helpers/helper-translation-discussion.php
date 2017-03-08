@@ -10,6 +10,11 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	const POST_STATUS = 'publish';
 	const LINK_TAXONOMY = 'gp_original_id_to_post_id';
 
+	//Temporarily disable
+	function activate() {
+		return false;
+	}
+
 	function after_constructor() {
 		$post_type_args = array(
 			'show_ui'               => false,
