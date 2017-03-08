@@ -9,8 +9,8 @@ class Helper_User_Info extends GP_Translation_Helper {
 	public $translation = false;
 
 
-	function init( $args ) {
-		parent::init( $args );
+	function set_data( $args ) {
+		parent::set_data( $args );
 
 		if (  isset( $this->data['translation_id'] ) ) {
 			$this->translation = GP::$translation->get( $this->data['translation_id'] );

@@ -25,7 +25,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 
 		$sections = array();
 		foreach ( $this->helpers as $translation_helper ) {
-			$translation_helper->init( $args );
+			$translation_helper->set_data( $args );
 			if ( $translation_helper->has_async_content() && $translation_helper->activate() ) {
 				$sections[ $translation_helper->get_div_id() ] = array(
 					'content' => $translation_helper->get_async_output(),
@@ -74,7 +74,7 @@ class GP_Translation_Helpers {
 			'th_url' => gp_url_project( $args['project'], gp_url_join( $args['locale_slug'],  $args['translation_set_slug'], '-get-translation-helpers' ) ),
 		);
 
-		add_action( 'gp_head',           array( $this, 'css' ), 10 );
+		add_action( 'gp_head',           array( $this, 'css_and_js' ), 10 );
 		add_action( 'gp_translation_row_editor_columns', array( $this, 'translation_helpers' ), 10, 2 );
 
 		add_filter(  'gp_translation_row_editor_clospan', function( $colspan ) {
@@ -121,14 +121,14 @@ class GP_Translation_Helpers {
 		$css = $js = '';
 		$sections = array();
 		foreach ( $this->helpers as $translation_helper ) {
-			$translation_helper->init( $args );
+			$translation_helper->set_data( $args );
 
 			if ( ! $translation_helper->activate() ) {
 				continue;
 			}
 
 			$sections[] = array(
-				'title' => $translation_helper->get_tab_title(),
+				'title' => $translation_helper->get_title(),
 				'content' => $translation_helper->get_initial_output(),
 				'classname' => $translation_helper->get_div_classname(),
 				'id' => $translation_helper->get_div_id(),
@@ -150,7 +150,7 @@ class GP_Translation_Helpers {
 			return $s1['priority'] > $s2['priority'];
 		});
 
-		gp_tmpl_load( 'translation-helpers', array( 'sections' => $sections, 'css' => $css, 'js' => $js ), dirname( __FILE__ ) . '/templates/' );
+		gp_tmpl_load( 'translation-helpers', array( 'sections' => $sections ), dirname( __FILE__ ) . '/templates/' );
 	}
 
 
@@ -166,7 +166,7 @@ class GP_Translation_Helpers {
 		GP::$router->prepend( "/$set/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'translation_helpers' ), 'get' );
 	}
 
-	public function css() {
+	public function css_and_js() {
 		?>
 		<style>
 			.editor td {
@@ -240,8 +240,27 @@ class GP_Translation_Helpers {
 				padding-left: 4px;
 				opacity: 0.6;
 			}
-
+			<?php
+			foreach ( $this->helpers as $translation_helper ) {
+				$css = $translation_helper->get_css();
+				if ( $css ) {
+					echo '/* Translation Helper:  ' . esc_js( $translation_helper->get_title() ) . ' */' . "\n";
+					echo $css . "\n";
+				}
+			}
+			?>
 		</style>
+		<script>
+			<?php
+			foreach ( $this->helpers as $translation_helper ) {
+				$js = $translation_helper->get_js();
+				if ( $js ) {
+					echo '/* Translation Helper:  ' . esc_js( $translation_helper->get_title() ) . ' */' . "\n";
+					echo $js . "\n";
+				}
+			}
+			?>
+		</script>
 		<?php
 	}
 

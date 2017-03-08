@@ -17,7 +17,7 @@ class GP_Translation_Helper {
 		}
 	}
 
-	public function init( $args ) {
+	public function set_data( $args ) {
 		$this->data = $args;
 	}
 
@@ -41,7 +41,7 @@ class GP_Translation_Helper {
 		return $this->get_div_classname() . '-' . $this->data['original_id'];
 	}
 
-	public function get_tab_title() {
+	public function get_title() {
 		return $this->title;
 	}
 
