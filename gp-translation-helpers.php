@@ -175,7 +175,7 @@ class GP_Translation_Helpers {
 			}
 			#translations .translation-helpers {
 				width: 600px;
-				padding: 0;
+				padding: .5em 0 0;
 				border: 0;
 				border-top:1px solid #eee;
 			}
