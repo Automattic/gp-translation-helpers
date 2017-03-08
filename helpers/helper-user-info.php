@@ -35,7 +35,6 @@ class Helper_User_Info extends GP_Translation_Helper {
 	}
 
 	function get_output() {
-		return '<div class="loading">Loading...</div>';
 	}
 
 	function is_active() {

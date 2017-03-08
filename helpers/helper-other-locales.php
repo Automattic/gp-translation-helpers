@@ -30,6 +30,5 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 	}
 
 	function get_output() {
-		return '<div class="loading">Loading...</div>';
 	}
 }

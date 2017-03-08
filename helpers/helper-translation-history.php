@@ -33,6 +33,5 @@ class Helper_History extends GP_Translation_Helper {
 	}
 
 	function get_output() {
-		return '<div class="loading">Loading...</div>';
 	}
 }
