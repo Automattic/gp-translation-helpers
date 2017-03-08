@@ -47,37 +47,42 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	}
 
 	public function get_shadow_post( $original_id ) {
-		$gp_posts = get_posts(
-			array(
-				'tax_query' => array(
-					array(
-						'taxonomy' => self::LINK_TAXONOMY,
-						'terms' => $original_id,
-						'field' => 'slug',
-					),
-				),
-				'post_type' => self::POST_TYPE,
-				'posts_per_page' => 1,
-				'post_status' => self::POST_STATUS,
-				'suppress_filters' => false,
-			)
-		);
+		$cache_key = self::POST_TYPE . '_' . $original_id;
 
-		if ( empty( $gp_posts ) ) {
-			$post_id = wp_insert_post(
+		if ( false === ( $post_id = wp_cache_get( $cache_key ) ) ) {
+			$gp_posts = get_posts(
 				array(
-					'post_type' => SELF::POST_TYPE,
-					'tax_input' => array(
-						self::LINK_TAXONOMY => array( $original_id ),
+					'tax_query'        => array(
+						array(
+							'taxonomy' => self::LINK_TAXONOMY,
+							'terms'    => $original_id,
+							'field'    => 'slug',
+						),
 					),
-					'post_status' => self::POST_STATUS,
-					'comment_status' => 'open',
+					'post_type'        => self::POST_TYPE,
+					'posts_per_page'   => 1,
+					'post_status'      => self::POST_STATUS,
+					'suppress_filters' => false,
 				)
 			);
-		} else {
-			$post_id = $gp_posts[0]->ID;
+
+			if ( ! empty( $gp_posts ) ) {
+				$post_id = $gp_posts[0]->ID;
+			} else {
+				$post_id = wp_insert_post(
+					array(
+						'post_type'      => SELF::POST_TYPE,
+						'tax_input'      => array(
+							self::LINK_TAXONOMY => array( $original_id ),
+						),
+						'post_status'    => self::POST_STATUS,
+						'comment_status' => 'open',
+					)
+				);
+			}
 		}
 
+		wp_cache_add( $cache_key, $post_id );
 		return $post_id;
 	}
 
