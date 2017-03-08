@@ -172,66 +172,58 @@ class GP_Translation_Helpers {
 			.editor td {
 				vertical-align: top;
 			}
-			.translation-helpers {
-				min-width: 550px;
-				padding:10px;
-				border:0;
+			#translations .translation-helpers {
+				width: 600px;
+				padding: 0;
+				border: 0;
+				border-top:1px solid #eee;
 			}
 			.translation-helpers h4 {
 				margin-bottom: 0.5em;
 				font-size: 1.1em;
 				padding: .25em .5em;
 			}
-
-			.translation-helpers .helpers-content h3 {
-				margin-top: 0.5em;
-			}
-
 			.helpers-tabs {
 				margin: 0px;
 				padding: 0px;
 				list-style: none;
-				border-bottom: 2px solid #eee;
+				border-bottom: 2px solid #ccc;
 				white-space: nowrap;
 			}
-
 			.helpers-tabs li {
 				background: #eee;
 				color: #222;
 				display: inline-block;
 				padding: 10px 15px;
 				cursor: pointer;
-				margin: 0 1px;
+				margin: 0 1px 0 0;
 			}
-
 			.helpers-tabs li.current {
 				background-color: transparent;
-				margin: 0 0 -2px;
-				border: 2px solid #eee;
+				margin: 0 0 -2px -1px;
+				border: 1px solid #ccc;
 				border-bottom: 2px solid #f8ffec;
+				border-top:0;
 				font-weight: bold;
 			}
-
+			.helpers-tabs li:first-child.current {
+				border-left: 0;
+			}
 			.loading .helpers-tabs {
 				padding-right: 28px;
 				background: transparent url(https://s0.wp.com/wp-content/mu-plugins/notes/images/loading.gif) no-repeat right 4px center;
 				background-size: 20px;
 			}
-
 			.helper {
 				overflow-y: scroll;
 				max-height: 800px;
 				display: none;
-				border: 2px solid #eee;
-				border-top: none;
-				padding: 1em .5em 1em;
+				padding: 1em;
 				min-height: 200px;
 			}
-
 			.helper.current {
 				display: inherit;
 			}
-
 			.helpers-tabs li .count {
 				display: inline-block;
 				padding-left: 4px;
