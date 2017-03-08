@@ -116,6 +116,7 @@ class GP_Translation_Helpers {
 			'set_slug' => $translation_set->slug,
 			'original_id' => $t->original_id,
 			'translation_id' => $t->id,
+			'translation' => $t,
 		);
 
 		$css = $js = '';
