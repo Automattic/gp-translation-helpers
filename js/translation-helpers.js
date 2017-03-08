@@ -8,10 +8,11 @@ $gp.translation_helpers = (
 			},
 			install_hooks: function() {
 				$( $gp.translation_helpers.table )
-					.on( 'beforeShow', '.editor', $gp.translation_helpers.hooks.fetch );
+					.on( 'beforeShow', '.editor', $gp.translation_helpers.hooks.fetch )
+					.on( 'click', '.helpers-tabs li', $gp.translation_helpers.hooks.tab_select );
 			},
 			fetch : function( $element ) {
-				var originalId  = $element.find('.translation-helpers').parent().attr( 'row');
+				var originalId  = $element.find('.translation-helpers').parent().attr('row');
 				var $helpers = $element.find('.translation-helpers');
 
 				if ( $helpers.hasClass('loaded') ) {
@@ -24,16 +25,30 @@ $gp.translation_helpers = (
 					function( data ){
 						$helpers.addClass('loaded').removeClass('loading');
 						$.each( data, function( id, html ){
-							$( '#'  + id ).find('.loading').hide();
-							$( '#'  + id ).prepend( html )	;
+							jQuery('.helpers-tabs li[data-tab="' + id +'"]').removeClass('loading');
+							$( '#'  + id ).find('.loading').remove();
+							$( '#'  + id ).append( html );
 						} );
 
 					}
 				);
 			},
+			tab_select: function( $tab ) {
+				var tab_id = $tab.attr('data-tab');
+
+				$('.helpers-tabs li').removeClass( 'current');
+				$('.helper').removeClass('current');
+
+				$tab.addClass('current');
+				$("#"+tab_id).addClass('current');
+			},
 			hooks: {
 				fetch: function() {
 					$gp.translation_helpers.fetch( $( this ) );
+					return false;
+				},
+				tab_select: function() {
+					$gp.translation_helpers.tab_select( $( this ) );
 					return false;
 				}
 			}

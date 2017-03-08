@@ -156,9 +156,9 @@ class GP_Translation_Helpers {
 				border:0;
 			}
 			.translation-helpers .loading {
-				background: url(https://s0.wp.com/wp-content/mu-plugins/notes/images/loading.gif) no-repeat left center;
+				padding-right: 28px;
+				background: #eee url(https://s0.wp.com/wp-content/mu-plugins/notes/images/loading.gif) no-repeat right 4px center;
 				background-size: 20px;
-				padding-left: 24px;
 			}
 			.translations .translation-helpers > h3 {
 				margin-top: 5px;
@@ -169,13 +169,48 @@ class GP_Translation_Helpers {
 				font-size: 1.1em;
 				padding: .25em .5em;
 			}
-			.helper {
-				padding: .25em .5em;
-			}
+
 			.helpers-content {
 				overflow-y: scroll;
 				max-height: 800px;
 			}
+
+			.helpers-tabs {
+				margin: 0px;
+				padding: 0px;
+				list-style: none;
+				border-bottom: 2px solid #eee;
+			}
+
+			.helpers-tabs li {
+				background: #eee;
+				color: #222;
+				display: inline-block;
+				padding: 10px 15px;
+				cursor: pointer;
+				margin: 0 1px;
+			}
+
+			.helpers-tabs li.current {
+				background-color: transparent;
+				margin: 0 0 -2px;
+				border: 2px solid #eee;
+				border-bottom: 2px solid #f8ffec;
+				font-weight: bold;
+			}
+
+			.helper {
+				display: none;
+				border: 2px solid #eee;
+				border-top: none;
+				padding: .5em;
+				min-height: 200px;
+			}
+
+			.helper.current {
+				display: inherit;
+			}
+
 		</style>
 		<?php
 	}
