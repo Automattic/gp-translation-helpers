@@ -198,13 +198,13 @@ class GP_Translation_Helpers {
 				padding: 10px 15px;
 				cursor: pointer;
 				margin: 0 1px 0 0;
+				border-top: 1px solid #eee;
 			}
 			.helpers-tabs li.current {
 				background-color: transparent;
 				margin: 0 0 -2px -1px;
 				border: 1px solid #ccc;
 				border-bottom: 2px solid #f8ffec;
-				border-top:0;
 				font-weight: bold;
 			}
 			.helpers-tabs li:first-child.current {
