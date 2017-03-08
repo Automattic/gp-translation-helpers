@@ -11,7 +11,6 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	const LINK_TAXONOMY = 'gp_original_id_to_post_id';
 
 	function after_constructor() {
-
 		$post_type_args = array(
 			'show_ui'               => false,
 			'show_in_menu'          => false,
