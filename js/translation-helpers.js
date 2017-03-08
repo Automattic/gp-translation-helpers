@@ -14,7 +14,7 @@ $gp.translation_helpers = (
 				var originalId  = $element.find('.translation-helpers').parent().attr('row');
 				var $helpers = $element.find('.translation-helpers');
 
-				if ( $helpers.hasClass('loaded') ) {
+				if ( $helpers.hasClass('loaded') || $helpers.hasClass('loading') ) {
 					return;
 				}
 
