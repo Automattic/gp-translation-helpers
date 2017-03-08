@@ -18,7 +18,11 @@ class Helper_User_Info extends GP_Translation_Helper {
 	}
 
 	function get_async_content() {
-		return GP::$translation->find_many_no_map( array( 'user_id' => $this->translation->user_id ) );
+		if ( $this->translation->user_id ) {
+			return GP::$translation->find_many_no_map( array( 'user_id' => $this->translation->user_id ) );
+		}
+
+		return false;
 	}
 
 	function async_output_callback( $translations ) {
@@ -35,6 +39,6 @@ class Helper_User_Info extends GP_Translation_Helper {
 	}
 
 	function activate() {
-		return $this->translation;
+		return $this->translation && $this->translation->user_id;
 	}
 }
