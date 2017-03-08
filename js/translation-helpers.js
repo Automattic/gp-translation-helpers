@@ -35,8 +35,8 @@ $gp.translation_helpers = (
 			tab_select: function( $tab ) {
 				var tab_id = $tab.attr('data-tab');
 
-				$('.helpers-tabs li').removeClass( 'current');
-				$('.helper').removeClass('current');
+				$tab.siblings().removeClass( 'current');
+				$tab.parents('.translation-helpers ').find('.helper').removeClass('current');
 
 				$tab.addClass('current');
 				$("#"+tab_id).addClass('current');

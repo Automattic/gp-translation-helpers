@@ -38,7 +38,13 @@ class GP_Translation_Helper {
 	}
 
 	public function get_div_id() {
-		return $this->get_div_classname() . '-' . $this->data['original_id'];
+		$div_id = $this->get_div_classname() . '-' . $this->data['original_id'];
+
+		if ( isset( $this->data['translation_id'] ) ) {
+			$div_id .= '-' . $this->data['translation_id'];
+		}
+
+		return $div_id;
 	}
 
 	public function get_title() {
