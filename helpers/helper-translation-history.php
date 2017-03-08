@@ -2,7 +2,7 @@
 
 class Helper_History extends GP_Translation_Helper {
 
-	public $priority = 0;
+	public $priority = 2;
 	public $title = 'History';
 	public $has_async_content = true;
 
@@ -41,8 +41,5 @@ class Helper_History extends GP_Translation_Helper {
 
 	function empty_content() {
 		return 'No translation history for this string';
-	}
-
-	function get_output() {
 	}
 }

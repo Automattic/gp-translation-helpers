@@ -2,7 +2,7 @@
 
 class Helper_Translation_Discussion extends GP_Translation_Helper {
 
-	public $priority = 2;
+	public $priority = 5;
 	public $title = 'Discussion';
 	public $has_async_content = true;
 
@@ -122,6 +122,4 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	function empty_content() {
 		return 'No comments yet. Feel free to add one!';
 	}
-
-
 }

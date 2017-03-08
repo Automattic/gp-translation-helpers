@@ -24,11 +24,9 @@ $gp.translation_helpers = (
 					function( data ){
 						$helpers.addClass('loaded').removeClass('loading');
 						$.each( data, function( id, result ){
-							var $tab = jQuery('.helpers-tabs li[data-tab="' + id +'"]');
-							$tab.removeClass('loading');
-							$tab.find('.count').text( '(' + result.count + ')' );
+							jQuery('.helpers-tabs li[data-tab="' + id +'"]').find('.count').text( '(' + result.count + ')' );
 							$( '#'  + id ).find('.loading').remove();
-							$( '#'  + id ).append( result.content );
+							$( '#'  + id ).prepend( result.content );
 						} );
 
 					}

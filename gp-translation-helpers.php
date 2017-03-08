@@ -126,16 +126,19 @@ class GP_Translation_Helpers {
 				continue;
 			}
 
-			$sections[ $translation_helper->get_priority() ] = array(
+			$sections[] = array(
 				'title' => $translation_helper->get_tab_title(),
 				'content' => $translation_helper->get_initial_output(),
 				'classname' => $translation_helper->get_div_classname(),
 				'id' => $translation_helper->get_div_id(),
-				'has_async_content' => $translation_helper->has_async_content(),
+				'priority' => $translation_helper->get_priority(),
 			);
 		}
 
-		ksort( $sections );
+		usort( $sections, function( $s1, $s2 ) {
+			return $s1['priority'] > $s2['priority'];
+		});
+
 		gp_tmpl_load( 'translation-helpers', array( 'sections' => $sections ), dirname( __FILE__ ) . '/templates/' );
 	}
 
@@ -163,15 +166,6 @@ class GP_Translation_Helpers {
 				padding:10px;
 				border:0;
 			}
-			.translation-helpers .loading {
-				padding-right: 28px;
-				background: #eee url(https://s0.wp.com/wp-content/mu-plugins/notes/images/loading.gif) no-repeat right 4px center;
-				background-size: 20px;
-			}
-			.translations .translation-helpers > h3 {
-				margin-top: 5px;
-				margin-bottom: 10px;
-			}
 			.translation-helpers h4 {
 				margin-bottom: 0.5em;
 				font-size: 1.1em;
@@ -183,7 +177,7 @@ class GP_Translation_Helpers {
 				max-height: 800px;
 			}
 
-			.helpers-content h3 {
+			.translation-helpers .helpers-content h3 {
 				margin-top: 0.5em;
 			}
 
@@ -192,6 +186,7 @@ class GP_Translation_Helpers {
 				padding: 0px;
 				list-style: none;
 				border-bottom: 2px solid #eee;
+				white-space: nowrap;
 			}
 
 			.helpers-tabs li {
@@ -209,6 +204,12 @@ class GP_Translation_Helpers {
 				border: 2px solid #eee;
 				border-bottom: 2px solid #f8ffec;
 				font-weight: bold;
+			}
+
+			.loading .helpers-tabs {
+				padding-right: 28px;
+				background: transparent url(https://s0.wp.com/wp-content/mu-plugins/notes/images/loading.gif) no-repeat right 4px center;
+				background-size: 20px;
 			}
 
 			.helper {

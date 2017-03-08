@@ -2,7 +2,7 @@
 
 class Helper_Other_Locales extends GP_Translation_Helper {
 
-	public $priority = 5;
+	public $priority = 3;
 	public $title = 'In other locales';
 	public $has_async_content = true;
 
@@ -34,8 +34,5 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 
 	function empty_content() {
 		return 'No other locales have translated this string yet.';
-	}
-
-	function get_output() {
 	}
 }

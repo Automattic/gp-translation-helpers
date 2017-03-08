@@ -34,9 +34,6 @@ class Helper_User_Info extends GP_Translation_Helper {
 		return sprintf( '%d total translations. %d%% accepted, %d%% rejected, %d%% waiting', $total , number_format( $translations_by_status['current'] * 100 / $total ), number_format( $translations_by_status['rejected'] * 100 / $total ), number_format( $translations_by_status['waiting'] * 100 / $total ) );
 	}
 
-	function get_output() {
-	}
-
 	function activate() {
 		return $this->translation;
 	}

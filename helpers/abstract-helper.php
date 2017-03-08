@@ -88,5 +88,7 @@ abstract class GP_Translation_Helper {
 		return $output;
 	}
 
-	abstract public function get_output();
+	public function get_output() {
+		return '<div class="loading">Loading&hellip;</div>';
+	}
 }

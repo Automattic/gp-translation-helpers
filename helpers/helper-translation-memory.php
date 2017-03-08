@@ -42,7 +42,4 @@ class Helper_Translation_Memory extends GP_Translation_Helper {
 	function empty_content() {
 		return 'No suggestions found!';
 	}
-
-	function get_output() {
-	}
 }

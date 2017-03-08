@@ -7,8 +7,7 @@
 			$is_first_class = 'current';
 			foreach ( $sections as $section ) {
 				// TODO: printf.
-				$loading_class = $section['has_async_content'] ? 'loading' : '';
-				echo "<li class='{$is_first_class} {$loading_class}' data-tab='{$section['id']}'>" . esc_html( $section['title'] ) . '<span class="count"></span></li>'; // WPCS: XSS OK.
+				echo "<li class='{$is_first_class}' data-tab='{$section['id']}'>" . esc_html( $section['title'] ) . '<span class="count"></span></li>'; // WPCS: XSS OK.
 				$is_first_class = '';
 			}
 			?>
