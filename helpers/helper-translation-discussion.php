@@ -39,14 +39,15 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			)
 		);
 
-		add_filter( 'disable_highlander_comments', '__return_true' );
 		remove_filter( 'comment_text', 'comment_like_button', 12, 2 );
 	}
 
 	private function get_comments( $gmd_post_id ) {
 		$comments_query = new WP_Comment_Query();
 		return $comments_query->query(
-			array( 'post_id' => $gmd_post_id )
+			array(
+				'post_id' => $gmd_post_id
+			)
 		);
 	}
 
@@ -92,6 +93,9 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 	public function get_output() {
 		$gmd_post_id = $this->get_shadow_post( $this->data['original_id'] );
+
+		add_filter( 'option_comment_registration', '__return_true' );
+
 		// TODO: output buffering? we should find something better.
 		ob_start();
 		comment_form(
@@ -106,14 +110,22 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		$output = ob_get_contents();
 		ob_end_clean();
 
-		$output = '<div class="loading">Loading comments&hellip;</div>' . $output;
+		remove_filter( 'option_comment_registration', '__return_true' );
 
+		$output = '<div class="loading">Loading comments&hellip;</div>' . $output;
 		return $output;
 	}
 
 	function get_async_content() {
 		$gmd_post_id = $this->get_shadow_post( $this->data['original_id'] );
 		$comments = $this->get_comments( $gmd_post_id );
+
+		foreach ( $comments as $id => $comment ) {
+			if ( $comment->comment_approved != 1 && $comment->user_id != get_current_user_id()  ) {
+				unset( $comments[ $id ] );
+			}
+		}
+
 		$this->set_count( $comments );
 		return $comments;
 	}
