@@ -20,7 +20,7 @@ $gp.translation_helpers = (
 
 				$helpers.addClass('loading');
 				$.getJSON(
-					$gp_translation_helpers_settings.th_url + '/'  + originalId,
+					$gp_translation_helpers_settings.th_url  + originalId,
 					function( data ){
 						$helpers.addClass('loaded').removeClass('loading');
 						$.each( data, function( id, result ){
