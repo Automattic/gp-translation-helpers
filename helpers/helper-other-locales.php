@@ -53,7 +53,7 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 		padding: 1px 6px 0 0;
 		margin: 1px 6px 1px 0;
 		background: #00DA12;
-		width: 40px;
+		width: 44px;
 		text-align: right;
 		float: left;
 		color: #fff;
