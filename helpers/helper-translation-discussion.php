@@ -114,7 +114,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 		// Redirect if referrer is missing ous site url. This helps (but doesn't prevent)
 		// the comments from being loaded directly (instead of inside our iframe). Good enough.
-		if ( ! wp_startswith( wp_get_referer(), site_url() ) ) {
+		if ( ! wp_startswith( wp_get_raw_referer(), site_url() ) ) {
 			wp_safe_redirect( site_url() );
 		}
 	}
