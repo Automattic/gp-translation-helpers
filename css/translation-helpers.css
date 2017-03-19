@@ -51,7 +51,7 @@
 	min-height: 200px;
 }
 .helper.current {
-	display: inherit;
+	display: block;
 }
 .helpers-tabs li .count {
 	display: inline-block;

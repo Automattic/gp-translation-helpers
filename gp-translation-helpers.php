@@ -61,6 +61,8 @@ class GP_Translation_Helpers {
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
 		add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
+
+		$this->helpers = self::load_helpers();
 	}
 
 	public function before_request( $class_name, $last_method ) {
@@ -75,8 +77,6 @@ class GP_Translation_Helpers {
 		if ( 'translations' !== $template ) {
 			return;
 		}
-
-		$this->helpers = self::load_helpers();
 
 		$translation_helpers_settings = array(
 			'th_url' => gp_url_project( $args['project'], gp_url_join( $args['locale_slug'],  $args['translation_set_slug'], '-get-translation-helpers' ) ),
