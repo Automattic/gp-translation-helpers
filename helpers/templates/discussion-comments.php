@@ -5,11 +5,11 @@
 ?>
 <div id="comments">
 	<div class="discussion-wrapper">
-		<ul class="discussion-list">
+		<ul id="discussion-list">
 			<?php
 			wp_list_comments( array(
 				'style'       => 'ul',
-				'short_ping'  => true,
+				'type'       => 'comment',
 				'callback' => 'gth_discussion_callback',
 			) );
 			?>
