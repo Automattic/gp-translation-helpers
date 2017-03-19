@@ -235,44 +235,48 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	position:relative;
 	min-height: 600px;
 }
-.original-comments {
-	list-style: none;
-}
-.original-comments li {
-	clear: both;
-}
-.comment-meta {
-    float: left;
-    width: 50px;
-    margin-right: 10px;
-}
 CSS;
 
 	}
 }
 
 
+function gth_get_locale() {
+	$locale_slug = gp_get( 'locale_slug', false );
+	if ( ! $locale_slug ) {
+		return false;
+	}
+	$_locale = GP_Locales::by_slug( $_GET['locale_slug'] );
+	return  $_locale ? $_locale->slug : false;
+}
+
 function gth_discussion_callback( $comment, $args, $depth ) {
-	$GLOBALS['comment'] = $comment; ?>
-<li>
+	$GLOBALS['comment'] = $comment;
+	$comment_locale = get_comment_meta( $comment->comment_ID, 'locale', true );
+	?>
+<li class="<?php echo esc_attr( 'comment-locale-' . $comment_locale );?>">
 	<article id="comment-<?php comment_ID(); ?>" class="comment">
 		<div class="comment-avatar">
 			<?php echo get_avatar( $comment, 25 ); ?>
 		</div><!-- .comment-avatar -->
 		<?php printf( '<cite class="fn">%s</cite>', get_comment_author_link() ); ?>
+		<?php
+		// Older than a week, show date; otherwise show __ time ago.
+		if ( current_time( 'timestamp' ) - get_comment_time( 'U' ) > 604800 ) {
+			$time = sprintf( _x( '%1$s at %2$s', '1: date, 2: time' ), get_comment_date(), get_comment_time() );
+		} else {
+			$time = sprintf( __( '%1$s ago' ), human_time_diff( get_comment_time( 'U' ), current_time( 'timestamp' ) ) );
+		}
+		echo '<time datetime=" ' . get_comment_time( 'c' ) . '">' . $time . '</time>';
+		?>
+		<?php
+
+		if ( $comment_locale  ) : ?>
+			<div class="comment-locale">Locale: <?php echo esc_html( $comment_locale );?></div>
+		<?php endif; ?>
 		<div class="comment-content"><?php comment_text(); ?></div>
 		<footer>
 			<div class="comment-author vcard">
-				<a href="<?php echo esc_url( get_comment_link( $comment->comment_ID ) ); ?>">
-					<?php
-					// Older than a week, show date; otherwise show __ time ago.
-					if ( current_time( 'timestamp' ) - get_comment_time( 'U' ) > 604800 ) {
-						$time = sprintf( _x( '%1$s at %2$s', '1: date, 2: time' ), get_comment_date(), get_comment_time() );
-					} else {
-						$time = sprintf( __( '%1$s ago' ), human_time_diff( get_comment_time( 'U' ), current_time( 'timestamp' ) ) );
-					}
-					echo '<time datetime=" ' . get_comment_time( 'c' ) . '">' . $time . '</time>'; ?>
-				</a>
 				<?php
 				if ( $comment->comment_parent ) {
 					printf(
