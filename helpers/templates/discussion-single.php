@@ -7,11 +7,11 @@
 <html lang="en">
 <head>
 <?php
-	gp_enqueue_styles( 'gp-base' );
-	gp_head();
+
+
 	wp_head();
-	gp_enqueue_style( 'wpcom-translate' );
-	gp_print_styles();
+
+
 ?>
 	<meta charset="utf-8">
 	<title>title</title>
@@ -71,7 +71,7 @@
 		<?php if ( get_comments_number() ) : ?>
 		<?php comments_number( 'no comments', 'one comment', '% comments' ); ?>
 		<div id="comments-selector">
-			<a href="#" data-selector="all">Show all</a> | <a href="#" data-selector="<?php echo esc_attr( gth_get_locale() );?>"><em><?php echo esc_html( gth_get_locale() )?></em> only</a>
+			<a href="#" data-selector="all">Show all</a> | <a href="#" data-selector="<?php echo esc_attr( gth_get_locale() );?>"><?php echo esc_html( gth_get_locale() )?> only</a>
 		</div>
 		<?php endif; ?>
 		<?php comments_template(); ?>
@@ -80,14 +80,14 @@
 	<script>
 		jQuery( function( $ ) {
 			var $comments = $('#discussion-list');
-			$('.comments-wrapper').on('click', '#comments-selector a', function( e ){
+			$('.comments-wrapper').on( 'click', '#comments-selector a', function( e ){
 				e.preventDefault();
 				var selector = $(e.target).data('selector');
 				if ( 'all' === selector  ) {
 					$comments.children().show();
 				} else {
 					$comments.children().hide();
-					$comments.children( '.comment-locale-' + selector).show();
+					$comments.children( '.comment-locale-' + selector ).show();
 				}
 				return false;
 			} );

@@ -134,6 +134,92 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		if ( ! wp_startswith( wp_get_raw_referer(), site_url() ) ) {
 			wp_safe_redirect( site_url() );
 		}
+
+		// Dequeue a bunch of unnecessary styles and scripts. Source: JP renderer.
+		add_action( 'wp_print_styles', function() {
+			// Remove some styles
+			wp_dequeue_style( 'mp6hacks' );
+			wp_dequeue_style( 'wpcom-bbpress2-staff-css' );
+			wp_dequeue_style( 'geo-location-flair' );
+			wp_dequeue_style( 'translator-jumpstart' );
+			wp_dequeue_style( 'reblogging' );
+			wp_dequeue_style( 'notes-admin-bar-rest' );
+			wp_dequeue_style( 'follow_css' );
+			wp_dequeue_style( 'wpcom-actionbar-bar' );
+			wp_dequeue_style( 'widget-achievements' );
+			wp_dequeue_style( 'a8c-global-print' );
+			wp_dequeue_style( 'notes-admin-bar-rest' );
+			wp_dequeue_style( 'wpcom-masterbar-css' );
+			wp_dequeue_style( 'masterbar-css' );
+			wp_dequeue_style( 'shoreditch-style' );
+			wp_dequeue_style( 'shoreditch-wpcom' );
+
+			// Scripts to dequeue
+			wp_dequeue_script( 'admin-bar'            );
+			wp_dequeue_script( 'debug-bar'            );
+			wp_dequeue_script( 'debug-bar-ajax'       );
+			wp_dequeue_script( 'notes-admin-bar'      );
+			wp_dequeue_script( 'notes-admin-bar-rest' );
+			wp_dequeue_script( 'loggedout-subscribe'  );
+			wp_dequeue_script( 'homepagescripts'      );
+			wp_dequeue_script( 'follow_js'            );
+
+			wp_dequeue_script( 'tos-report-form'      );
+			wp_dequeue_script( 'thickbox'             );
+			wp_dequeue_script( 'devicepx'             );
+			wp_dequeue_script( 'grofiles-cards'       );
+			wp_dequeue_script( 'wpgroho'              );
+			wp_dequeue_script( 'notes-rest-common'    );
+			wp_dequeue_script( 'wpcom-actionbar-bar'  );
+			wp_dequeue_script( 'translator'           );
+			wp_dequeue_script( 'translator-jumpstart' );
+			wp_dequeue_script( 'wpcom-masterbar-js'   );
+			wp_dequeue_script( 'notes-rest-common'    );
+		}, 999 );
+
+		add_action( 'wp_head', function(){
+			// Actions we can remove here
+			remove_action( 'wp_head', 'wpl_load_css'                );
+			remove_action( 'wp_head', 'jetpack_og_tags'             );
+			remove_action( 'wp_head', 'wp_admin_bar_header'         );
+
+			remove_action( 'wp_head', 'feed_links_extra', 3              ); // Display the links to the extra feeds such as category feeds
+			remove_action( 'wp_head', 'feed_links', 2                    ); // Display the links to the general feeds: Post and Comment Feed
+			remove_action( 'wp_head', 'rsd_link'                         ); // Display the link to the Really Simple Discovery service endpoint, EditURI link
+			remove_action( 'wp_head', 'wlwmanifest_link'                 ); // Display the link to the Windows Live Writer manifest file.
+			remove_action( 'wp_head', 'index_rel_link'                   ); // index link
+			remove_action( 'wp_head', 'parent_post_rel_link', 10, 0      ); // prev link
+			remove_action( 'wp_head', 'start_post_rel_link', 10, 0       ); // start link
+			remove_action( 'wp_head', 'adjacent_posts_rel_link', 10, 0   ); // Display relational links for the posts adjacent to the current post.
+			remove_action( 'wp_head', 'wp_generator'                     ); // Display the XHTML generator that is generated on the wp_head hook, WP version
+
+			global $opensearch;
+			remove_action( 'wp_head', array( $opensearch, 'insertAutodiscovery' ) );
+
+			remove_action( 'wp_head', 'iesitemode_define_webapp'  );
+			remove_action( 'wp_head', 'iesitemode_jumplist_tasks' );
+			remove_action( 'wp_head', 'openidserver_link_rel_tags');
+
+			remove_action( 'wp_head', 'rel_canonical' );
+			remove_action( 'wp_head', 'wp_shortlink_wp_head', 10 );
+
+			remove_action( 'wp_head', 'blavatar_add_meta' );
+		}, -999 );
+
+		add_action( 'wp_footer', function(){
+			remove_action( 'wp_footer', 'wpl_load_ajax_js'            );
+			remove_action( 'wp_footer', 'wpl_load_logged_out_js'      );
+			remove_action( 'wp_footer', 'loggedout_follow_widget'     );
+			remove_action( 'wp_footer', 'sharing_footer'              );
+			remove_action( 'wp_footer', 'wpcom_subs_js'               );
+			remove_action( 'wp_footer', 'stats_footer',           101 );
+			remove_action( 'wp_footer', 'skimlinks_footer_js'         );
+			remove_action( 'wp_footer', 'wpcom_mobile_devices_stats', 9999 );
+			remove_action( 'wp_footer', 'wpcom_pre_masterbar_statistics' );
+		}, -999 );
+
+		// Remove inline terms
+		remove_action( 'plugins_loaded', 'inline_terms_loader', 9 );
 	}
 
 	public function add_locale_to_comment_meta( $comment_id ) {
