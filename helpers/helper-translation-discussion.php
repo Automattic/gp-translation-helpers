@@ -98,15 +98,15 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	public function set_the_stage() {
 		define( 'IFRAME_REQUEST', true );
 
-		// Custom Single template
+		// Custom Single template.
 		add_filter( 'single_template', array( $this, 'single_template' ) );
 
-		// Custom comments template
+		// Custom comments template.
 		add_filter( 'comments_template', function(){
 			return plugin_dir_path( __FILE__ ) . 'templates/discussion-comments.php';
 		} );
 
-		// Remove theme header specific script
+		// Remove theme header specific script.
 		add_action( 'wp_enqueue_scripts', function(){
 			wp_dequeue_script( 'shoreditch-header' );
 		}, 99 );
