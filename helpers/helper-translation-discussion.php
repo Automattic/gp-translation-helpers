@@ -20,6 +20,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	function after_constructor() {
 		$this->register_post_type_and_taxonomy();
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+		add_action( 'send_headers',  array( $this, 'robots_header' ) );
 	}
 	public function register_post_type_and_taxonomy() {
 		register_taxonomy(
@@ -108,9 +109,14 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			wp_dequeue_script( 'shoreditch-header' );
 		}, 99 );
 
-
 		// Remove comment likes for now (or forever :) )
 		remove_filter( 'comment_text', 'comment_like_button', 12 );
+	}
+
+	public function robots_header( $wp ) {
+		if ( wp_startswith( $wp->request, self::URL_SLUG ) ) {
+			header( 'X-Robots-Tag: noindex, nofollow' );
+		}
 	}
 
 	public function single_template( $template ) {
