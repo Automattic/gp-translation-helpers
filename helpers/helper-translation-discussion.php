@@ -231,7 +231,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 	public function get_output() {
 		$iframe_src = site_url() . '/discuss/original-' . $this->data['original_id'] . '/?locale_slug=' . $this->data['locale_slug'];
-		$output = "<iframe style='border:0; position: absolute; height: 100%; width: 100%;' name='discuss-" . $this->data['original_id'] . "' frameborder='0' src='$iframe_src'></iframe>";
+		$output = "<iframe style='border:0; position: absolute; height: 100%; width: 100%;' name='discuss-" . $this->data['original_id'] . "' frameborder='0' data-src='$iframe_src' class='discuss'></iframe>";
 		return $output;
 	}
 
@@ -242,7 +242,18 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	min-height: 600px;
 }
 CSS;
-
+	}
+	public function get_js() {
+		return <<<JS
+		jQuery( function( $ ) {
+			$('#translations').on( 'beforeShow', '.editor', function(){
+				console.log('before show');
+		        $(this).find( 'iframe.discuss' ).prop( 'src', function(){
+		            return $(this).data('src');
+		        });
+			});
+		});
+JS;
 	}
 }
 
