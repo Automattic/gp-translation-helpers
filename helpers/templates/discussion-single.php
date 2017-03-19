@@ -18,6 +18,7 @@
 	<style>
 		body {
 			background: transparent;
+			padding-right: 30px;
 		}
 		#discussion-list {
 			list-style:none;
