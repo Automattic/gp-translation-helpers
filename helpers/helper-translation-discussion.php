@@ -21,7 +21,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		$this->register_post_type_and_taxonomy();
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 		add_action( 'send_headers',  array( $this, 'robots_header' ) );
-
+		add_action( 'comment_post',  array( $this, 'add_locale_to_comment_meta' ) );
 		add_filter( 'pre_comment_approved', array( $this, 'comment_moderation' ), 10, 2 );
 	}
 	public function register_post_type_and_taxonomy() {
@@ -111,13 +111,28 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			wp_dequeue_script( 'shoreditch-header' );
 		}, 99 );
 
-		// Remove comment likes for now (or forever :) )
+
+
+		// Add the locale passed to the iframe to the comment form data.
+		if ( gth_get_locale() ) {
+			add_action( 'highlander_comment_notes_after', function() {
+					echo '<input type="hidden" name="comment_locale" value="' . esc_attr( gth_get_locale() ) . '" />' . "\n";
+			} );
+		}
+
+		// Remove comment likes for now (or forever :) ).
 		remove_filter( 'comment_text', 'comment_like_button', 12 );
 
 		// Redirect if referrer is missing ous site url. This helps (but doesn't prevent)
 		// the comments from being loaded directly (instead of inside our iframe). Good enough.
 		if ( ! wp_startswith( wp_get_raw_referer(), site_url() ) ) {
 			wp_safe_redirect( site_url() );
+		}
+	}
+
+	public function add_locale_to_comment_meta( $comment_id ) {
+		if ( isset( $_POST['comment_locale'] ) && GP_Locales::by_slug( $_POST['comment_locale'] ) ) {
+			add_comment_meta( $comment_id, 'locale', $_POST['comment_locale'], true );
 		}
 	}
 
@@ -209,7 +224,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	}
 
 	public function get_output() {
-		$iframe_src = site_url() . '/discuss/original-' . $this->data['original_id'] . '/';
+		$iframe_src = site_url() . '/discuss/original-' . $this->data['original_id'] . '/?locale_slug=' . $this->data['locale_slug'];
 		$output = "<iframe style='border:0; position: absolute; height: 100%; width: 100%;' name='discuss-" . $this->data['original_id'] . "' frameborder='0' src='$iframe_src'></iframe>";
 		return $output;
 	}
