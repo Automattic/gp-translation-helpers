@@ -111,6 +111,12 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 		// Remove comment likes for now (or forever :) )
 		remove_filter( 'comment_text', 'comment_like_button', 12 );
+
+		// Redirect if referrer is missing ous site url. This helps (but doesn't prevent)
+		// the comments from being loaded directly (instead of inside our iframe). Good enough.
+		if ( ! wp_startswith( wp_get_referer(), site_url() ) ) {
+			wp_safe_redirect( site_url() );
+		}
 	}
 
 	public function robots_header( $wp ) {
