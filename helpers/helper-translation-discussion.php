@@ -21,6 +21,8 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		$this->register_post_type_and_taxonomy();
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 		add_action( 'send_headers',  array( $this, 'robots_header' ) );
+
+		add_filter( 'pre_comment_approved', array( $this, 'comment_moderation' ), 10, 2 );
 	}
 	public function register_post_type_and_taxonomy() {
 		register_taxonomy(
@@ -124,6 +126,34 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			header( 'X-Robots-Tag: noindex, nofollow' );
 		}
 	}
+
+	public function comment_moderation( $approved, $commentdata ) {
+		global $wpdb;
+
+		// If the comment is already approved, we're good.
+		if ( $approved ) {
+			return $approved;
+		}
+
+		// We only care on comments on our specific post type
+		if ( self::POST_TYPE !== get_post_type( $commentdata['comment_post_ID'] ) ) {
+			return $approved;
+		}
+
+		// We can't do much if the comment was posted logged out.
+		if ( empty( $commentdata['comment_author'] ) ) {
+			return $approved;
+		}
+
+		// If our user has already contributed translations, approve comment.
+		$user_current_translations = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->gp_translations WHERE user_id = %s AND status = 'current'", $commentdata['comment_author'] ) );
+		if ( $user_current_translations ) {
+			$approved = true;
+		}
+
+		return $approved;
+	}
+
 
 	public function single_template( $template ) {
 		global $post;
