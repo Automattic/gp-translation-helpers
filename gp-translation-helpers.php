@@ -45,8 +45,6 @@ class GP_Route_Translation_Helpers extends GP_Route {
 }
 
 class GP_Translation_Helpers {
-
-
 	public $id = 'translation-helpers';
 	private $helpers = array();
 

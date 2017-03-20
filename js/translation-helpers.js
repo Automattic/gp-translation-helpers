@@ -27,13 +27,11 @@ $gp.translation_helpers = (
 					$helpers = $( '.editor:visible' ).find('.translation-helpers').first();
 				}
 
-				console.log( $helpers );
-
 				var originalId  = $helpers.parent().attr('row');
-				var requestUrl = $gp_translation_helpers_settings.th_url  + originalId;
+				var requestUrl = $gp_translation_helpers_settings.th_url  + originalId + '?nohc';
 
 				if ( which ) {
-					requestUrl = requestUrl + '?helper=' + which;
+					requestUrl = requestUrl + '&helper=' + which;
 				}
 
 				$helpers.addClass('loading');
