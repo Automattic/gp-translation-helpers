@@ -384,24 +384,27 @@ article.comment time {
 CSS;
 	}
 	public function get_js() {
-		return <<<JS
+		return <<<'JS'
 		jQuery( function( $ ) {
 			$('#translations').on( 'beforeShow', '.editor', function(){
 		        $(this).find( 'iframe.discuss' ).prop( 'src', function(){
 		            return $(this).data('src');
 		        }).on('load', function(){
-		        	$(this).parent().removeClass('iframe-loader');
+					this.contentWindow.onunload = function(){
+						$gp.translation_helpers.fetch( 'comments')
+					};
+					$(this).parent().removeClass('iframe-loader');
 		        });
 			});
 			$('.helper-translation-discussion').on( 'click', '.comments-selector a', function( e ){
 				e.preventDefault();
-				var comments = jQuery(e.target).parents('h6').next('.discussion-list');
+				var $comments = jQuery(e.target).parents('h6').next('.discussion-list');
 				var selector = $(e.target).data('selector');
 				if ( 'all' === selector  ) {
-					comments.children().show();
+					$comments.children().show();
 				} else {
-					comments.children().hide();
-					comments.children( '.comment-locale-' + selector ).show();
+					$comments.children().hide();
+					$comments.children( '.comment-locale-' + selector ).show();
 				}
 				return false;
 			} );
