@@ -323,6 +323,10 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		return $output;
 	}
 
+	public function empty_content() {
+		return 'No comments yet.';
+	}
+
 	public function get_css() {
 		return <<<CSS
 .helper-translation-discussion {
@@ -342,6 +346,9 @@ iframe.discuss {
 .discussion-list {
 	list-style:none;
 	max-width: 560px;
+}
+.comments-wrapper {
+max-width: 600px;
 }
 article.comment {
 	margin: 15px 30px 15px 30px;
