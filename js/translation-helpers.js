@@ -7,26 +7,45 @@ $gp.translation_helpers = (
 			},
 			install_hooks: function() {
 				$( $gp.translation_helpers.table )
-					.on( 'beforeShow', '.editor', $gp.translation_helpers.hooks.fetch )
+					.on( 'beforeShow', '.editor', $gp.translation_helpers.hooks.initial_fetch )
 					.on( 'click', '.helpers-tabs li', $gp.translation_helpers.hooks.tab_select );
 			},
-			fetch : function( $element ) {
-				var originalId  = $element.find('.translation-helpers').parent().attr('row');
+			initial_fetch : function( $element ) {
 				var $helpers = $element.find('.translation-helpers');
 
 				if ( $helpers.hasClass('loaded') || $helpers.hasClass('loading') ) {
 					return;
 				}
 
+				$gp.translation_helpers.fetch( false, $element);
+			},
+			fetch : function( which, $element ) {
+				var $helpers;
+				if ( $element ) {
+					$helpers = $element.find('.translation-helpers');
+				} else {
+					$helpers = $( '.editor:visible' ).find('.translation-helpers').first();
+				}
+
+				console.log( $helpers );
+
+				var originalId  = $helpers.parent().attr('row');
+				var requestUrl = $gp_translation_helpers_settings.th_url  + originalId;
+
+				if ( which ) {
+					requestUrl = requestUrl + '?helper=' + which;
+				}
+
 				$helpers.addClass('loading');
+
 				$.getJSON(
-					$gp_translation_helpers_settings.th_url  + originalId,
+					requestUrl,
 					function( data ){
 						$helpers.addClass('loaded').removeClass('loading');
 						$.each( data, function( id, result ){
 							jQuery('.helpers-tabs li[data-tab="' + id +'"]').find('.count').text( '(' + result.count + ')' );
 							$( '#'  + id ).find('.loading').remove();
-							$( '#'  + id ).prepend( result.content );
+							$( '#'  + id ).find('.async-content').html( result.content );
 						} );
 
 					}
@@ -42,8 +61,8 @@ $gp.translation_helpers = (
 				$("#"+tab_id).addClass('current');
 			},
 			hooks: {
-				fetch: function() {
-					$gp.translation_helpers.fetch( $( this ) );
+				initial_fetch: function() {
+					$gp.translation_helpers.initial_fetch( $( this ) );
 					return false;
 				},
 				tab_select: function() {
