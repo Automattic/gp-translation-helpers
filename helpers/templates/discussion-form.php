@@ -7,11 +7,7 @@
 <html lang="en">
 <head>
 <?php
-
-
 	wp_head();
-
-
 ?>
 	<meta charset="utf-8">
 	<title>title</title>
@@ -69,31 +65,16 @@
 <body>
 <?php while ( have_posts() ) : the_post(); ?>
 	<article id="post-<?php the_ID(); ?>-comments" class="comments-wrapper">
-		<?php if ( get_comments_number() ) : ?>
-		<?php comments_number( 'no comments', 'one comment', '% comments' ); ?>
-		<div id="comments-selector">
-			<a href="#" data-selector="all">Show all</a> | <a href="#" data-selector="<?php echo esc_attr( gth_get_locale() );?>"><?php echo esc_html( gth_get_locale() )?> only</a>
-		</div>
-		<?php endif; ?>
-		<?php comments_template(); ?>
+		<?php
+		comment_form( $args = array(
+			'title_reply'          => __( 'Discuss this string' ),
+			'title_reply_to'       => __( 'Reply to %s' ),
+			'title_reply_before'   => '<h4 id="reply-title" class="discuss-title">',
+			'title_reply_after'    => '</h4>',
+		));
+		?>
 	</article><!-- #post-## -->
 	<?php endwhile;  // End of the loop. ?>
-	<script>
-		jQuery( function( $ ) {
-			var $comments = $('#discussion-list');
-			$('.comments-wrapper').on( 'click', '#comments-selector a', function( e ){
-				e.preventDefault();
-				var selector = $(e.target).data('selector');
-				if ( 'all' === selector  ) {
-					$comments.children().show();
-				} else {
-					$comments.children().hide();
-					$comments.children( '.comment-locale-' + selector ).show();
-				}
-				return false;
-			} );
-		});
-	</script>
 </body>
 <?php wp_footer();?>
 </html>

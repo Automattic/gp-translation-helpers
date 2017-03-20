@@ -2,7 +2,7 @@
 	vertical-align: top;
 }
 #translations .translation-helpers {
-	width: 600px;
+	min-width: 400px;
 	padding: .5em 0 0;
 	border: 0;
 	border-top:1px solid #eee;

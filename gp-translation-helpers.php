@@ -86,7 +86,7 @@ class GP_Translation_Helpers {
 		add_action( 'gp_translation_row_editor_columns', array( $this, 'translation_helpers' ), 10, 2 );
 
 		add_filter(  'gp_translation_row_editor_clospan', function( $colspan ) {
-			return ( $colspan - 2 );
+			return ( $colspan - 3 );
 		});
 
 		wp_register_style( 'gp-translation-helpers-css', plugins_url( 'css/translation-helpers.css', __FILE__ ) );

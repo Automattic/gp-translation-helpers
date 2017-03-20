@@ -1,4 +1,4 @@
-<td colspan="2" class="translation-helpers">
+<td colspan="3" class="translation-helpers">
 	<nav>
 		<ul class="helpers-tabs">
 			<?php

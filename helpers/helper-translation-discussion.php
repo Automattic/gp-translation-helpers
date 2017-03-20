@@ -4,7 +4,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 	public $priority = 0;
 	public $title = 'Comments';
-	public $has_async_content = false;
+	public $has_async_content = true;
 
 	const POST_TYPE = 'gth_original';
 	const POST_STATUS = 'publish';
@@ -101,17 +101,10 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		// Custom Single template.
 		add_filter( 'single_template', array( $this, 'single_template' ) );
 
-		// Custom comments template.
-		add_filter( 'comments_template', function(){
-			return plugin_dir_path( __FILE__ ) . 'templates/discussion-comments.php';
-		} );
-
 		// Remove theme header specific script.
 		add_action( 'wp_enqueue_scripts', function(){
 			wp_dequeue_script( 'shoreditch-header' );
 		}, 99 );
-
-
 
 		// Add the locale passed to the iframe to the comment form data.
 		if ( gth_get_locale() ) {
@@ -119,9 +112,6 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 					echo '<input type="hidden" name="comment_locale" value="' . esc_attr( gth_get_locale() ) . '" />' . "\n";
 			} );
 		}
-
-		// Remove comment likes for now (or forever :) ).
-		remove_filter( 'comment_text', 'comment_like_button', 12 );
 
 		// Disable subscribe to posts.
 		add_filter( 'option_stb_enabled', '__return_false' );
@@ -265,11 +255,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	public function single_template( $template ) {
 		global $post;
 		if ( self::POST_TYPE === $post->post_type ) {
-			$template = plugin_dir_path( __FILE__ ) . 'templates/discussion-single.php';
-
-			// Load some GP functions
-			$core_templates = WP_CONTENT_DIR . '/plugins/glotpress/gp-templates/';
-			require_once $core_templates . 'helper-functions.php';
+			$template = plugin_dir_path( __FILE__ ) . 'templates/discussion-form.php';
 		}
 
 		return $template;
@@ -315,9 +301,25 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		return $post_id;
 	}
 
+	public function get_async_content() {
+		return get_comments( array('post_id' => $this->get_shadow_post( $this->data['original_id'] ) ) );
+	}
+
+	public function async_output_callback( $comments ) {
+		return gp_tmpl_get_output(
+			'discussion-comments',
+			array(
+					'comments' => $comments,
+					'post_id' => $this->get_shadow_post( $this->data['original_id'] ),
+					'locale_slug' => $this->data['locale_slug'],
+			),
+			dirname( __FILE__ ) . '/templates'
+		);
+	}
+
 	public function get_output() {
 		$iframe_src = site_url() . '/discuss/original-' . $this->data['original_id'] . '/?locale_slug=' . $this->data['locale_slug'];
-		$output = "<iframe style='border:0; position: absolute; height: 100%; width: 100%;' name='discuss-" . $this->data['original_id'] . "' frameborder='0' data-src='$iframe_src' class='discuss'></iframe>";
+		$output = "<div class='iframe-loader'><iframe name='discuss-" . $this->data['original_id'] . "' frameborder='0' data-src='$iframe_src' class='discuss'></iframe></div>";
 		return $output;
 	}
 
@@ -327,17 +329,82 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	position:relative;
 	min-height: 600px;
 }
+.iframe-loader::before {
+	content: "Loading comment form...";
+	min-height: 200px; 
+}
+iframe.discuss {
+	border: 0;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+}
+.discussion-list {
+	list-style:none;
+	max-width: 560px;
+}
+article.comment {
+	margin: 15px 30px 15px 30px;
+	position: relative;
+	font-size: 0.9rem;
+}
+article.comment p {
+	margin-bottom: 0.5em;
+}
+article.comment footer {
+	overflow: hidden;
+	font-size: 0.8rem;
+	font-style: italic;
+}
+article.comment time {
+	font-style: italic;
+	opacity: 0.8;
+	display: inline-block;
+	padding-left: 4px;
+}
+.comment-locale {
+	opacity: 0.8;
+	float: right;
+}
+.comment-avatar {
+	margin-left: -45px;
+	margin-bottom: -25px;
+	width: 50px;
+	height: 26px;
+}
+.comment-avatar img {
+	display: block;
+	border-radius: 13px;
+}
+.comments-selector {
+	display: inline-block;
+	padding-left: 10px;
+	font-size: 0.9em;
+}
 CSS;
 	}
 	public function get_js() {
 		return <<<JS
 		jQuery( function( $ ) {
 			$('#translations').on( 'beforeShow', '.editor', function(){
-				console.log('before show');
 		        $(this).find( 'iframe.discuss' ).prop( 'src', function(){
 		            return $(this).data('src');
+		        }).on('load', function(){
+		        	$(this).parent().removeClass('iframe-loader');
 		        });
 			});
+			$('.helper-translation-discussion').on( 'click', '.comments-selector a', function( e ){
+				e.preventDefault();
+				var comments = jQuery(e.target).parents('h6').next('.discussion-list');
+				var selector = $(e.target).data('selector');
+				if ( 'all' === selector  ) {
+					comments.children().show();
+				} else {
+					comments.children().hide();
+					comments.children( '.comment-locale-' + selector ).show();
+				}
+				return false;
+			} );
 		});
 JS;
 	}
@@ -355,6 +422,10 @@ function gth_get_locale() {
 
 function gth_discussion_callback( $comment, $args, $depth ) {
 	$GLOBALS['comment'] = $comment;
+
+	// Remove comment likes for now (or forever :) ).
+	remove_filter( 'comment_text', 'comment_like_button', 12 );
+
 	$comment_locale = get_comment_meta( $comment->comment_ID, 'locale', true );
 	?>
 <li class="<?php echo esc_attr( 'comment-locale-' . $comment_locale );?>">
