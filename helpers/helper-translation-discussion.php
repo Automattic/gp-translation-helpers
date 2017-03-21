@@ -39,18 +39,12 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			'show_in_admin_bar'   => false,
 			'show_in_nav_menus'   => false,
 			'can_export'          => false,
-			'exclude_from_search' => false,
-			'public'              => true,
-			'publicly_queryable'  => true,
-			'rewrite'               => array(
-				'slug' => self::URL_SLUG,
-			),
-			'has_archive'         => true,
+			'has_archive'         => false,
 			'show_in_rest'        => true,
 			'taxonomies'          => array( self::LINK_TAXONOMY ),
 		);
 
-		register_post_type( SELF::POST_TYPE, $post_type_args );
+		register_post_type( self::POST_TYPE, $post_type_args );
 
 		$rest_meta_args = array(
 			'description'  => 'Locale slug associated with a string comment',
@@ -113,7 +107,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			} else {
 				$post_id = wp_insert_post(
 					array(
-						'post_type'      => SELF::POST_TYPE,
+						'post_type'      => self::POST_TYPE,
 						'tax_input'      => array(
 							self::LINK_TAXONOMY => array( $original_id ),
 						),
