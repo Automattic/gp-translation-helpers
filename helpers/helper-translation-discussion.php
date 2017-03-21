@@ -163,7 +163,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	}
 
 	public function empty_content() {
-		return 'No comments yet.';
+		return $this->async_output_callback( array() );
 	}
 
 	public function get_css() {

@@ -158,7 +158,6 @@ class GP_Translation_Helper {
 
 		if ( ! $items ) {
 			return $this->empty_content();
-
 		}
 
 		$output = $this->async_output_callback( $items );
