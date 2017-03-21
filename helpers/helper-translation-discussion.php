@@ -19,7 +19,6 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 	function after_constructor() {
 		$this->register_post_type_and_taxonomy();
-		add_action( 'comment_post',  array( $this, 'add_locale_to_comment_meta' ) );
 		add_filter( 'pre_comment_approved', array( $this, 'comment_moderation' ), 10, 2 );
 	}
 

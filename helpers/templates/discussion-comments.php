@@ -26,6 +26,7 @@
 			'title_reply_before'   => '<h4 id="reply-title" class="discuss-title">',
 			'title_reply_after'    => '</h4>',
 			'id_form'              => 'commentform-' . $post_id,
+			'comment_notes_after' => '<input type="hidden" name="comment_locale" value="' . esc_attr( $locale_slug ) . '" />'
 		), $post_id);
 		?>
 	</ul><!-- .discussion-list -->
