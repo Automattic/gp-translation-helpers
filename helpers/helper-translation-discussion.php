@@ -20,6 +20,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	function after_constructor() {
 		$this->register_post_type_and_taxonomy();
 		add_filter( 'pre_comment_approved', array( $this, 'comment_moderation' ), 10, 2 );
+		wp_enqueue_script( 'jquery.wpcom-proxy-request', '/wp-content/js/jquery/jquery.wpcom-proxy-request.js', array( 'jquery' ), null, true );
 	}
 
 	public function register_post_type_and_taxonomy() {
@@ -220,30 +221,30 @@ CSS;
 			$('.helper-translation-discussion').on( 'submit', '.comment-form', function( e ){
 				e.preventDefault();
 				var $commentform = $( e.target );
-				var formdata = $commentform.serializeArray();
-				var formurl = 'https://public-api.wordpress.com/wp/v2/sites/translate.wordpress.com/comments';
-				//Post Form with data
-				$.ajax({
-					type: 'post',
-					url: formurl + '?nohc',
-					data: formdata,
-					dataType: 'json',
-					error: function(){
-					  statusdiv.html('<p class="ajax-error" >You might have left one of the fields blank, or be posting too quickly</p>');
-					},
-					success: function( data ){
-						console.log(data);
-						if ( data == "success" ) {
-							$gp.translation_helpers.fetch( 'comments' );
-							statusdiv.html('<p class="ajax-success" >Thanks for your comment. We appreciate your response.</p>');
-						} else {
-							statusdiv.html('<p class="ajax-error" >Please wait a while before posting your next comment</p>');
-							$commentform.find('textarea[name=comment]').val('');
-						}
+				var formdata = {
+					content: $commentform.find('textarea[name=comment]').val(),
+					post: $commentform.attr('id').split( '-' )[ 1 ],
+					meta: {
+						locale : $commentform.find('input[name=comment_locale]').val()
 					}
-				});
-				return false;
+				}
+				jQuery.wpcom_proxy_request( {
+						method: 'POST',
+						apiNamespace: 'wp/v2',
+						path: '/sites/translate.wordpress.com/comments',
+						body: formdata
+					}
+				).done( function( response ){
+					if ( 'undefined' !== typeof ( response.data ) ) {
+						// There's probably a better way, but response.data is only set for errors.
+						// TODO: error handling.
+					} else {
+						$commentform.find('textarea[name=comment]').val('');
+						$gp.translation_helpers.fetch( 'comments' );
+					}
+				} );
 				
+				return false;
 			});
 		});
 JS;
