@@ -19,15 +19,15 @@
 			'callback' => 'gth_discussion_callback',
 		), $comments );
 		?>
-		<?php
-		comment_form( $args = array(
-			'title_reply'          => __( 'Discuss this string' ),
-			'title_reply_to'       => __( 'Reply to %s' ),
-			'title_reply_before'   => '<h4 id="reply-title" class="discuss-title">',
-			'title_reply_after'    => '</h4>',
-			'id_form'              => 'commentform-' . $post_id,
-			'comment_notes_after' => '<input type="hidden" name="comment_locale" value="' . esc_attr( $locale_slug ) . '" />'
-		), $post_id);
-		?>
 	</ul><!-- .discussion-list -->
+	<?php
+	comment_form( $args = array(
+		'title_reply'          => __( 'Discuss this string' ),
+		'title_reply_to'       => __( 'Reply to %s' ),
+		'title_reply_before'   => '<h6 id="reply-title" class="discuss-title">',
+		'title_reply_after'    => '</h6>',
+		'id_form'              => 'commentform-' . $post_id,
+		'comment_notes_after' => '<input type="hidden" name="comment_locale" value="' . esc_attr( $locale_slug ) . '" />'
+	), $post_id);
+	?>
 </div><!-- .discussion-wrapper -->
