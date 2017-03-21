@@ -12,9 +12,8 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	const URL_SLUG = 'discuss';
 	const ORIGINAL_ID_PREFIX = 'original-';
 
-	//Temporarily disable
 	function activate() {
-		return true;
+		return ( is_automattician() || 'de' === $this->data['locale_slug'] );
 	}
 
 	function after_constructor() {
@@ -151,13 +150,13 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		add_filter( 'option_stc_disabled', '__return_true' );
 
 		$output = gp_tmpl_get_output(
-			'discussion-comments',
+			'translation-discussion-comments',
 			array(
 				'comments' => $comments,
 				'post_id' => $this->get_shadow_post( $this->data['original_id'] ),
 				'locale_slug' => $this->data['locale_slug'],
 			),
-			dirname( __FILE__ ) . '/templates'
+			$this->assets_dir . 'templates'
 		);
 		return $output;
 	}
@@ -167,103 +166,10 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	}
 
 	public function get_css() {
-		return <<<CSS
-.helper-translation-discussion {
-	position:relative;
-	min-height: 600px;
-}
-.discussion-list {
-	list-style:none;
-	max-width: 560px;
-}
-.comments-wrapper {
-max-width: 600px;
-}
-article.comment {
-	margin: 15px 30px 15px 30px;
-	position: relative;
-	font-size: 0.9rem;
-}
-article.comment p {
-	margin-bottom: 0.5em;
-}
-article.comment footer {
-	overflow: hidden;
-	font-size: 0.8rem;
-	font-style: italic;
-}
-article.comment time {
-	font-style: italic;
-	opacity: 0.8;
-	display: inline-block;
-	padding-left: 4px;
-}
-.comment-locale {
-	opacity: 0.8;
-	float: right;
-}
-.comment-avatar {
-	margin-left: -45px;
-	margin-bottom: -25px;
-	width: 50px;
-	height: 26px;
-}
-.comment-avatar img {
-	display: block;
-	border-radius: 13px;
-}
-.comments-selector {
-	display: inline-block;
-	padding-left: 10px;
-	font-size: 0.9em;
-}
-CSS;
+		return file_get_contents( $this->assets_dir . 'css/translation-discussion.css' );
 	}
 	public function get_js() {
-		return <<<'JS'
-		jQuery( function( $ ) {
-			$('.helper-translation-discussion').on( 'click', '.comments-selector a', function( e ){
-				e.preventDefault();
-				var $comments = jQuery(e.target).parents('h6').next('.discussion-list');
-				var selector = $(e.target).data('selector');
-				if ( 'all' === selector  ) {
-					$comments.children().show();
-				} else {
-					$comments.children().hide();
-					$comments.children( '.comment-locale-' + selector ).show();
-				}
-				return false;
-			} );
-			$('.helper-translation-discussion').on( 'submit', '.comment-form', function( e ){
-				e.preventDefault();
-				var $commentform = $( e.target );
-				var formdata = {
-					content: $commentform.find('textarea[name=comment]').val(),
-					post: $commentform.attr('id').split( '-' )[ 1 ],
-					meta: {
-						locale : $commentform.find('input[name=comment_locale]').val()
-					}
-				}
-				jQuery.wpcom_proxy_request( {
-						method: 'POST',
-						apiNamespace: 'wp/v2',
-						path: '/sites/translate.wordpress.com/comments',
-						body: formdata
-					}
-				).done( function( response ){
-					if ( 'undefined' !== typeof ( response.data ) ) {
-						// There's probably a better way, but response.data is only set for errors.
-						// TODO: error handling.
-					} else {
-						$commentform.find('textarea[name=comment]').val('');
-						$gp.translation_helpers.fetch( 'comments' );
-					}
-				} );
-				
-				return false;
-			});
-		});
-JS;
+		return file_get_contents( $this->assets_dir . 'js/translation-discussion.js' );
 	}
 }
 
