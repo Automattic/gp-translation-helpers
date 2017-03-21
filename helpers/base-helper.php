@@ -8,6 +8,7 @@
 class GP_Translation_Helper {
 
 	public $assets_dir;
+	public $data;
 
 	/**
 	 * GP_Translation_Helper constructor.
