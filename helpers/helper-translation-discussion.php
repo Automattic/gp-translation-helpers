@@ -82,7 +82,16 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		return $approved;
 	}
 
-	private function get_shadow_post( $original_id ) {
+	public static function get_original_from_post_id( $post_id ) {
+		$terms = wp_get_object_terms( $post_id, self::LINK_TAXONOMY, array( 'number' => 1 ) );
+		if ( empty( $terms ) ) {
+			return false;
+		}
+
+		return $terms[0]->slug;
+	}
+
+	public static function get_shadow_post( $original_id ) {
 		$cache_key = self::LINK_TAXONOMY . '_' . $original_id;
 
 		if ( true || false === ( $post_id = wp_cache_get( $cache_key ) ) ) {
@@ -125,7 +134,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	public function get_async_content() {
 		return get_comments(
 			array(
-				'post_id' => $this->get_shadow_post( $this->data['original_id'] ),
+				'post_id' => self::get_shadow_post( $this->data['original_id'] ),
 				'status' => 'approve',
 				'type' => 'comment',
 				'include_unapproved' => array( get_current_user_id() ),
@@ -147,7 +156,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			'translation-discussion-comments',
 			array(
 				'comments' => $comments,
-				'post_id' => $this->get_shadow_post( $this->data['original_id'] ),
+				'post_id' => self::get_shadow_post( $this->data['original_id'] ),
 				'locale_slug' => $this->data['locale_slug'],
 			),
 			$this->assets_dir . 'templates'
@@ -167,6 +176,9 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	}
 }
 
+function gth_discussion_get_original_id_from_post( $post_id ) {
+	return Helper_Translation_Discussion::get_original_from_post_id( $post_id );
+}
 
 function gth_discussion_callback( $comment, $args, $depth ) {
 	$GLOBALS['comment'] = $comment;
