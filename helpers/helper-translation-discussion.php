@@ -134,6 +134,15 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	}
 
 	public function async_output_callback( $comments ) {
+		// Remove comment likes for now (or forever :) ).
+		remove_filter( 'comment_text', 'comment_like_button', 12 );
+
+		// Disable subscribe to posts.
+		add_filter( 'option_stb_enabled', '__return_false' );
+
+		// Disable subscribe to comments for now.
+		add_filter( 'option_stc_disabled', '__return_true' );
+
 		$output = gp_tmpl_get_output(
 			'discussion-comments',
 			array(
@@ -254,9 +263,6 @@ JS;
 
 function gth_discussion_callback( $comment, $args, $depth ) {
 	$GLOBALS['comment'] = $comment;
-
-	// Remove comment likes for now (or forever :) ).
-	remove_filter( 'comment_text', 'comment_like_button', 12 );
 
 	$comment_locale = get_comment_meta( $comment->comment_ID, 'locale', true );
 	?>
