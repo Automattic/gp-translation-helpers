@@ -51,12 +51,14 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		);
 
 		register_post_type( SELF::POST_TYPE, $post_type_args );
-	}
 
-	public function add_locale_to_comment_meta( $comment_id ) {
-		if ( isset( $_POST['comment_locale'] ) && GP_Locales::by_slug( $_POST['comment_locale'] ) ) {
-			add_comment_meta( $comment_id, 'locale', $_POST['comment_locale'], true );
-		}
+		$rest_meta_args = array(
+			'description'  => 'Locale slug associated with a string comment',
+			'single'       => true,
+			'show_in_rest' => true,
+		);
+
+		register_meta( 'comment', 'locale', $rest_meta_args );
 	}
 
 	public function comment_moderation( $approved, $commentdata ) {
