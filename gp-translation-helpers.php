@@ -150,16 +150,6 @@ class GP_Translation_Helpers {
 				'priority' => $translation_helper->get_priority(),
 				'has_async_content' => $translation_helper->has_async_content(),
 			);
-
-			$helper_css = $translation_helper->get_css();
-			if ( $helper_css ) {
-				$css .= $helper_css . "\n";
-			}
-
-			$helper_js = $translation_helper->get_js();
-			if ( $helper_js ) {
-				$js .= $helper_js . "\n";
-			}
 		}
 
 		usort( $sections, function( $s1, $s2 ) {
