@@ -130,7 +130,14 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	}
 
 	public function get_async_content() {
-		return get_comments( array('post_id' => $this->get_shadow_post( $this->data['original_id'] ) ) );
+		return get_comments(
+			array(
+				'post_id' => $this->get_shadow_post( $this->data['original_id'] ),
+				'status' => 'approve',
+				'type' => 'comment',
+				'include_unapproved' => array( get_current_user_id() ),
+			)
+		);
 	}
 
 	public function async_output_callback( $comments ) {
