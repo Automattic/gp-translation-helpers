@@ -23,8 +23,14 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			'translation_id' => $translation_id,
 		);
 
+		$single_helper = gp_get( 'helper' );
+		$helpers = $this->helpers;
+		if ( isset( $this->helpers[ $single_helper ] ) ) {
+			$helpers = array( $this->helpers[ $single_helper ] );
+		}
+
 		$sections = array();
-		foreach ( $this->helpers as $translation_helper ) {
+		foreach ( $helpers as $translation_helper ) {
 			$translation_helper->set_data( $args );
 			if ( $translation_helper->has_async_content() && $translation_helper->activate() ) {
 				$sections[ $translation_helper->get_div_id() ] = array(
@@ -39,8 +45,6 @@ class GP_Route_Translation_Helpers extends GP_Route {
 }
 
 class GP_Translation_Helpers {
-
-
 	public $id = 'translation-helpers';
 	private $helpers = array();
 
@@ -61,6 +65,8 @@ class GP_Translation_Helpers {
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
 		add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
+
+		$this->helpers = self::load_helpers();
 	}
 
 	public function before_request( $class_name, $last_method ) {
@@ -76,8 +82,6 @@ class GP_Translation_Helpers {
 			return;
 		}
 
-		$this->helpers = self::load_helpers();
-
 		$translation_helpers_settings = array(
 			'th_url' => gp_url_project( $args['project'], gp_url_join( $args['locale_slug'],  $args['translation_set_slug'], '-get-translation-helpers' ) ),
 		);
@@ -86,7 +90,7 @@ class GP_Translation_Helpers {
 		add_action( 'gp_translation_row_editor_columns', array( $this, 'translation_helpers' ), 10, 2 );
 
 		add_filter(  'gp_translation_row_editor_clospan', function( $colspan ) {
-			return ( $colspan - 2 );
+			return ( $colspan - 3 );
 		});
 
 		wp_register_style( 'gp-translation-helpers-css', plugins_url( 'css/translation-helpers.css', __FILE__ ) );
@@ -112,7 +116,7 @@ class GP_Translation_Helpers {
 		foreach ( $classes as $declared_class ) {
 			$reflect = new ReflectionClass( $declared_class );
 			if ( $reflect->isSubclassOf( 'GP_Translation_Helper' ) ) {
-				$helpers[] = new $declared_class;
+				$helpers[ sanitize_title_with_dashes( $reflect->getDefaultProperties()['title'] ) ] = new $declared_class;
 			}
 		}
 
@@ -144,17 +148,8 @@ class GP_Translation_Helpers {
 				'classname' => $translation_helper->get_div_classname(),
 				'id' => $translation_helper->get_div_id(),
 				'priority' => $translation_helper->get_priority(),
+				'has_async_content' => $translation_helper->has_async_content(),
 			);
-
-			$helper_css = $translation_helper->get_css();
-			if ( $helper_css ) {
-				$css .= $helper_css . "\n";
-			}
-
-			$helper_js = $translation_helper->get_js();
-			if ( $helper_js ) {
-				$js .= $helper_js . "\n";
-			}
 		}
 
 		usort( $sections, function( $s1, $s2 ) {

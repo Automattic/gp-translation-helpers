@@ -7,12 +7,17 @@
  */
 class GP_Translation_Helper {
 
+	public $assets_dir;
+	public $data;
+
 	/**
 	 * GP_Translation_Helper constructor.
 	 *
 	 * Will throw a LogicException if the title property is not set.
 	 */
 	public final function __construct() {
+		$this->assets_dir = dirname( dirname( __FILE__ ) ) . '/helpers-assets/' ;
+
 		$required_properties = array(
 			'title',
 		);
@@ -158,7 +163,6 @@ class GP_Translation_Helper {
 
 		if ( ! $items ) {
 			return $this->empty_content();
-
 		}
 
 		$output = $this->async_output_callback( $items );

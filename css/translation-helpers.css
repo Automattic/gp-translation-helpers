@@ -2,8 +2,8 @@
 	vertical-align: top;
 }
 #translations .translation-helpers {
-	width: 600px;
-	padding: .5em 0 0;
+	min-width: 400px;
+	padding: 0;
 	border: 0;
 	border-top:1px solid #eee;
 }
@@ -51,7 +51,7 @@
 	min-height: 200px;
 }
 .helper.current {
-	display: inherit;
+	display: block;
 }
 .helpers-tabs li .count {
 	display: inline-block;
