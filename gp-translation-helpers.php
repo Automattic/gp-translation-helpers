@@ -78,7 +78,9 @@ class GP_Translation_Helpers {
 	}
 
 	public function pre_tmpl_load( $template, $args ) {
-		if ( 'translations' !== $template ) {
+		$allowed_templates = apply_filters( 'gp_translations_helpers_templates', array( 'translations' ) );
+
+		if ( ! in_array( $template, $allowed_templates, true ) ) {
 			return;
 		}
 

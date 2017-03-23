@@ -73,7 +73,7 @@ $gp.translation_helpers = (
 );
 
 jQuery( function( $ ) {
-	$gp.translation_helpers.init( $( '#translations' ) );
+	$gp.translation_helpers.init( $( '.translations' ) );
 	if ( typeof window.newShowFunctionAttached === 'undefined' ) {
 		window.newShowFunctionAttached = true;
 		var _oldShow = $.fn.show;
