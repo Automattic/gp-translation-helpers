@@ -27,7 +27,11 @@
 		'title_reply_before'   => '<h6 id="reply-title" class="discuss-title">',
 		'title_reply_after'    => '</h6>',
 		'id_form'              => 'commentform-' . $post_id,
-		'comment_notes_after' => '<input type="hidden" name="comment_locale" value="' . esc_attr( $locale_slug ) . '" />'
+		'comment_notes_after'  => implode( "\n",
+			array(
+				'<input type="hidden" name="comment_locale" value="' . esc_attr( $locale_slug ) . '" />',
+				'<input type="hidden" name="translation_id" value="' . esc_attr( $translation_id ) . '" />',
+			) ),
 	), $post_id);
 	?>
 </div><!-- .discussion-wrapper -->

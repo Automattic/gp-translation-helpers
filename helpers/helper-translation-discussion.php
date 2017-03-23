@@ -46,13 +46,17 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 		register_post_type( self::POST_TYPE, $post_type_args );
 
-		$rest_meta_args = array(
+		register_meta( 'comment', 'translation_id', array(
+			'description'  => 'Translation that was displayed when the comment was posted',
+			'single'       => true,
+			'show_in_rest' => true,
+		) );
+
+		register_meta( 'comment', 'locale', array(
 			'description'  => 'Locale slug associated with a string comment',
 			'single'       => true,
 			'show_in_rest' => true,
-		);
-
-		register_meta( 'comment', 'locale', $rest_meta_args );
+		) );
 	}
 
 	public function comment_moderation( $approved, $commentdata ) {
@@ -157,6 +161,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			array(
 				'comments' => $comments,
 				'post_id' => self::get_shadow_post( $this->data['original_id'] ),
+				'translation_id' => isset( $this->data['translation_id'] ) ? $this->data['translation_id'] : null,
 				'locale_slug' => $this->data['locale_slug'],
 			),
 			$this->assets_dir . 'templates'
