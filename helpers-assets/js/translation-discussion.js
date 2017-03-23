@@ -18,7 +18,8 @@ jQuery( function( $ ) {
 			content: $commentform.find('textarea[name=comment]').val(),
 			post: $commentform.attr('id').split( '-' )[ 1 ],
 			meta: {
-				locale : $commentform.find('input[name=comment_locale]').val()
+				translation_id : $commentform.find('input[name=translation_id]').val(),
+				locale         : $commentform.find('input[name=comment_locale]').val()
 			}
 		}
 		jQuery.wpcom_proxy_request( {

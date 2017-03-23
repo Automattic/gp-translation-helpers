@@ -46,13 +46,17 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 		register_post_type( self::POST_TYPE, $post_type_args );
 
-		$rest_meta_args = array(
+		register_meta( 'comment', 'translation_id', array(
+			'description'  => 'Translation that was displayed when the comment was posted',
+			'single'       => true,
+			'show_in_rest' => true,
+		) );
+
+		register_meta( 'comment', 'locale', array(
 			'description'  => 'Locale slug associated with a string comment',
 			'single'       => true,
 			'show_in_rest' => true,
-		);
-
-		register_meta( 'comment', 'locale', $rest_meta_args );
+		) );
 	}
 
 	public function comment_moderation( $approved, $commentdata ) {
@@ -157,6 +161,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			array(
 				'comments' => $comments,
 				'post_id' => self::get_shadow_post( $this->data['original_id'] ),
+				'translation_id' => isset( $this->data['translation_id'] ) ? $this->data['translation_id'] : null,
 				'locale_slug' => $this->data['locale_slug'],
 			),
 			$this->assets_dir . 'templates'
@@ -184,6 +189,8 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 	$GLOBALS['comment'] = $comment;
 
 	$comment_locale = get_comment_meta( $comment->comment_ID, 'locale', true );
+	$current_translation_id = $args['translation_id'];
+	$comment_translation_id = get_comment_meta( $comment->comment_ID, 'translation_id', true );
 	?>
 <li class="<?php echo esc_attr( 'comment-locale-' . $comment_locale );?>">
 	<article id="comment-<?php comment_ID(); ?>" class="comment">
@@ -226,6 +233,10 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 			</div><!-- .comment-author .vcard -->
 			<?php if ( $comment->comment_approved == '0' ) : ?>
 				<em><?php _e( 'Your comment is awaiting moderation.' ); ?></em>
+			<?php endif; ?>
+			<?php if ( $comment_translation_id && $comment_translation_id !== $current_translation_id ) : ?>
+				<?php $translation = GP::$translation->get( $comment_translation_id ); ?>
+				<em>Translation: <?php echo esc_translation( $translation->translation_0 );?></em>
 			<?php endif; ?>
 		</footer>
 	</article><!-- #comment-## -->

@@ -135,7 +135,6 @@ class GP_Translation_Helpers {
 			'translation' => $t,
 		);
 
-		$css = $js = '';
 		$sections = array();
 		foreach ( $this->helpers as $translation_helper ) {
 			$translation_helper->set_data( $args );
