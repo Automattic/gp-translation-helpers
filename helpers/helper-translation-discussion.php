@@ -212,7 +212,7 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 		if ( $comment_locale  ) : ?>
 			<div class="comment-locale">Locale: <?php echo esc_html( $comment_locale );?></div>
 		<?php endif; ?>
-		<div class="comment-content"><?php comment_text(); ?></div>
+		<div class="comment-content" dir="auto"><?php comment_text(); ?></div>
 		<footer>
 			<div class="comment-author vcard">
 				<?php

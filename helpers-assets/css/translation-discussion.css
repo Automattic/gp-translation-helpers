@@ -47,3 +47,6 @@ article.comment time {
 	padding-left: 10px;
 	font-size: 0.9em;
 }
+.comment-content {
+	text-align: start;
+}
