@@ -17,6 +17,7 @@
 			'style'       => 'ul',
 			'type'       => 'comment',
 			'callback' => 'gth_discussion_callback',
+			'translation_id' => $translation_id,
 		), $comments );
 		?>
 	</ul><!-- .discussion-list -->

@@ -189,6 +189,8 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 	$GLOBALS['comment'] = $comment;
 
 	$comment_locale = get_comment_meta( $comment->comment_ID, 'locale', true );
+	$current_translation_id = $args['translation_id'];
+	$comment_translation_id = get_comment_meta( $comment->comment_ID, 'translation_id', true );
 	?>
 <li class="<?php echo esc_attr( 'comment-locale-' . $comment_locale );?>">
 	<article id="comment-<?php comment_ID(); ?>" class="comment">
@@ -231,6 +233,10 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 			</div><!-- .comment-author .vcard -->
 			<?php if ( $comment->comment_approved == '0' ) : ?>
 				<em><?php _e( 'Your comment is awaiting moderation.' ); ?></em>
+			<?php endif; ?>
+			<?php if ( $comment_translation_id && $comment_translation_id !== $current_translation_id ) : ?>
+				<?php $translation = GP::$translation->get( $comment_translation_id ); ?>
+				<em>Translation: <?php echo esc_translation( $translation->translation_0 );?></em>
 			<?php endif; ?>
 		</footer>
 	</article><!-- #comment-## -->
