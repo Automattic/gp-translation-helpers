@@ -12,10 +12,6 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	const URL_SLUG = 'discuss';
 	const ORIGINAL_ID_PREFIX = 'original-';
 
-	function activate() {
-		return ( is_automattician() || 'de' === $this->data['locale_slug'] );
-	}
-
 	function after_constructor() {
 		$this->register_post_type_and_taxonomy();
 		add_filter( 'pre_comment_approved', array( $this, 'comment_moderation' ), 10, 2 );
