@@ -121,6 +121,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 							self::LINK_TAXONOMY => array( $original_id ),
 						),
 						'post_status'    => self::POST_STATUS,
+						'post_author'    => 0,
 						'comment_status' => 'open',
 					)
 				);
