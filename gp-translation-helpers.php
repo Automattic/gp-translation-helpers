@@ -1,5 +1,5 @@
 <?php
-// Plugin name: GP WP Comments
+// Plugin name: GP Translation Helpers
 
 class GP_Route_Translation_Helpers extends GP_Route {
 
@@ -8,6 +8,38 @@ class GP_Route_Translation_Helpers extends GP_Route {
 	function __construct() {
 		$this->helpers = GP_Translation_Helpers::load_helpers();
 		$this->template_path = dirname( __FILE__ ) . '/templates/';
+	}
+
+	function discussion( $project_path, $locale_slug, $set_slug, $original_id, $translation_id = null ) {
+		$project = GP::$project->by_path( $project_path );
+		if ( ! $project ) {
+			$this->die_with_404();
+		}
+
+		$args = array(
+			'project_id' => $project->id,
+			'locale_slug' => $locale_slug,
+			'set_slug' => $set_slug,
+			'original_id' => $original_id,
+			'translation_id' => $translation_id,
+		);
+		$translation_set = GP::$translation_set->by_project_id_slug_and_locale( $project->id, $set_slug, $locale_slug );
+		$original = GP::$original->get( $original_id );
+
+		$translation_helper = $this->helpers['comments'];
+		$translation_helper->set_data( $args );
+
+		$post_id = $translation_helper::get_shadow_post( $original_id );
+		$comments = get_comments(
+			array(
+				'post_id' => $post_id,
+				'status' => 'approve',
+				'type' => 'comment',
+				'include_unapproved' => array( get_current_user_id() ),
+			)
+		);
+
+		$this->tmpl( 'discussion', get_defined_vars() );
 	}
 
 	function translation_helpers( $project_path, $locale_slug, $set_slug, $original_id, $translation_id = null ) {
@@ -110,7 +142,9 @@ class GP_Translation_Helpers {
 
 		$helpers_files = glob( dirname( __FILE__ ) . '/helpers/helper-*.php' );
 		foreach ( $helpers_files as $helper ) {
-			require_once( $helper );
+			if ( ! in_array( basename( $helper ), array( 'helper-translation-memory.php' ) ) ) {
+				require_once( $helper );
+			}
 		}
 
 		$helpers = array();
@@ -172,6 +206,8 @@ class GP_Translation_Helpers {
 		$id = '(\d+)-?(\d+)?';
 
 		GP::$router->prepend( "/$set/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'translation_helpers' ), 'get' );
+		// echo "/$set/discussion/$id";exit;
+		GP::$router->prepend( "/$set/discussion/$id", array( 'GP_Route_Translation_Helpers', 'discussion' ), 'get' );
 	}
 
 	public function css_and_js() {
