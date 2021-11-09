@@ -97,7 +97,7 @@ class GP_Translation_Helpers {
 
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
-		add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
+		// add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
 
 		$this->helpers = self::load_helpers();
 	}
@@ -107,7 +107,7 @@ class GP_Translation_Helpers {
 			return;
 		}
 
-		add_action( 'gp_pre_tmpl_load',  array( $this, 'pre_tmpl_load' ), 10, 2 );
+		// add_action( 'gp_pre_tmpl_load',  array( $this, 'pre_tmpl_load' ), 10, 2 );
 	}
 
 	public function pre_tmpl_load( $template, $args ) {
