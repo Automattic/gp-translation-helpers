@@ -206,7 +206,6 @@ class GP_Translation_Helpers {
 		$id = '(\d+)-?(\d+)?';
 
 		GP::$router->prepend( "/$set/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'translation_helpers' ), 'get' );
-		// echo "/$set/discussion/$id";exit;
 		GP::$router->prepend( "/$set/discussion/$id", array( 'GP_Route_Translation_Helpers', 'discussion' ), 'get' );
 	}
 
