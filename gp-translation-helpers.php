@@ -1,4 +1,5 @@
 <?php
+// Plugin name: GP WP Comments
 
 class GP_Route_Translation_Helpers extends GP_Route {
 
