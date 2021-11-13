@@ -6,8 +6,9 @@ gp_breadcrumb( array(
 ) );
 gp_enqueue_scripts( array( 'gp-editor', 'gp-translations-page' ) );
 wp_localize_script( 'gp-translations-page', '$gp_translations_options', array( 'sort' => __( 'Sort', 'glotpress' ), 'filter' => __( 'Filter', 'glotpress' ) ) );
-
+gp_enqueue_style( 'gp-discussion-css' );
 gp_tmpl_header();
+
 
 ?>
 
@@ -20,7 +21,9 @@ gp_tmpl_header();
 		</span>
 		</h6>
 	<?php endif; ?>
+	
 	<ul class="discussion-list">
+	
 		<?php
 		wp_list_comments( array(
 			'style'       => 'ul',
