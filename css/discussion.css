@@ -50,3 +50,6 @@ article.comment time {
 .comment-content {
 	text-align: start;
 }
+.comment-form-comment label{
+    display: block;
+}
