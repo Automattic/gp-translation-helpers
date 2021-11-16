@@ -38,7 +38,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 				'include_unapproved' => array( get_current_user_id() ),
 			)
 		);
-
+		wp_register_style( 'gp-discussion-css', plugins_url( './css/discussion.css', __FILE__ ) );
 		$this->tmpl( 'discussion', get_defined_vars() );
 	}
 
