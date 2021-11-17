@@ -13,11 +13,11 @@ gp_tmpl_header();
 <h1><?php echo esc_html( $original->singular ); ?></h1>
 <div class="discussion-wrapper">
 	<?php if ( $number = count( $comments ) ) : ?>
-		<h6><?php printf( _n( '%s Comment', '%s Comments', $number ), number_format_i18n( $number ) ); ?>
+		<h4><?php printf( _n( '%s Comment', '%s Comments', $number ), number_format_i18n( $number ) ); ?>
 		<span class="comments-selector">
 			<a href="#" data-selector="all">Show all</a> | <a href="#" data-selector="<?php echo esc_attr( $locale_slug );?>"><?php echo esc_html( $locale_slug )?> only</a>
 		</span>
-		</h6>
+		</h4>
 	<?php endif; ?>
 	
 	<ul class="discussion-list">
