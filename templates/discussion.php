@@ -4,12 +4,10 @@ gp_breadcrumb( array(
 	gp_project_links_from_root( $project ),
 	$translation_set->name,
 ) );
-gp_enqueue_scripts( array( 'gp-editor', 'gp-translations-page' ) );
+gp_enqueue_scripts( array( 'gp-editor', 'gp-translations-page', 'gp-translation-discussion-js') );
 wp_localize_script( 'gp-translations-page', '$gp_translations_options', array( 'sort' => __( 'Sort', 'glotpress' ), 'filter' => __( 'Filter', 'glotpress' ) ) );
 gp_enqueue_style( 'gp-discussion-css' );
 gp_tmpl_header();
-
-
 ?>
 
 <h1><?php echo esc_html( $original->singular ); ?></h1>

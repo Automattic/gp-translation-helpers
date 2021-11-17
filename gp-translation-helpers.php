@@ -39,6 +39,9 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			)
 		);
 		wp_register_style( 'gp-discussion-css', plugins_url( './css/discussion.css', __FILE__ ) );
+
+		wp_register_script( 'gp-translation-discussion-js', plugins_url( './js/discussion.js', __FILE__ ) );
+
 		$this->tmpl( 'discussion', get_defined_vars() );
 	}
 
