@@ -38,6 +38,10 @@ class GP_Route_Translation_Helpers extends GP_Route {
 				'include_unapproved' => array( get_current_user_id() ),
 			)
 		);
+
+		$translation = GP::$translation->get( $translation_id );
+		$original_permalink = gp_url_project_locale( $project, $locale_slug, $translation_set->slug, array( 'filters[original_id]' => $original_id ) );
+		
 		wp_register_style( 'gp-discussion-css', plugins_url( './css/discussion.css', __FILE__ ) );
 
 		wp_register_script( 'gp-translation-discussion-js', plugins_url( './js/discussion.js', __FILE__ ) );

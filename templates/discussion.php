@@ -11,6 +11,9 @@ gp_tmpl_header();
 ?>
 
 <h1><?php echo esc_html( $original->singular ); ?></h1>
+
+<?php echo '<a href="' . esc_url( $original_permalink ) . '">View translation</a>'; ?>
+
 <div class="discussion-wrapper">
 	<?php if ( $number = count( $comments ) ) : ?>
 		<h4><?php printf( _n( '%s Comment', '%s Comments', $number ), number_format_i18n( $number ) ); ?>
