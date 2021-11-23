@@ -53,3 +53,7 @@ article.comment time {
 .comment-form-comment label{
     display: block;
 }
+
+h6 {
+	font-size: 1.5em;
+}

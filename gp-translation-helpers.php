@@ -46,8 +46,17 @@ class GP_Route_Translation_Helpers extends GP_Route {
 
 		wp_register_script( 'gp-translation-discussion-js', plugins_url( './js/discussion.js', __FILE__ ) );
 		
-		add_filter( 'comment_form_logged_in', '__return_empty_string' );
-		
+		add_filter( 'comment_form_logged_in', function( $logged_in_as, $commenter, $user_identity ) {
+			return sprintf( '<p class="logged-in-as">%s</p>', sprintf( __( 'Logged in as %s.' ), $user_identity ) );
+		}, 10, 3 );
+
+		add_filter( 'comment_form_fields', function( $comment_fields ) {
+			$comment_fields['comment'] = str_replace( '>Comment<', '>Please leave your comment about this string here:<', $comment_fields['comment'] );
+			return $comment_fields;
+		} );
+
+		remove_action( 'comment_form_top', 'rosetta_comment_form_support_hint' );
+
 		$this->tmpl( 'discussion', get_defined_vars() );
 	}
 
