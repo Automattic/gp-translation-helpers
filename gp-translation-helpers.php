@@ -67,6 +67,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			if ( $translation_set ) {
 				$permalink .= '/' . $translation_set->locale . '/' . $translation_set->slug;
 			}
+			$permalink = home_url( $permalink );
 
 			$data_attributes = array(
 				'commentid'      => $comment->comment_ID,
@@ -163,6 +164,21 @@ class GP_Translation_Helpers {
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
 		// add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
+
+		add_filter( 'gp_translation_row_template_more_links', function( $more_links, $project, $locale, $translation_set, $translation ) {
+			$permalink = "/projects/" . $project->path . '/' . $translation->original_id;
+			$original_permalink = home_url( $permalink );
+			if ( $translation_set ) {
+				$permalink .= '/' . $translation_set->locale . '/' . $translation_set->slug;
+			}
+			$permalink = home_url( $permalink );
+
+			$more_links['original_permalink'] = '<a href="' . esc_url( $original_permalink ) . '">Permlink to original</a>';
+			$more_links['discussions'] = '<a href="' . esc_url( $permalink ) . '">Discussions</a>';
+
+			return $more_links;
+
+		}, 10, 5 );
 
 		$this->helpers = self::load_helpers();
 	}
