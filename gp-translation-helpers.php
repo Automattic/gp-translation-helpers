@@ -63,7 +63,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 
 
 		add_filter( 'comment_reply_link', function( $link, $args, $comment, $post ) use ( $project, $translation_set, $original ) {
-			$permalink = "/projects/" . $project->path . $original->id;
+			$permalink = "/projects/" . $project->path . '/' . $original->id;
 			if ( $translation_set ) {
 				$permalink .= '/' . $translation_set->locale . '/' . $translation_set->slug;
 			}
