@@ -207,7 +207,7 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 		<?php
 
 		if ( $comment_locale  ) : ?>
-			<div class="comment-locale">Locale: <?php echo esc_html( $comment_locale );?></div>
+			<div class="comment-locale">Locale: <a href="<?php echo esc_attr( $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale );?></a></div>
 		<?php endif; ?>
 		<div class="comment-content" dir="auto"><?php comment_text(); ?></div>
 		<footer>
