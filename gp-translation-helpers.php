@@ -10,7 +10,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$this->template_path = dirname( __FILE__ ) . '/templates/';
 	}
 
-	function discussion( $project_path, $locale_slug, $set_slug, $original_id, $translation_id = null ) {
+	function discussion( $project_path, $original_id, $locale_slug = null, $set_slug = null, $translation_id = null ) {
 		$project = GP::$project->by_path( $project_path );
 		if ( ! $project ) {
 			$this->die_with_404();
@@ -40,7 +40,11 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		);
 
 		$translation = GP::$translation->get( $translation_id );
-		$original_permalink = gp_url_project_locale( $project, $locale_slug, $translation_set->slug, array( 'filters[original_id]' => $original_id ) );
+		$original_permalink = gp_url_project( $project, array( 'filters[original_id]' => $original_id ) );
+		$original_translation_permalink = false;
+		if ( $translation_set ) {
+			$original_translation_permalink = gp_url_project_locale( $project, $locale_slug, $translation_set->slug, array( 'filters[original_id]' => $original_id ) );
+		}
 		
 		wp_register_style( 'gp-discussion-css', plugins_url( './css/discussion.css', __FILE__ ) );
 
@@ -58,8 +62,11 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		remove_action( 'comment_form_top', 'rosetta_comment_form_support_hint' );
 
 
-		add_filter( 'comment_reply_link', function( $link, $args, $comment, $post ) use ( $project_path, $translation_set, $original ) {
-			$permalink = "/projects/" . $project_path . '/' . $translation_set->locale .'/' . $translation_set->slug . '/discussion/' . $original->id;
+		add_filter( 'comment_reply_link', function( $link, $args, $comment, $post ) use ( $project, $translation_set, $original ) {
+			$permalink = "/projects/" . $project->path . $original->id;
+			if ( $translation_set ) {
+				$permalink .= '/' . $translation_set->locale . '/' . $translation_set->slug;
+			}
 
 			$data_attributes = array(
 				'commentid'      => $comment->comment_ID,
@@ -264,7 +271,7 @@ class GP_Translation_Helpers {
 		$id = '(\d+)-?(\d+)?';
 
 		GP::$router->prepend( "/$set/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'translation_helpers' ), 'get' );
-		GP::$router->prepend( "/$set/discussion/$id", array( 'GP_Route_Translation_Helpers', 'discussion' ), 'get' );
+		GP::$router->prepend( "/$project/(\d+)(?:/$locale/$dir)?", array( 'GP_Route_Translation_Helpers', 'discussion' ), 'get' );
 	}
 
 	public function css_and_js() {
