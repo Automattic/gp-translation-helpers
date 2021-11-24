@@ -194,7 +194,7 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 		<div class="comment-avatar">
 			<?php echo get_avatar( $comment, 25 ); ?>
 		</div><!-- .comment-avatar -->
-		<?php printf( '<cite class="fn">%s</cite>', get_comment_author_link() ); ?>
+		<?php printf( '<cite class="fn">%s</cite>', get_comment_author_link( $comment->comment_ID ) ); ?>
 		<?php
 		// Older than a week, show date; otherwise show __ time ago.
 		if ( current_time( 'timestamp' ) - get_comment_time( 'U' ) > 604800 ) {

@@ -103,7 +103,10 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			);
 			return $args['before'] . $link . $args['after'];
 		}, 10, 4 );
-
+		
+		add_filter( 'get_comment_author_link', function( $author) {
+			return '<a href="https://profiles.wordpress.org/' . $author . '">' . $author . '</a>';
+		});
 
 		$this->tmpl( 'discussion', get_defined_vars() );
 	}
