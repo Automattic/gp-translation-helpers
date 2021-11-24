@@ -173,7 +173,7 @@ class GP_Translation_Helpers {
 			}
 			$permalink = home_url( $permalink );
 
-			$more_links['original_permalink'] = '<a href="' . esc_url( $original_permalink ) . '">Permlink to original</a>';
+			$more_links['original_permalink'] = '<a href="' . esc_url( $original_permalink ) . '">Permalink to original</a>';
 			$more_links['discussions'] = '<a href="' . esc_url( $permalink ) . '">Discussions</a>';
 
 			return $more_links;
