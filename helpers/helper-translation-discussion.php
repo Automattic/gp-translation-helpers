@@ -186,6 +186,11 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 	$GLOBALS['comment'] = $comment;
 
 	$comment_locale = get_comment_meta( $comment->comment_ID, 'locale', true );
+	$current_locale = $args['locale_slug'];
+
+	if ( $current_locale && $current_locale !== $comment_locale ){
+		return;
+	}
 	$current_translation_id = $args['translation_id'];
 	$comment_translation_id = get_comment_meta( $comment->comment_ID, 'translation_id', true );
 	?>

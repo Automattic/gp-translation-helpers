@@ -47,6 +47,7 @@ gp_tmpl_header();
 			'callback' => 'gth_discussion_callback',
 			'translation_id' => $translation_id,
 			'original_permalink' => $original_permalink,
+			'locale_slug' => $locale_slug,
 		), $comments );
 		?>
 	</ul><!-- .discussion-list -->
