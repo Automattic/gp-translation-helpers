@@ -104,8 +104,9 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			return $args['before'] . $link . $args['after'];
 		}, 10, 4 );
 		
-		add_filter( 'get_comment_author_link', function( $author) {
-			return '<a href="https://profiles.wordpress.org/' . $author . '">' . $author . '</a>';
+		add_filter( 'get_comment_author_link', function() {
+			$comment_author = get_comment_author( $comment );
+			return '<a href="https://profiles.wordpress.org/' . $comment_author . '">' . $comment_author . '</a>';
 		});
 
 		/** Get translations for this original */
