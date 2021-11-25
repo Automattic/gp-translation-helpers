@@ -19,6 +19,10 @@ gp_tmpl_header();
 
 <h1><?php echo esc_html( $original->singular ); ?></h1>
 
+<?php if ( $translations[0] ) : ?>
+	<h2>Translation: <?php echo $translations[0]->translations[0]; ?></h2>
+<?php endif; ?>
+
 <?php if ( $original_translation_permalink ) : ?>
 <a href="<?php echo esc_url( $original_translation_permalink ); ?>">View translation</a>
 <?php endif; ?>

@@ -108,6 +108,18 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			return '<a href="https://profiles.wordpress.org/' . $author . '">' . $author . '</a>';
 		});
 
+		/** Get translations for this original */
+		$translations = GP::$translation->for_translation(
+			$project,
+			$translation_set,
+			'no-limit',
+			array(
+				'translation_id' => $translation_id,
+				'status'         => 'either',
+			),
+			array()
+		);
+
 		$this->tmpl( 'discussion', get_defined_vars() );
 	}
 
