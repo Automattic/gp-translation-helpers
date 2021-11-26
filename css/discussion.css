@@ -62,3 +62,6 @@ h6 {
 .discussion-locales ul li{
 	display: inline;
 }
+.active-locale-link{
+	font-weight: bold;
+}
