@@ -53,11 +53,12 @@ article.comment time {
 .comment-form-comment label{
     display: block;
 }
-
 h6 {
 	font-size: 1.5em;
 }
-
 .discussion-heading{
 	line-height: 1.2em;
+}
+.discussion-locales ul li{
+	display: inline;
 }
