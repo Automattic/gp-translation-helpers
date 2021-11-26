@@ -38,7 +38,15 @@ class GP_Route_Translation_Helpers extends GP_Route {
 				'include_unapproved' => array( get_current_user_id() ),
 			)
 		);
-
+		
+		$locales_with_comments = [];
+		foreach( $comments as $comment ){
+			$single_comment_locale = get_comment_meta( $comment->comment_ID, 'locale' )[0];
+			if ( $single_comment_locale && !in_array( $single_comment_locale, $locales_with_comments ) ){
+				$locales_with_comments[] = $single_comment_locale;
+			}
+		}
+		
 		$translation = GP::$translation->get( $translation_id );
 		$original_permalink = gp_url_project( $project, array( 'filters[original_id]' => $original_id ) );
 		$original_translation_permalink = false;

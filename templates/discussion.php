@@ -26,7 +26,17 @@ gp_tmpl_header();
 <?php if ( $original_translation_permalink ) : ?>
 <a href="<?php echo esc_url( $original_translation_permalink ); ?>">View translation</a>
 <?php endif; ?>
-
+<div class="discussion-locales">
+	<ul>
+		<?php foreach( $locales_with_comments as $locale_with_comments ): ?>
+			<li>
+				<a href="<?php echo esc_attr( $args['original_permalink'] . $locale_with_comments . '/default' ); ?>">
+					<?php echo $locale_with_comments; ?>
+				</a>
+			</li>
+		<?php endforeach; ?>
+	</ul>
+</div>
 <div class="discussion-wrapper">
 	<?php if ( $number = count( $comments ) ) : ?>
 		<h4><?php printf( _n( '%s Comment', '%s Comments', $number ), number_format_i18n( $number ) ); ?>
