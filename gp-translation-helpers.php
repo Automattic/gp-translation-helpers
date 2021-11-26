@@ -110,17 +110,8 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		});
 
 		/** Get translations for this original */
-		$translations = GP::$translation->for_translation(
-			$project,
-			$translation_set,
-			'no-limit',
-			array(
-				'translation_id' => $translation_id,
-				'status'         => 'either',
-			),
-			array()
-		);
-
+		$translations  = GP::$translation->find_many_no_map( array( 'status' => 'current', 'original_id' => $original_id ) );
+		
 		$this->tmpl( 'discussion', get_defined_vars() );
 	}
 

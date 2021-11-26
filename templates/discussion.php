@@ -20,7 +20,7 @@ gp_tmpl_header();
 <h1 class="discussion-heading"><?php echo esc_html( $original->singular ); ?></h1>
 
 <?php if ( $translations[0] ) : ?>
-	<h2>Translation: <?php echo $translations[0]->translations[0]; ?></h2>
+	<h2>Translation: <?php echo $translations[0]->translation_0; ?></h2>
 <?php endif; ?>
 
 <?php if ( $original_translation_permalink ) : ?>
