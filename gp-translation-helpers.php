@@ -120,9 +120,13 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			return '<a href="https://profiles.wordpress.org/' . $comment_author . '">' . $comment_author . '</a>';
 		});
 
-		/** Get translations for this original */
-		$translations  = GP::$translation->find_many_no_map( array( 'status' => 'current', 'original_id' => $original_id ) );
-		
+		/** Get translation for this original */
+		$string_translation = null;
+		$translation_details  = GP::$translation->find_many_no_map( array( 'status' => 'current', 'original_id' => $original_id , 'translation_set_id' => $translation_set->id) );
+		if( is_array( $translation_details ) && $translation_details[0] ){
+			$string_translation = $translation_details[0]->translation_0;
+		}
+
 		$this->tmpl( 'discussion', get_defined_vars() );
 	}
 
