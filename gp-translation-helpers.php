@@ -40,10 +40,12 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		);
 		
 		$locales_with_comments = [];
-		foreach( $comments as $comment ){
-			$single_comment_locale = get_comment_meta( $comment->comment_ID, 'locale' )[0];
-			if ( $single_comment_locale && !in_array( $single_comment_locale, $locales_with_comments ) ){
-				$locales_with_comments[] = $single_comment_locale;
+		if( $comments ){
+			foreach( $comments as $comment ){
+				$single_comment_locale = get_comment_meta( $comment->comment_ID, 'locale' )[0];
+				if ( $single_comment_locale && !in_array( $single_comment_locale, $locales_with_comments ) ){
+					$locales_with_comments[] = $single_comment_locale;
+				}
 			}
 		}
 		
