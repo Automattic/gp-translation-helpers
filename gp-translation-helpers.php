@@ -130,6 +130,25 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$this->tmpl( 'discussion', get_defined_vars() );
 	}
 
+	function original_permalink( $project_path, $original_id, $locale_slug = null, $set_slug = null, $translation_id = null ) {
+		$project = GP::$project->by_path( $project_path );
+		if ( ! $project ) {
+			$this->die_with_404();
+		}
+
+		$args = array(
+			'project_id' => $project->id,
+			'locale_slug' => $locale_slug,
+			'set_slug' => $set_slug,
+			'original_id' => $original_id,
+			'translation_id' => $translation_id,
+		);
+		$translation_set = GP::$translation_set->by_project_id_slug_and_locale( $project->id, $set_slug, $locale_slug );
+		$original = GP::$original->get( $original_id );
+
+		$this->tmpl( 'original_permalink', get_defined_vars() );
+	}
+
 	function translation_helpers( $project_path, $locale_slug, $set_slug, $original_id, $translation_id = null ) {
 		$project = GP::$project->by_path( $project_path );
 		if ( ! $project ) {
