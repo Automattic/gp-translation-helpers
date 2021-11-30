@@ -170,6 +170,15 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			}
 		}
 
+		$translations  = GP::$translation->find_many_no_map( array( 'status' => 'current', 'original_id' => $original_id ) );
+		$translations_by_locale = array();
+		if( $translations ){
+			foreach ( $translations as $translation ) {
+				$_set = GP::$translation_set->get( $translation->translation_set_id );
+				$translations_by_locale[ $_set->locale ] = $translation->translation_0;
+			}
+		}
+		
 		$this->tmpl( 'original_permalink', get_defined_vars() );
 	}
 

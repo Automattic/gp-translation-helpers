@@ -111,17 +111,28 @@ gp_tmpl_header();
 													'<input type="hidden" name="redirect_to" value="' . esc_url( home_url($_SERVER['REQUEST_URI']) ) . '" />',
 													
 												) ),
-										), $post_id);
+										), $post_id );
 										?>
                                     </details>
                                 </div>
                                 <div class="suggestions-wrapper">
-
-                                    ​
                                     <details class="suggestions__other-languages initialized" data-nonce="b1ee0a8267" open="">
                                         <summary>All Languages</summary>
-
-                                        <p class="no-suggestions">No suggestions.</p>
+										<?php if( $translations_by_locale ): ?>
+											<ul class="suggestions-list">
+											<?php foreach( $translations_by_locale as $locale => $translation ): ?>
+												<li>
+													<div class="translation-suggestion with-tooltip" tabindex="0" role="button" aria-pressed="false" aria-label="Copy translation">
+														<span class="translation-suggestion__translation">
+															<?php echo strtoupper( $locale ) . ' - ' . $translation; ?>
+														</span>
+													</div>
+												</li>
+											<?php endforeach; ?>	
+											</ul>
+										<?php else: ?>
+											<p class="no-suggestions">No suggestions.</p>
+										<?php endif; ?>
                                     </details>
                                 </div>
                                 ​ ​
