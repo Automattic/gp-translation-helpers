@@ -146,6 +146,30 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$translation_set = GP::$translation_set->by_project_id_slug_and_locale( $project->id, $set_slug, $locale_slug );
 		$original = GP::$original->get( $original_id );
 
+		$translation_helper = $this->helpers['comments'];
+		$translation_helper->set_data( $args );
+
+		$post_id = $translation_helper::get_shadow_post( $original_id );
+		$comments = get_comments(
+			array(
+				'post_id' => $post_id,
+				'status' => 'approve',
+				'type' => 'comment',
+				'include_unapproved' => array( get_current_user_id() ),
+			)
+		);
+
+		$locales_with_comments = [];
+		if( $comments ){
+			foreach( $comments as $comment ){
+				$comment_meta = get_comment_meta( $comment->comment_ID, 'locale' );
+				$single_comment_locale = is_array( $comment_meta ) ? $comment_meta[0] : '';
+				if ( $single_comment_locale && !in_array( $single_comment_locale, $locales_with_comments ) ){
+					$locales_with_comments[] = $single_comment_locale;
+				}
+			}
+		}
+
 		$this->tmpl( 'original_permalink', get_defined_vars() );
 	}
 
