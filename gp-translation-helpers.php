@@ -362,7 +362,6 @@ class GP_Translation_Helpers {
 
 		GP::$router->prepend( "/$set/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'translation_helpers' ), 'get' );
 		GP::$router->prepend( "/$project/(\d+)(?:/$locale/$dir)?", array( 'GP_Route_Translation_Helpers', 'discussion' ), 'get' );
-		GP::$router->prepend( "/$project/(\d+)", array( 'GP_Route_Translation_Helpers', 'original_permalink' ), 'get' );
 	}
 
 	public function css_and_js() {
