@@ -4,28 +4,12 @@
 		</thead>
 		​
 		<tbody>
-			<tr class="preview untranslated priority-normal no-warnings no-translations" id="preview-12561869" row="12561869" style="display: none;">
-				<th scope="row" class="checkbox"><input type="checkbox" name="selected-row[]"></th>
-				<td class="priority" title="Priority: normal">
-				</td>
-				<td class="original">
-					<span class="original-text"><?php echo esc_html( $original->singular ); ?></span>
-
-					<div class="original-tags">
-					</div>
-				</td>
-				<td class="translation foreign-text">
-					<span class="missing">Double-click to add</span> </td>
-				<td class="actions">
-					<a href="#" class="action edit">Details</a>
-				</td>
-			</tr>
 			<tr class="editor untranslated priority-normal no-warnings no-translations" id="editor-12561869" row="12561869" style="display: table-row;">
 				<td colspan="5">
 					<div class="editor-panel">
 						<div class="editor-panel__left">
 							<div class="panel-header">
-								<h3>Original</h3>
+								<h3>Originalo</h3>
 							</div>
 							<div class="panel-content">
 								<div class="source-string strings">
