@@ -86,7 +86,7 @@
 									</dl>
 									<dl>
 										<dt>Priority of the original:</dt>
-										<dd>normal</dd>
+										<dd><?php echo $priority; ?></dd>
 									</dl>
 									<div class="source-details">
 										<details class="source-details__references">

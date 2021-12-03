@@ -160,6 +160,8 @@ class GP_Route_Translation_Helpers extends GP_Route {
 				$translations_by_locale[ $_set->locale ] = $translation->translation_0;
 			}
 		}
+		$priorities_key_value = $original->get_static( 'priorities' );
+		$priority             = $priorities_key_value[ $original->priority ];
 
 		$this->tmpl( 'original-permalink', get_defined_vars() );
 	}
