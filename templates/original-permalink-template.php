@@ -26,27 +26,6 @@
 						<div class="editor-panel__left">
 							<div class="panel-header">
 								<h3>Original <span class="panel-header__bubble">untranslated</span></h3>
-								<div class="panel-header-actions">
-									<button type="button" class="panel-header-actions__cancel with-tooltip" aria-label="Close current editor">
-									<span class="screen-reader-text">Close</span><span aria-hidden="true" class="dashicons dashicons-no-alt"></span>
-								</button>
-									<button type="button" class="panel-header-actions__previous with-tooltip" aria-label="Open previous editor">
-									<span class="screen-reader-text">Previous</span><span aria-hidden="true" class="dashicons dashicons-arrow-up-alt2"></span>
-								</button>
-									<button type="button" class="panel-header-actions__next with-tooltip" aria-label="Open next editor">
-									<span class="screen-reader-text">Next</span><span aria-hidden="true" class="dashicons dashicons-arrow-down-alt2"></span>
-								</button>
-									<div class="button-menu">
-										<button type="button" class="button-menu__toggle with-tooltip" aria-label="Show contextual links">
-										<span class="screen-reader-text">Links</span><span aria-hidden="true" class="dashicons dashicons-menu-alt"></span>
-									</button>
-										<ul class="button-menu__dropdown">
-											<li><a href="/projects/wp-plugins/friends/dev/de/default/?filters%5Boriginal_id%5D=12561869">Permalink to original</a></li>
-											<li><a href="/projects/wp-plugins/friends/dev/de/default/?filters%5Bstatus%5D=either&amp;filters%5Boriginal_id%5D=12561869&amp;sort%5Bby%5D=translation_date_added&amp;sort%5Bhow%5D=asc">Translation History</a></li>
-											<li><a href="https://translate.wordpress.org/consistency?search=Message&amp;set=de%2Fdefault">View original in consistency tool</a></li>
-										</ul>
-									</div>
-								</div>
 							</div>
 							<div class="panel-content">
 								<div class="source-string strings">
@@ -67,7 +46,7 @@
 										</summary>
 
 										<?php gp_tmpl_load( 'comment-section', get_defined_vars(), dirname( __FILE__ ) ); ?>
-									
+
 									</details>
 								</div>
 								<div class="suggestions-wrapper">
@@ -136,27 +115,6 @@
 						<div class="editor-panel__left">
 							<div class="panel-header">
 								<h3>Original <span class="panel-header__bubble">untranslated</span></h3>
-								<div class="panel-header-actions">
-									<button type="button" class="panel-header-actions__cancel with-tooltip" aria-label="Close current editor">
-									<span class="screen-reader-text">Close</span><span aria-hidden="true" class="dashicons dashicons-no-alt"></span>
-								</button>
-									<button type="button" class="panel-header-actions__previous with-tooltip" aria-label="Open previous editor">
-									<span class="screen-reader-text">Previous</span><span aria-hidden="true" class="dashicons dashicons-arrow-up-alt2"></span>
-								</button>
-									<button type="button" class="panel-header-actions__next with-tooltip" aria-label="Open next editor">
-									<span class="screen-reader-text">Next</span><span aria-hidden="true" class="dashicons dashicons-arrow-down-alt2"></span>
-								</button>
-									<div class="button-menu">
-										<button type="button" class="button-menu__toggle with-tooltip" aria-label="Show contextual links">
-										<span class="screen-reader-text">Links</span><span aria-hidden="true" class="dashicons dashicons-menu-alt"></span>
-									</button>
-										<ul class="button-menu__dropdown">
-											<li><a href="/projects/wp-plugins/friends/dev/de/default/?filters%5Boriginal_id%5D=12561837">Permalink to original</a></li>
-											<li><a href="/projects/wp-plugins/friends/dev/de/default/?filters%5Bstatus%5D=either&amp;filters%5Boriginal_id%5D=12561837&amp;sort%5Bby%5D=translation_date_added&amp;sort%5Bhow%5D=asc">Translation History</a></li>
-											<li><a href="https://translate.wordpress.org/consistency?search=Start+writing+or+type+%2F+to+choose+a+block&amp;set=de%2Fdefault">View original in consistency tool</a></li>
-										</ul>
-									</div>
-								</div>
 							</div>
 							<div class="panel-content">
 								<div class="source-string strings">
