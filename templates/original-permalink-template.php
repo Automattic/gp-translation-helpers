@@ -9,7 +9,7 @@
 					<div class="editor-panel">
 						<div class="editor-panel__left">
 							<div class="panel-header">
-								<h3>Originalo</h3>
+								<h3>Original</h3>
 							</div>
 							<div class="panel-content">
 								<div class="source-string strings">
