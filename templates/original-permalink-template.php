@@ -80,15 +80,10 @@
 							</div>
 							<div class="panel-content">
 								<div class="meta">
-									​
-
 									<dl>
 										<dt>Status:</dt>
-										<dd>
-											untranslated </dd>
+										<dd><?php echo 'Translated in ' . count( $translations ) . ' languages'; ?></dd>
 									</dl>
-									​
-
 									<dl>
 										<dt>Priority of the original:</dt>
 										<dd>normal</dd>
@@ -101,8 +96,7 @@
 											</ul>
 										</details>
 									</div>
-								</div>
-								​
+								</div>	​
 							</div>
 						</div>
 					</div>
