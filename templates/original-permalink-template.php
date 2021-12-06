@@ -66,7 +66,7 @@
 								<div class="meta">
 									<dl>
 										<dt>Status:</dt>
-										<dd><?php echo 'Translated in ' . count( $translations ) . ' languages'; ?></dd>
+										<dd><?php echo 'Translated in ' . $no_of_translations . ( ( $no_of_translations > 1 ) ? ' languages' : ' language' ); ?></dd>
 									</dl>
 									<dl>
 										<dt>Priority of the original:</dt>

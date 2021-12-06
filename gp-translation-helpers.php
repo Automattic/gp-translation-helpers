@@ -147,12 +147,14 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		if ( is_array( $translation_details ) && $translation_details[0] ) {
 			$string_translation = $translation_details[0]->translation_0;
 		}
-		$translations           = GP::$translation->find_many_no_map(
+		$translations       = GP::$translation->find_many_no_map(
 			array(
 				'status'      => 'current',
 				'original_id' => $original_id,
 			)
 		);
+		$no_of_translations = count( $translations );
+
 		$translations_by_locale = array();
 		if ( $translations ) {
 			foreach ( $translations as $translation ) {
