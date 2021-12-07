@@ -42,7 +42,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		if ( $comments ) {
 			foreach ( $comments as $comment ) {
 				$comment_meta          = get_comment_meta( $comment->comment_ID, 'locale' );
-				$single_comment_locale = is_array( $comment_meta ) ? $comment_meta[0] : '';
+				$single_comment_locale = is_array( $comment_meta ) && ! empty( $comment_meta ) ? $comment_meta[0] : '';
 				if ( $single_comment_locale && ! in_array( $single_comment_locale, $locales_with_comments ) ) {
 					$locales_with_comments[] = $single_comment_locale;
 				}
