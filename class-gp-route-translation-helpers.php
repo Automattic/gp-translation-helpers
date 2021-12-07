@@ -136,14 +136,18 @@ class GP_Route_Translation_Helpers extends GP_Route {
 
 		/** Get translation for this original */
 		$string_translation  = null;
-		$translation_details = GP::$translation->find_many_no_map(
-			array(
-				'status'             => 'current',
-				'original_id'        => $original_id,
-				'translation_set_id' => $translation_set->id,
-			)
-		);
-		if ( is_array( $translation_details ) && $translation_details[0] ) {
+		$translation_details = array();
+		if ( $translation_set && $original_id ) {
+			$translation_details = GP::$translation->find_many_no_map(
+				array(
+					'status'             => 'current',
+					'original_id'        => $original_id,
+					'translation_set_id' => $translation_set->id,
+				)
+			);
+		}
+
+		if ( is_array( $translation_details ) && ! empty( $translation_details ) ) {
 			$string_translation = $translation_details[0]->translation_0;
 		}
 		$translations       = GP::$translation->find_many_no_map(
