@@ -2,8 +2,8 @@
 // Plugin name: GP Translation Helpers
 
 
-require_once __DIR__ . '/class-gp-translation-helpers.php';
-require_once __DIR__ . '/class-gp-route-translation-helpers.php';
+require_once __DIR__ . '/includes/class-gp-route-translation-helpers.php';
+require_once __DIR__ . '/includes/class-gp-translation-helpers.php';
 
 add_action( 'gp_init', array( 'GP_Translation_Helpers', 'init' ) );
 add_action(

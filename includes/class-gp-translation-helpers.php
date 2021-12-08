@@ -84,9 +84,9 @@ class GP_Translation_Helpers {
 	}
 
 	public static function load_helpers() {
-		require_once dirname( __FILE__ ) . '/helpers/base-helper.php';
+		require_once dirname( __FILE__ ) . '/../helpers/base-helper.php';
 
-		$helpers_files = glob( dirname( __FILE__ ) . '/helpers/helper-*.php' );
+		$helpers_files = glob( dirname( __FILE__ ) . '/../helpers/helper-*.php' );
 		foreach ( $helpers_files as $helper ) {
 			if ( ! in_array( basename( $helper ), array( 'helper-translation-memory.php' ) ) ) {
 				require_once $helper;

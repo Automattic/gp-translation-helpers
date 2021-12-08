@@ -6,7 +6,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 
 	function __construct() {
 		$this->helpers       = GP_Translation_Helpers::load_helpers();
-		$this->template_path = dirname( __FILE__ ) . '/templates/';
+		$this->template_path = dirname( __FILE__ ) . '/../templates/';
 	}
 
 	function original_permalink( $project_path, $original_id, $locale_slug = null, $set_slug = null, $translation_id = null ) {
