@@ -4,12 +4,12 @@ class GP_Route_Translation_Helpers extends GP_Route {
 
 	private $helpers = array();
 
-	function __construct() {
+	public function __construct() {
 		$this->helpers       = GP_Translation_Helpers::load_helpers();
 		$this->template_path = dirname( __FILE__ ) . '/../templates/';
 	}
 
-	function original_permalink( $project_path, $original_id, $locale_slug = null, $set_slug = null, $translation_id = null ) {
+	public function original_permalink( $project_path, $original_id, $locale_slug = null, $set_slug = null, $translation_id = null ) {
 		$project = GP::$project->by_path( $project_path );
 		if ( ! $project ) {
 			$this->die_with_404();
@@ -171,7 +171,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$this->tmpl( 'original-permalink', get_defined_vars() );
 	}
 
-	function translation_helpers( $project_path, $locale_slug, $set_slug, $original_id, $translation_id = null ) {
+	public function translation_helpers( $project_path, $locale_slug, $set_slug, $original_id, $translation_id = null ) {
 		$project = GP::$project->by_path( $project_path );
 		if ( ! $project ) {
 			$this->die_with_404();

@@ -145,7 +145,7 @@ class GP_Translation_Helpers {
 	}
 
 
-	function register_routes() {
+	public function register_routes() {
 		$dir      = '([^_/][^/]*)';
 		$path     = '(.+?)';
 		$projects = 'projects';
