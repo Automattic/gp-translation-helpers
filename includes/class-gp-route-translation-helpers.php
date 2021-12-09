@@ -38,16 +38,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			)
 		);
 
-		$locales_with_comments = array();
-		if ( $comments ) {
-			foreach ( $comments as $comment ) {
-				$comment_meta          = get_comment_meta( $comment->comment_ID, 'locale' );
-				$single_comment_locale = is_array( $comment_meta ) && ! empty( $comment_meta ) ? $comment_meta[0] : '';
-				if ( $single_comment_locale && ! in_array( $single_comment_locale, $locales_with_comments ) ) {
-					$locales_with_comments[] = $single_comment_locale;
-				}
-			}
-		}
+		$locales_with_comments = $this->get_locales_with_comments( $comments );
 
 		$translation                    = GP::$translation->get( $translation_id );
 		$original_permalink             = gp_url_project( $project, array( 'filters[original_id]' => $original_id ) );
@@ -203,5 +194,19 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		}
 
 		echo wp_json_encode( $sections );
+	}
+
+	private function get_locales_with_comments( $comments ) {
+		$comment_locales = array();
+		if ( $comments ) {
+			foreach ( $comments as $comment ) {
+				$comment_meta          = get_comment_meta( $comment->comment_ID, 'locale' );
+				$single_comment_locale = is_array( $comment_meta ) && ! empty( $comment_meta ) ? $comment_meta[0] : '';
+				if ( $single_comment_locale && ! in_array( $single_comment_locale, $comment_locales ) ) {
+					$comment_locales[] = $single_comment_locale;
+				}
+			}
+		}
+		return $comment_locales;
 	}
 }
