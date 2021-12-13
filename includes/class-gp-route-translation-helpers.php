@@ -9,7 +9,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$this->template_path = dirname( __FILE__ ) . '/../templates/';
 	}
 
-	public function original_permalink( $project_path, $original_id, $locale_slug = null, $set_slug = null, $translation_id = null ) {
+	public function original_permalink( $project_path, $original_id, $locale_slug = null, $translation_set_slug = null, $translation_id = null ) {
 		$project = GP::$project->by_path( $project_path );
 		if ( ! $project ) {
 			$this->die_with_404();
@@ -18,11 +18,11 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$args                 = array(
 			'project_id'     => $project->id,
 			'locale_slug'    => $locale_slug,
-			'set_slug'       => $set_slug,
+			'set_slug'       => $translation_set_slug,
 			'original_id'    => $original_id,
 			'translation_id' => $translation_id,
 		);
-		$translation_set      = GP::$translation_set->by_project_id_slug_and_locale( $project->id, $set_slug, $locale_slug );
+		$translation_set      = GP::$translation_set->by_project_id_slug_and_locale( $project->id, $translation_set_slug, $locale_slug );
 		$original             = GP::$original->get( $original_id );
 		$all_translation_sets = GP::$translation_set->by_project_id( $project->id );
 
@@ -41,6 +41,10 @@ class GP_Route_Translation_Helpers extends GP_Route {
 
 		$locales_with_comments = $this->get_locales_with_comments( $comments );
 
+		$row_id = $original_id;
+		if ( $translation_id ) {
+			$row_id .= '-' . $translation_id;
+		}
 		$translation                    = GP::$translation->get( $translation_id );
 		$original_permalink             = gp_url_project( $project, array( 'filters[original_id]' => $original_id ) );
 		$original_translation_permalink = false;
@@ -160,10 +164,41 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$priorities_key_value = $original->get_static( 'priorities' );
 		$priority             = $priorities_key_value[ $original->priority ];
 
+		$sections = $this->get_translation_helper_sections( $project->id, $original_id, $locale_slug, $translation_set_slug, $translation_id, $translation_details );
+
 		$this->tmpl( 'original-permalink', get_defined_vars() );
 	}
 
+
+	public function get_translation_helper_sections( $project_id, $original_id, $locale_slug = null, $translation_set_slug = null, $translation_id = null, $translation = null ) {
+		$args = compact( 'project_id', 'locale_slug', 'translation_set_slug', 'original_id', 'translation_id', 'translation' );
+		$sections = array();
+		foreach ( $this->helpers as $translation_helper ) {
+			$translation_helper->set_data( $args );
+
+			if ( ! $translation_helper->activate() ) {
+				continue;
+			}
+
+			$sections[] = array(
+				'title' => $translation_helper->get_title(),
+				'content' => $translation_helper->get_output(),
+				'classname' => $translation_helper->get_div_classname(),
+				'id' => $translation_helper->get_div_id(),
+				'priority' => $translation_helper->get_priority(),
+				'has_async_content' => $translation_helper->has_async_content(),
+			);
+		}
+
+		usort( $sections, function( $s1, $s2 ) {
+			return $s1['priority'] > $s2['priority'];
+		});
+
+		return $sections;
+	}
+
 	public function translation_helpers( $project_path, $locale_slug, $set_slug, $original_id, $translation_id = null ) {
+		var_dump( $project_path );exit;
 		$project = GP::$project->by_path( $project_path );
 		if ( ! $project ) {
 			$this->die_with_404();

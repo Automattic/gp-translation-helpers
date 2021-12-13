@@ -15,7 +15,6 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	function after_constructor() {
 		$this->register_post_type_and_taxonomy();
 		add_filter( 'pre_comment_approved', array( $this, 'comment_moderation' ), 10, 2 );
-		wp_enqueue_script( 'jquery.wpcom-proxy-request', '/wp-content/js/jquery/jquery.wpcom-proxy-request.js', array( 'jquery' ), null, true );
 	}
 
 	public function register_post_type_and_taxonomy() {

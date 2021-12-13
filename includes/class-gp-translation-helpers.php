@@ -20,7 +20,7 @@ class GP_Translation_Helpers {
 
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
-		// add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
+		add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
 
 		add_filter(
 			'gp_translation_row_template_more_links',
@@ -46,15 +46,21 @@ class GP_Translation_Helpers {
 	}
 
 	public function before_request( $class_name, $last_method ) {
-		if ( 'GP_Route_Translation' !== $class_name || 'translations_get' !== $last_method ) {
-			return;
+		if (
+			in_array(
+				$class_name . '::' . $last_method,
+				array(
+					// 'GP_Route_Translation::translations_get',
+					'GP_Route_Translation_Helpers::original_permalink',
+				)
+			)
+		) {
+			add_action( 'gp_pre_tmpl_load',  array( $this, 'pre_tmpl_load' ), 10, 2 );
 		}
-
-		// add_action( 'gp_pre_tmpl_load',  array( $this, 'pre_tmpl_load' ), 10, 2 );
 	}
 
 	public function pre_tmpl_load( $template, $args ) {
-		$allowed_templates = apply_filters( 'gp_translations_helpers_templates', array( 'translations' ) );
+			$allowed_templates = apply_filters( 'gp_translations_helpers_templates', array( 'original-permalink' ) );
 
 		if ( ! in_array( $template, $allowed_templates, true ) ) {
 			return;
@@ -74,19 +80,19 @@ class GP_Translation_Helpers {
 			}
 		);
 
-		wp_register_style( 'gp-translation-helpers-css', plugins_url( 'css/translation-helpers.css', __FILE__ ) );
+		wp_register_style( 'gp-translation-helpers-css', plugins_url( 'css/translation-helpers.css', __DIR__ ) );
 		gp_enqueue_style( 'gp-translation-helpers-css' );
 
-		wp_register_script( 'gp-translation-helpers', plugins_url( './js/translation-helpers.js', __FILE__ ), array( 'gp-editor' ), '2017-02-09' );
+		wp_register_script( 'gp-translation-helpers', plugins_url( './js/translation-helpers.js', __DIR__ ), array( 'gp-editor' ), '2017-02-09' );
 		gp_enqueue_scripts( array( 'gp-translation-helpers' ) );
 
 		wp_localize_script( 'gp-translation-helpers', '$gp_translation_helpers_settings', $translation_helpers_settings );
 	}
 
 	public static function load_helpers() {
-		require_once dirname( __FILE__ ) . '/../helpers/base-helper.php';
+		require_once dirname( dirname( __FILE__ ) ) . '/helpers/base-helper.php';
 
-		$helpers_files = glob( dirname( __FILE__ ) . '/../helpers/helper-*.php' );
+		$helpers_files = glob( dirname( dirname( __FILE__ ) ) . '/helpers/helper-*.php' );
 		foreach ( $helpers_files as $helper ) {
 			if ( ! in_array( basename( $helper ), array( 'helper-translation-memory.php' ) ) ) {
 				require_once $helper;

@@ -26,8 +26,35 @@ wp_localize_script(
 gp_enqueue_style( 'gp-discussion-css' );
 gp_tmpl_header();
 
-if ( $locale_slug ) {
-	gp_tmpl_load( 'discussion', get_defined_vars(), dirname( __FILE__ ) );
-} else {
-	gp_tmpl_load( 'original-permalink-template', get_defined_vars(), dirname( __FILE__ ) );
-}
+?>
+<div class="translations" row="<?php echo esc_attr( $row_id ); ?>">
+<div class="translation-helpers">
+	<nav>
+		<ul class="helpers-tabs">
+			<?php
+			$is_first_class = 'current';
+			foreach ( $sections as $section ) {
+				// TODO: printf.
+				echo "<li class='{$is_first_class}' data-tab='{$section['id']}'>" . esc_html( $section['title'] ) . '<span class="count"></span></li>'; // WPCS: XSS OK.
+				$is_first_class = '';
+			}
+			?>
+		</ul>
+	</nav>
+	<?php
+	$is_first_class = 'current';
+	foreach ( $sections as $section ) {
+		printf( '<div class="%s helper %s" id="%s">', esc_attr( $section['classname'] ), esc_attr( $is_first_class ), esc_attr( $section['id'] ) );
+		if ( $section['has_async_content'] ) {
+			echo '<div class="async-content"></div>';
+		}
+		echo $section['content'];
+		echo '</div>';
+		$is_first_class = '';
+	}
+		?>
+</div>
+</div>
+<?php
+
+gp_tmpl_footer();
