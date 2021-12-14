@@ -26,9 +26,12 @@ class GP_Translation_Helpers {
 			'gp_translation_row_template_more_links',
 			function( $more_links, $project, $locale, $translation_set, $translation ) {
 				$permalink          = '/projects/' . $project->path . '/' . $translation->original_id;
+				if ( $translation_set ) {
+					$permalink .= '/' . $translation_set->locale . '/' . $translation_set->slug;
+				}
 				$permalink = home_url( $permalink );
 
-				$more_links['original_permalink'] = '<a href="' . esc_url( $permalink ) . '">Permalink to original</a>';
+				$more_links['discussion'] = '<a href="' . esc_url( $permalink ) . '">Discussion</a>';
 
 				return $more_links;
 

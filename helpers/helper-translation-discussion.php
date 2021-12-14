@@ -3,7 +3,7 @@
 class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 	public $priority = 0;
-	public $title = 'Comments';
+	public $title = 'Discussion';
 	public $has_async_content = true;
 
 	const POST_TYPE = 'gth_original';

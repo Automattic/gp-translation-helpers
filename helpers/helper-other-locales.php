@@ -31,7 +31,7 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 		$translations_by_locale = array();
 		foreach ( $translations as $translation ) {
 			$_set = GP::$translation_set->get( $translation->translation_set_id );
-			if ( ! $_set || ( $translation_set && intval( $translation->translation_set_id ) === $translation_set->id ) ) {
+			if ( ! $_set || ( $translation_set && intval( $translation->translation_set_id ) === intval( $translation_set->id ) ) ) {
 				continue;
 			}
 			$translations_by_locale[ $_set->locale ] = $translation;

@@ -26,7 +26,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$original             = GP::$original->get( $original_id );
 		$all_translation_sets = GP::$translation_set->by_project_id( $project->id );
 
-		$translation_helper = $this->helpers['comments'];
+		$translation_helper = $this->helpers['discussion'];
 		$translation_helper->set_data( $args );
 
 		$post_id  = $translation_helper::get_shadow_post( $original_id );

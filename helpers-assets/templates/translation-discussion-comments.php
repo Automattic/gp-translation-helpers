@@ -4,7 +4,7 @@
  */
 ?>
 <div class="discussion-wrapper">
-	<?php if ( $number = count( $comments) ) : ?>
+	<?php if ( $number = count( $comments ) ) : ?>
 		<h6><?php printf( _n( '%s Comment', '%s Comments', $number ), number_format_i18n( $number ) ); ?>
 		<?php if ( $locale_slug ) : ?>
 			(<?php echo esc_html( $locale_slug )?>)
