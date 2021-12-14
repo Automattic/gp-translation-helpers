@@ -26,14 +26,9 @@ class GP_Translation_Helpers {
 			'gp_translation_row_template_more_links',
 			function( $more_links, $project, $locale, $translation_set, $translation ) {
 				$permalink          = '/projects/' . $project->path . '/' . $translation->original_id;
-				$original_permalink = home_url( $permalink );
-				if ( $translation_set ) {
-					$permalink .= '/' . $translation_set->locale . '/' . $translation_set->slug;
-				}
 				$permalink = home_url( $permalink );
 
-				$more_links['original_permalink'] = '<a href="' . esc_url( $original_permalink ) . '">Permalink to original</a>';
-				$more_links['discussions']        = '<a href="' . esc_url( $permalink ) . '">Discussions</a>';
+				$more_links['original_permalink'] = '<a href="' . esc_url( $permalink ) . '">Permalink to original</a>';
 
 				return $more_links;
 
@@ -90,13 +85,19 @@ class GP_Translation_Helpers {
 	}
 
 	public static function load_helpers() {
-		require_once dirname( dirname( __FILE__ ) ) . '/helpers/base-helper.php';
+		$base_dir = dirname( dirname( __FILE__ ) ) . '/helpers/';
+		require_once $base_dir . '/base-helper.php';
 
-		$helpers_files = glob( dirname( dirname( __FILE__ ) ) . '/helpers/helper-*.php' );
+		$helpers_files = array(
+			  'helper-translation-discussion.php',
+			  'helper-other-locales.php',
+			  'helper-translation-history.php',
+			  // 'helper-translation-memory.php',
+			  // 'helper-user-info.php',
+		);
+
 		foreach ( $helpers_files as $helper ) {
-			if ( ! in_array( basename( $helper ), array( 'helper-translation-memory.php' ) ) ) {
-				require_once $helper;
-			}
+			require_once $base_dir . $helper;
 		}
 
 		$helpers = array();
@@ -116,7 +117,7 @@ class GP_Translation_Helpers {
 		$args = array(
 			'project_id'     => $t->project_id,
 			'locale_slug'    => $translation_set->locale,
-			'set_slug'       => $translation_set->slug,
+			'translation_set_slug'       => $translation_set->slug,
 			'original_id'    => $t->original_id,
 			'translation_id' => $t->id,
 			'translation'    => $t,
@@ -160,8 +161,9 @@ class GP_Translation_Helpers {
 		$set      = "$project/$locale/$dir";
 		$id       = '(\d+)-?(\d+)?';
 
-		GP::$router->prepend( "/$set/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'translation_helpers' ), 'get' );
 		GP::$router->prepend( "/$project/(\d+)(?:/$locale/$dir)?", array( 'GP_Route_Translation_Helpers', 'original_permalink' ), 'get' );
+		GP::$router->prepend( "/$project/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'ajax_translation_helpers' ), 'get' );
+		GP::$router->prepend( "/$project/$locale/$dir/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'ajax_translation_helpers_locale' ), 'get' );
 	}
 
 	public function css_and_js() {

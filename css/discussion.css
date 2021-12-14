@@ -1,3 +1,15 @@
+#original {
+	border: 1px solid black;
+}
+
+#original h1 {
+	margin: .5em 10px;
+}
+
+#original p {
+	margin: 10px;
+}
+
 .helper-translation-discussion {
 	position:relative;
 	min-height: 600px;

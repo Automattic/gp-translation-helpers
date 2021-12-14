@@ -23,7 +23,7 @@
 									<details class="source-details__references" close="">
 										<summary>Comments all
 										<?php foreach ( $locales_with_comments as $locale_with_comments ) : ?>
-											<a class="<?php echo esc_attr( $locale_with_comments == $locale_slug ? 'active-locale-link' : '' ); ?>" href="<?php echo esc_attr( $args['original_permalink'] . $locale_with_comments . '/default' ); ?>">
+											<a class="<?php echo esc_attr( $locale_with_comments == $locale_slug ? 'active-locale-link' : '' ); ?>" href="<?php echo esc_attr( $args['original_permalink'] . $locale_with_comments . '/default1' ); ?>">
 												| <?php echo $locale_with_comments; ?>
 											</a>
 										<?php endforeach; ?>

@@ -35,9 +35,6 @@
 	border-bottom: 2px solid #f8ffec;
 	font-weight: bold;
 }
-.helpers-tabs li:first-child.current {
-	border-left: 0;
-}
 .loading .helpers-tabs {
 	padding-right: 28px;
 	background: transparent url(https://s0.wp.com/wp-content/mu-plugins/notes/images/loading.gif) no-repeat right 4px center;
@@ -49,6 +46,10 @@
 	display: none;
 	padding: 1em;
 	min-height: 200px;
+}
+#original .helper {
+	overflow-y: initial;
+	max-height: fit-content;
 }
 .helper.current {
 	display: block;

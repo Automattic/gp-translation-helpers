@@ -27,6 +27,22 @@ gp_enqueue_style( 'gp-discussion-css' );
 gp_tmpl_header();
 
 ?>
+
+<div id="original" class="clear">
+<h1><?php echo esc_html( $original->singular ); ?></h1>
+<?php if ( $translation ) : ?>
+	<p>
+		<?php echo esc_html( ucfirst( $translation->status ) ); ?> translation:
+		<strong><?php echo esc_html( $translation->translation_0 ); ?></strong>
+	</p>
+<?php elseif ( $existing_translations ) : ?>
+	<?php foreach ( $existing_translations as $e ) : var_dump( $e );?>
+		<p>
+			<?php echo esc_html( ucfirst( $e->translation_status ) ); ?> translation:
+			<strong><?php echo esc_html( $e->translations[0] ); ?></strong>
+		</p>
+	<?php endforeach; ?>
+<?php endif; ?>
 <div class="translations" row="<?php echo esc_attr( $row_id ); ?>">
 <div class="translation-helpers">
 	<nav>
@@ -53,6 +69,7 @@ gp_tmpl_header();
 		$is_first_class = '';
 	}
 		?>
+</div>
 </div>
 </div>
 <?php

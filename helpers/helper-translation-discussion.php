@@ -208,10 +208,16 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 		}
 		echo '<time datetime=" ' . get_comment_time( 'c' ) . '">' . $time . '</time>';
 		?>
-		<?php
-
-		if ( $comment_locale  ) : ?>
-			<div class="comment-locale">Locale: <a href="<?php echo esc_attr( $args['original_permalink'] . $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale );?></a></div>
+		<?php if ( $comment_locale ) : ?>
+			<div class="comment-locale">Locale:
+				<?php if ( ! $current_locale ) : ?>
+					<a href="<?php echo esc_attr( $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale ); ?></a>
+				<?php elseif ( $current_locale && $current_locale !== $comment_locale ) : ?>
+					<a href="<?php echo esc_attr( '../../' . $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale ); ?></a>
+				<?php else: ?>
+					<?php echo esc_html( $comment_locale ); ?>
+			<?php endif; ?>
+			</div>
 		<?php endif; ?>
 		<div class="comment-content" dir="auto"><?php comment_text(); ?></div>
 		<footer>
