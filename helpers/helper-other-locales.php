@@ -6,17 +6,32 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 	public $title = 'Other locales';
 	public $has_async_content = true;
 
+	function activate() {
+		if ( ! $this->data['project_id'] ) {
+			return false;
+		}
+
+		if ( ! isset( $this->data['translation_set_slug'] ) || ! isset( $this->data['locale_slug'] ) ) {
+			$this->title = 'Translations';
+		}
+
+		return true;
+	}
+
 	function get_async_content() {
-		$translation_set = GP::$translation_set->by_project_id_slug_and_locale( $this->data['project_id'], $this->data['set_slug'], $this->data['locale_slug'] );
-		if ( ! $translation_set ) {
+		if ( ! $this->data['project_id'] ) {
 			return;
+		}
+		$translation_set = null;
+		if ( isset( $this->data['translation_set_slug'] ) && isset( $this->data['locale_slug'] )  ) {
+			$translation_set = GP::$translation_set->by_project_id_slug_and_locale( $this->data['project_id'], $this->data['translation_set_slug'], $this->data['locale_slug'] );
 		}
 
 		$translations  = GP::$translation->find_many_no_map( array( 'status' => 'current', 'original_id' => $this->data['original_id'] ) );
 		$translations_by_locale = array();
 		foreach ( $translations as $translation ) {
 			$_set = GP::$translation_set->get( $translation->translation_set_id );
-			if ( $translation->translation_set_id === $translation_set->id ) {
+			if ( ! $_set || ( $translation_set && intval( $translation->translation_set_id ) === intval( $translation_set->id ) ) ) {
 				continue;
 			}
 			$translations_by_locale[ $_set->locale ] = $translation;
@@ -53,7 +68,7 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 		padding: 1px 6px 0 0;
 		margin: 1px 6px 1px 0;
 		background: #00DA12;
-		width: 44px;
+		width: 5em;
 		text-align: right;
 		float: left;
 		color: #fff;

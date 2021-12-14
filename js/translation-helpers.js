@@ -1,9 +1,12 @@
 $gp.translation_helpers = (
 	function( $ ) {
 		return {
-			init: function( table ) {
+			init: function( table, fetch_now ) {
 				$gp.translation_helpers.table = table;
 				$gp.translation_helpers.install_hooks();
+				if ( fetch_now ) {
+					$gp.translation_helpers.fetch( false, $('.translations') );
+				}
 			},
 			install_hooks: function() {
 				$( $gp.translation_helpers.table )
@@ -73,7 +76,7 @@ $gp.translation_helpers = (
 );
 
 jQuery( function( $ ) {
-	$gp.translation_helpers.init( $( '.translations' ) );
+	$gp.translation_helpers.init( $( '.translations' ), true );
 	if ( typeof window.newShowFunctionAttached === 'undefined' ) {
 		window.newShowFunctionAttached = true;
 		var _oldShow = $.fn.show;

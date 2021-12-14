@@ -9,7 +9,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$this->template_path = dirname( __FILE__ ) . '/../templates/';
 	}
 
-	public function original_permalink( $project_path, $original_id, $locale_slug = null, $set_slug = null, $translation_id = null ) {
+	public function original_permalink( $project_path, $original_id, $locale_slug = null, $translation_set_slug = null, $translation_id = null ) {
 		$project = GP::$project->by_path( $project_path );
 		if ( ! $project ) {
 			$this->die_with_404();
@@ -18,15 +18,15 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$args                 = array(
 			'project_id'     => $project->id,
 			'locale_slug'    => $locale_slug,
-			'set_slug'       => $set_slug,
+			'set_slug'       => $translation_set_slug,
 			'original_id'    => $original_id,
 			'translation_id' => $translation_id,
 		);
-		$translation_set      = GP::$translation_set->by_project_id_slug_and_locale( $project->id, $set_slug, $locale_slug );
+		$translation_set      = GP::$translation_set->by_project_id_slug_and_locale( $project->id, $translation_set_slug, $locale_slug );
 		$original             = GP::$original->get( $original_id );
 		$all_translation_sets = GP::$translation_set->by_project_id( $project->id );
 
-		$translation_helper = $this->helpers['comments'];
+		$translation_helper = $this->helpers['discussion'];
 		$translation_helper->set_data( $args );
 
 		$post_id  = $translation_helper::get_shadow_post( $original_id );
@@ -41,7 +41,12 @@ class GP_Route_Translation_Helpers extends GP_Route {
 
 		$locales_with_comments = $this->get_locales_with_comments( $comments );
 
-		$translation                    = GP::$translation->get( $translation_id );
+		$row_id = $original_id;
+		$translation = null;
+		if ( $translation_id ) {
+			$row_id .= '-' . $translation_id;
+			$translation = GP::$translation->get( $translation_id );
+		}
 		$original_permalink             = gp_url_project( $project, array( 'filters[original_id]' => $original_id ) );
 		$original_translation_permalink = false;
 		if ( $translation_set ) {
@@ -127,43 +132,74 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		);
 
 		/** Get translation for this original */
-		$string_translation  = null;
-		$translation_details = array();
-		if ( $translation_set && $original_id ) {
-			$translation_details = GP::$translation->find_many_no_map(
+		$existing_translations = array();
+		if ( ! $translation && $translation_set && $original_id ) {
+			$existing_translations = GP::$translation->find_many_no_map(
 				array(
 					'status'             => 'current',
 					'original_id'        => $original_id,
 					'translation_set_id' => $translation_set->id,
 				)
 			);
-		}
 
-		if ( is_array( $translation_details ) && ! empty( $translation_details ) ) {
-			$string_translation = $translation_details[0]->translation_0;
-		}
-		$translations       = GP::$translation->find_many_no_map(
-			array(
-				'status'      => 'current',
-				'original_id' => $original_id,
-			)
-		);
-		$no_of_translations = count( $translations );
+			foreach ( $existing_translations as $e ) {
+				if ( 'current' === $e->status ) {
+					$translation = $e;
+					break;
+				}
+			}
 
-		$translations_by_locale = array();
-		if ( $translations ) {
-			foreach ( $translations as $translation ) {
-				$_set                                    = GP::$translation_set->get( $translation->translation_set_id );
-				$translations_by_locale[ $_set->locale ] = $translation->translation_0;
+			if ( ! $translation ) {
+				$existing_translations = GP::$translation->find_many_no_map(
+					array(
+						'original_id'        => $original_id,
+						'translation_set_id' => $translation_set->id,
+					)
+				);
 			}
 		}
+
 		$priorities_key_value = $original->get_static( 'priorities' );
 		$priority             = $priorities_key_value[ $original->priority ];
+
+		$sections = $this->get_translation_helper_sections( $project->id, $original_id, $locale_slug, $translation_set_slug, $translation_id, $translation );
 
 		$this->tmpl( 'original-permalink', get_defined_vars() );
 	}
 
-	public function translation_helpers( $project_path, $locale_slug, $set_slug, $original_id, $translation_id = null ) {
+
+	public function get_translation_helper_sections( $project_id, $original_id, $locale_slug = null, $translation_set_slug = null, $translation_id = null, $translation = null ) {
+		$args = compact( 'project_id', 'locale_slug', 'translation_set_slug', 'original_id', 'translation_id', 'translation' );
+		$sections = array();
+		foreach ( $this->helpers as $translation_helper ) {
+			$translation_helper->set_data( $args );
+
+			if ( ! $translation_helper->activate() ) {
+				continue;
+			}
+
+			$sections[] = array(
+				'title' => $translation_helper->get_title(),
+				'content' => $translation_helper->get_output(),
+				'classname' => $translation_helper->get_div_classname(),
+				'id' => $translation_helper->get_div_id(),
+				'priority' => $translation_helper->get_priority(),
+				'has_async_content' => $translation_helper->has_async_content(),
+			);
+		}
+
+		usort( $sections, function( $s1, $s2 ) {
+			return $s1['priority'] > $s2['priority'];
+		});
+
+		return $sections;
+	}
+
+	public function ajax_translation_helpers_locale( $project_path, $locale_slug, $set_slug, $original_id, $translation_id = null ) {
+		return $this->ajax_translation_helpers( $project_path, $original_id, $translation_id, $locale_slug, $set_slug );
+	}
+
+	public function ajax_translation_helpers( $project_path, $original_id, $translation_id = null, $locale_slug = null, $set_slug = null ) {
 		$project = GP::$project->by_path( $project_path );
 		if ( ! $project ) {
 			$this->die_with_404();
@@ -172,7 +208,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$args = array(
 			'project_id'     => $project->id,
 			'locale_slug'    => $locale_slug,
-			'set_slug'       => $set_slug,
+			'translation_set_slug'       => $set_slug,
 			'original_id'    => $original_id,
 			'translation_id' => $translation_id,
 		);

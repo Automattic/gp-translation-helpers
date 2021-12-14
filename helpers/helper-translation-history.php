@@ -6,6 +6,15 @@ class Helper_History extends GP_Translation_Helper {
 	public $title = 'History';
 	public $has_async_content = true;
 
+	function activate() {
+		if ( ! $this->data['project_id'] || ! isset( $this->data['set_slug'] ) || ! isset( $this->data['locale_slug'] ) ) {
+			// Deactivate when translation set is available.
+			return false;
+		}
+
+		return true;
+	}
+
 	function get_async_content() {
 		$translation_set = GP::$translation_set->by_project_id_slug_and_locale( $this->data['project_id'], $this->data['set_slug'], $this->data['locale_slug'] );
 

@@ -45,6 +45,6 @@ class Helper_User_Info extends GP_Translation_Helper {
 	}
 
 	function activate() {
-		return $this->data['translation'] && $this->data['translation']->user_id;
+		return $this->data['translation'] && is_object( $this->data['translation'] ) && $this->data['translation']->user_id;
 	}
 }

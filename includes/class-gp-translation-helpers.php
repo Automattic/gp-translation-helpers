@@ -20,20 +20,18 @@ class GP_Translation_Helpers {
 
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'register_routes' ), 5 );
-		// add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
+		add_action( 'gp_before_request',    array( $this, 'before_request' ), 10, 2 );
 
 		add_filter(
 			'gp_translation_row_template_more_links',
 			function( $more_links, $project, $locale, $translation_set, $translation ) {
 				$permalink          = '/projects/' . $project->path . '/' . $translation->original_id;
-				$original_permalink = home_url( $permalink );
 				if ( $translation_set ) {
 					$permalink .= '/' . $translation_set->locale . '/' . $translation_set->slug;
 				}
 				$permalink = home_url( $permalink );
 
-				$more_links['original_permalink'] = '<a href="' . esc_url( $original_permalink ) . '">Permalink to original</a>';
-				$more_links['discussions']        = '<a href="' . esc_url( $permalink ) . '">Discussions</a>';
+				$more_links['discussion'] = '<a href="' . esc_url( $permalink ) . '">Discussion</a>';
 
 				return $more_links;
 
@@ -46,15 +44,21 @@ class GP_Translation_Helpers {
 	}
 
 	public function before_request( $class_name, $last_method ) {
-		if ( 'GP_Route_Translation' !== $class_name || 'translations_get' !== $last_method ) {
-			return;
+		if (
+			in_array(
+				$class_name . '::' . $last_method,
+				array(
+					// 'GP_Route_Translation::translations_get',
+					'GP_Route_Translation_Helpers::original_permalink',
+				)
+			)
+		) {
+			add_action( 'gp_pre_tmpl_load',  array( $this, 'pre_tmpl_load' ), 10, 2 );
 		}
-
-		// add_action( 'gp_pre_tmpl_load',  array( $this, 'pre_tmpl_load' ), 10, 2 );
 	}
 
 	public function pre_tmpl_load( $template, $args ) {
-		$allowed_templates = apply_filters( 'gp_translations_helpers_templates', array( 'translations' ) );
+			$allowed_templates = apply_filters( 'gp_translations_helpers_templates', array( 'original-permalink' ) );
 
 		if ( ! in_array( $template, $allowed_templates, true ) ) {
 			return;
@@ -74,23 +78,29 @@ class GP_Translation_Helpers {
 			}
 		);
 
-		wp_register_style( 'gp-translation-helpers-css', plugins_url( 'css/translation-helpers.css', __FILE__ ) );
+		wp_register_style( 'gp-translation-helpers-css', plugins_url( 'css/translation-helpers.css', __DIR__ ) );
 		gp_enqueue_style( 'gp-translation-helpers-css' );
 
-		wp_register_script( 'gp-translation-helpers', plugins_url( './js/translation-helpers.js', __FILE__ ), array( 'gp-editor' ), '2017-02-09' );
+		wp_register_script( 'gp-translation-helpers', plugins_url( './js/translation-helpers.js', __DIR__ ), array( 'gp-editor' ), '2017-02-09' );
 		gp_enqueue_scripts( array( 'gp-translation-helpers' ) );
 
 		wp_localize_script( 'gp-translation-helpers', '$gp_translation_helpers_settings', $translation_helpers_settings );
 	}
 
 	public static function load_helpers() {
-		require_once dirname( __FILE__ ) . '/../helpers/base-helper.php';
+		$base_dir = dirname( dirname( __FILE__ ) ) . '/helpers/';
+		require_once $base_dir . '/base-helper.php';
 
-		$helpers_files = glob( dirname( __FILE__ ) . '/../helpers/helper-*.php' );
+		$helpers_files = array(
+			  'helper-translation-discussion.php',
+			  'helper-other-locales.php',
+			  'helper-translation-history.php',
+			  // 'helper-translation-memory.php',
+			  // 'helper-user-info.php',
+		);
+
 		foreach ( $helpers_files as $helper ) {
-			if ( ! in_array( basename( $helper ), array( 'helper-translation-memory.php' ) ) ) {
-				require_once $helper;
-			}
+			require_once $base_dir . $helper;
 		}
 
 		$helpers = array();
@@ -110,7 +120,7 @@ class GP_Translation_Helpers {
 		$args = array(
 			'project_id'     => $t->project_id,
 			'locale_slug'    => $translation_set->locale,
-			'set_slug'       => $translation_set->slug,
+			'translation_set_slug'       => $translation_set->slug,
 			'original_id'    => $t->original_id,
 			'translation_id' => $t->id,
 			'translation'    => $t,
@@ -154,8 +164,9 @@ class GP_Translation_Helpers {
 		$set      = "$project/$locale/$dir";
 		$id       = '(\d+)-?(\d+)?';
 
-		GP::$router->prepend( "/$set/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'translation_helpers' ), 'get' );
 		GP::$router->prepend( "/$project/(\d+)(?:/$locale/$dir)?", array( 'GP_Route_Translation_Helpers', 'original_permalink' ), 'get' );
+		GP::$router->prepend( "/$project/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'ajax_translation_helpers' ), 'get' );
+		GP::$router->prepend( "/$project/$locale/$dir/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'ajax_translation_helpers_locale' ), 'get' );
 	}
 
 	public function css_and_js() {

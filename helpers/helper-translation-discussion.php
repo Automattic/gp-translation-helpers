@@ -3,7 +3,7 @@
 class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 	public $priority = 0;
-	public $title = 'Comments';
+	public $title = 'Discussion';
 	public $has_async_content = true;
 
 	const POST_TYPE = 'gth_original';
@@ -15,7 +15,6 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	function after_constructor() {
 		$this->register_post_type_and_taxonomy();
 		add_filter( 'pre_comment_approved', array( $this, 'comment_moderation' ), 10, 2 );
-		wp_enqueue_script( 'jquery.wpcom-proxy-request', '/wp-content/js/jquery/jquery.wpcom-proxy-request.js', array( 'jquery' ), null, true );
 	}
 
 	public function register_post_type_and_taxonomy() {
@@ -209,10 +208,16 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 		}
 		echo '<time datetime=" ' . get_comment_time( 'c' ) . '">' . $time . '</time>';
 		?>
-		<?php
-
-		if ( $comment_locale  ) : ?>
-			<div class="comment-locale">Locale: <a href="<?php echo esc_attr( $args['original_permalink'] . $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale );?></a></div>
+		<?php if ( $comment_locale ) : ?>
+			<div class="comment-locale">Locale:
+				<?php if ( ! $current_locale ) : ?>
+					<a href="<?php echo esc_attr( $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale ); ?></a>
+				<?php elseif ( $current_locale && $current_locale !== $comment_locale ) : ?>
+					<a href="<?php echo esc_attr( '../../' . $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale ); ?></a>
+				<?php else: ?>
+					<?php echo esc_html( $comment_locale ); ?>
+			<?php endif; ?>
+			</div>
 		<?php endif; ?>
 		<div class="comment-content" dir="auto"><?php comment_text(); ?></div>
 		<footer>
