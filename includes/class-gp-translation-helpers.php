@@ -96,7 +96,7 @@ class GP_Translation_Helpers {
 			  'helper-other-locales.php',
 			  'helper-translation-history.php',
 			  // 'helper-translation-memory.php',
-			  // 'helper-user-info.php',
+			  'helper-user-info.php',
 		);
 
 		foreach ( $helpers_files as $helper ) {
@@ -164,7 +164,7 @@ class GP_Translation_Helpers {
 		$set      = "$project/$locale/$dir";
 		$id       = '(\d+)-?(\d+)?';
 
-		GP::$router->prepend( "/$project/(\d+)(?:/$locale/$dir)?", array( 'GP_Route_Translation_Helpers', 'original_permalink' ), 'get' );
+		GP::$router->prepend( "/$project/(\d+)(?:/$locale/$dir)?(/\d+)?", array( 'GP_Route_Translation_Helpers', 'original_permalink' ), 'get' );
 		GP::$router->prepend( "/$project/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'ajax_translation_helpers' ), 'get' );
 		GP::$router->prepend( "/$project/$locale/$dir/-get-translation-helpers/$id", array( 'GP_Route_Translation_Helpers', 'ajax_translation_helpers_locale' ), 'get' );
 	}

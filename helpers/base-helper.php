@@ -82,6 +82,8 @@ class GP_Translation_Helper {
 
 		if ( isset( $this->data['translation_id'] ) ) {
 			$div_id .= '-' . $this->data['translation_id'];
+		} elseif ( isset( $this->data['translation'] ) ) {
+			$div_id .= '-' . $this->data['translation']->id;
 		}
 
 		return $div_id;

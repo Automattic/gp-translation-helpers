@@ -9,6 +9,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$this->template_path = dirname( __FILE__ ) . '/../templates/';
 	}
 
+
 	public function original_permalink( $project_path, $original_id, $locale_slug = null, $translation_set_slug = null, $translation_id = null ) {
 		$project = GP::$project->by_path( $project_path );
 		if ( ! $project ) {
@@ -26,20 +27,22 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$original             = GP::$original->get( $original_id );
 		$all_translation_sets = GP::$translation_set->by_project_id( $project->id );
 
-		$translation_helper = $this->helpers['discussion'];
-		$translation_helper->set_data( $args );
+		if ( isset( $this->helpers['discussion'] ) ) {
+			$translation_helper = $this->helpers['discussion'];
+			$translation_helper->set_data( $args );
 
-		$post_id  = $translation_helper::get_shadow_post( $original_id );
-		$comments = get_comments(
-			array(
-				'post_id'            => $post_id,
-				'status'             => 'approve',
-				'type'               => 'comment',
-				'include_unapproved' => array( get_current_user_id() ),
-			)
-		);
+			$post_id  = $translation_helper::get_shadow_post( $original_id );
+			$comments = get_comments(
+				array(
+					'post_id'            => $post_id,
+					'status'             => 'approve',
+					'type'               => 'comment',
+					'include_unapproved' => array( get_current_user_id() ),
+				)
+			);
+			$locales_with_comments = $this->get_locales_with_comments( $comments );
+		}
 
-		$locales_with_comments = $this->get_locales_with_comments( $comments );
 
 		$row_id = $original_id;
 		$translation = null;

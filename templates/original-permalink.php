@@ -43,7 +43,7 @@ gp_tmpl_header();
 		</p>
 	<?php endforeach; ?>
 <?php endif; ?>
-<div class="translations" row="<?php echo esc_attr( $row_id ); ?>">
+<div class="translations" row="<?php echo esc_attr( $row_id . ( $translation ? '-' . $translation->id : '' )); ?>">
 <div class="translation-helpers">
 	<nav>
 		<ul class="helpers-tabs">
