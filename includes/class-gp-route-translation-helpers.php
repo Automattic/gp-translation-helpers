@@ -208,12 +208,19 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			$this->die_with_404();
 		}
 
+		$permalink = '/projects/' . $project->path . '/' . $original_id;
+		if ( $set_slug ) {
+			$permalink .= '/' . $locale_slug . '/' . $set_slug;
+		}
+		$permalink = home_url( $permalink );
+
 		$args = array(
 			'project_id'     => $project->id,
 			'locale_slug'    => $locale_slug,
 			'translation_set_slug'       => $set_slug,
 			'original_id'    => $original_id,
 			'translation_id' => $translation_id,
+			'permalink' => $permalink,
 		);
 
 		$single_helper = gp_get( 'helper' );

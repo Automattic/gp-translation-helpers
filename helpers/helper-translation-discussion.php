@@ -151,7 +151,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 		// Disable subscribe to comments for now.
 		add_filter( 'option_stc_disabled', '__return_true' );
-
+		
 		$output = gp_tmpl_get_output(
 			'translation-discussion-comments',
 			array(
@@ -159,6 +159,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 				'post_id' => self::get_shadow_post( $this->data['original_id'] ),
 				'translation_id' => isset( $this->data['translation_id'] ) ? $this->data['translation_id'] : null,
 				'locale_slug' => $this->data['locale_slug'],
+				'original_permalink' => $this->data['permalink'],
 			),
 			$this->assets_dir . 'templates'
 		);
