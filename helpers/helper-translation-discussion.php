@@ -231,6 +231,48 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 						sprintf( __( 'in reply to %s' ), get_comment_author( $comment->comment_parent ) )
 					);
 				}
+
+				add_filter(
+					'comment_reply_link',
+					function( $link, $args, $comment, $post ) {
+						$data_attributes = array(
+							'commentid'      => $comment->comment_ID,
+							'postid'         => $post->ID,
+							'belowelement'   => $args['add_below'] . '-' . $comment->comment_ID,
+							'respondelement' => $args['respond_id'],
+							'replyto'        => sprintf( $args['reply_to_text'], $comment->comment_author ),
+						);
+		
+						$data_attribute_string = '';
+		
+						foreach ( $data_attributes as $name => $value ) {
+							$data_attribute_string .= " data-${name}=\"" . esc_attr( $value ) . '"';
+						}
+		
+						$data_attribute_string = trim( $data_attribute_string );
+		
+						$link = sprintf(
+							"<a rel='nofollow' class='comment-reply-link' href='%s' %s aria-label='%s'>%s</a>",
+							esc_url(
+								add_query_arg(
+									array(
+										'replytocom'      => $comment->comment_ID,
+										'unapproved'      => false,
+										'moderation-hash' => false,
+									),
+									$args['original_permalink']
+								)
+							) . '#' . $args['respond_id'],
+							$data_attribute_string,
+							esc_attr( sprintf( $args['reply_to_text'], $comment->comment_author ) ),
+							$args['reply_text']
+						);
+						return $args['before'] . $link . $args['after'];
+					},
+					10,
+					4
+				);
+
 				comment_reply_link( array_merge( $args, array(
 					'depth'     => $depth,
 					'max_depth' => $args['max_depth'],

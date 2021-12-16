@@ -21,6 +21,7 @@
 			'callback' => 'gth_discussion_callback',
 			'translation_id' => $translation_id,
 			'locale_slug' => $locale_slug,
+			'original_permalink' => $original_permalink,
 		), $comments );
 		?>
 	</ul><!-- .discussion-list -->

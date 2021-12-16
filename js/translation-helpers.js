@@ -31,11 +31,13 @@ $gp.translation_helpers = (
 				}
 
 				var originalId  = $helpers.parent().attr('row');
-				var requestUrl = $gp_translation_helpers_settings.th_url  + originalId + '?nohc';
+				var replytocom = $helpers.parent().attr('replytocom');
+				var requestUrl = $gp_translation_helpers_settings.th_url + originalId + '?nohc';
 
 				if ( which ) {
 					requestUrl = requestUrl + '&helper=' + which;
 				}
+				requestUrl = requestUrl + '&replytocom=' + replytocom;
 
 				$helpers.addClass('loading');
 
