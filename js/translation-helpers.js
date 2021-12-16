@@ -27,7 +27,7 @@ $gp.translation_helpers = (
 				if ( $element ) {
 					$helpers = $element.find('.translation-helpers');
 				} else {
-					$helpers = $( '.editor:visible' ).find('.translation-helpers').first();
+					$helpers = $( '.editor:visible, .translations' ).find('.translation-helpers').first();
 				}
 
 				var originalId  = $helpers.parent().attr('row');

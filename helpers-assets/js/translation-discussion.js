@@ -22,19 +22,20 @@ jQuery( function( $ ) {
 				locale         : $commentform.find('input[name=comment_locale]').val()
 			}
 		}
-		jQuery.wpcom_proxy_request( {
-				method: 'POST',
-				apiNamespace: 'wp/v2',
-				path: '/sites/translate.wordpress.com/comments',
-				body: formdata
-			}
-		).done( function( response ){
+		$.ajax( {
+			url: wpApiSettings.root + 'wp/v2/comments',
+			method: 'POST',
+			beforeSend: function ( xhr ) {
+				xhr.setRequestHeader( 'X-WP-Nonce', wpApiSettings.nonce );
+			},
+			data: formdata
+		}).done( function( response ){
 			if ( 'undefined' !== typeof ( response.data ) ) {
 				// There's probably a better way, but response.data is only set for errors.
 				// TODO: error handling.
 			} else {
 				$commentform.find('textarea[name=comment]').val('');
-				$gp.translation_helpers.fetch( 'comments' );
+				$gp.translation_helpers.fetch( 'discussion' );
 			}
 		} );
 

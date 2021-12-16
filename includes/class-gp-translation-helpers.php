@@ -85,8 +85,11 @@ class GP_Translation_Helpers {
 		gp_enqueue_scripts( array( 'gp-translation-helpers' ) );
 
 		wp_localize_script( 'gp-translation-helpers', '$gp_translation_helpers_settings', $translation_helpers_settings );
+		wp_localize_script( 'gp-translation-helpers', 'wpApiSettings', array(
+			'root' => esc_url_raw( rest_url() ),
+			'nonce' => wp_create_nonce( 'wp_rest' )
+		) );
 	}
-
 	public static function load_helpers() {
 		$base_dir = dirname( dirname( __FILE__ ) ) . '/helpers/';
 		require_once $base_dir . '/base-helper.php';
