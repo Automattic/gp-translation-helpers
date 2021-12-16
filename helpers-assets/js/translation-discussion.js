@@ -16,6 +16,7 @@ jQuery( function( $ ) {
 		var $commentform = $( e.target );
 		var formdata = {
 			content: $commentform.find('textarea[name=comment]').val(),
+			parent: $commentform.find('input[name=comment_parent]').val(),
 			post: $commentform.attr('id').split( '-' )[ 1 ],
 			meta: {
 				translation_id : $commentform.find('input[name=translation_id]').val(),
