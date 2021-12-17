@@ -25,11 +25,8 @@ class GP_Translation_Helpers {
 		add_filter(
 			'gp_translation_row_template_more_links',
 			function( $more_links, $project, $locale, $translation_set, $translation ) {
-				$permalink          = '/projects/' . $project->path . '/' . $translation->original_id;
-				if ( $translation_set ) {
-					$permalink .= '/' . $translation_set->locale . '/' . $translation_set->slug;
-				}
-				$permalink = home_url( $permalink );
+				$route_translation_helpers = new GP_Route_Translation_Helpers();
+				$permalink = $route_translation_helpers->get_permalink($project->path, $translation->original_id, $translation_set->slug, $translation_set->locale);
 
 				$more_links['discussion'] = '<a href="' . esc_url( $permalink ) . '">Discussion</a>';
 

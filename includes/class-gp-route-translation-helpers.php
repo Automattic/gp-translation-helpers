@@ -82,11 +82,8 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		add_filter(
 			'comment_reply_link',
 			function( $link, $args, $comment, $post ) use ( $project, $translation_set, $original ) {
-				$permalink = '/projects/' . $project->path . '/' . $original->id;
-				if ( $translation_set ) {
-					$permalink .= '/' . $translation_set->locale . '/' . $translation_set->slug;
-				}
-				$permalink = home_url( $permalink );
+	
+				$permalink = $this->get_permalink($project->path, $original->id, $translation_set->slug, $translation_set->locale);
 
 				$data_attributes = array(
 					'commentid'      => $comment->comment_ID,
@@ -208,12 +205,8 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			$this->die_with_404();
 		}
 
-		$permalink = '/projects/' . $project->path . '/' . $original_id;
-		if ( $set_slug ) {
-			$permalink .= '/' . $locale_slug . '/' . $set_slug;
-		}
-		$permalink = home_url( $permalink );
-
+		$permalink = $this->get_permalink($project->path, $original_id, $set_slug, $locale_slug);
+		
 		$args = array(
 			'project_id'     => $project->id,
 			'locale_slug'    => $locale_slug,
@@ -255,5 +248,14 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			}
 		}
 		return $comment_locales;
+	}
+
+	public function get_permalink( $project_path, $original_id, $set_slug = null, $locale_slug = null ){
+		$permalink = '/projects/' . $project_path . '/' . $original_id;
+		if ( $set_slug && $locale_slug ) {
+			$permalink .= '/' . $locale_slug . '/' . $set_slug;
+		}
+		$permalink = home_url( $permalink );
+		return $permalink;
 	}
 }
