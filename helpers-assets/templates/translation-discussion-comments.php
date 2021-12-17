@@ -7,9 +7,10 @@
 	<?php if ( $number = count( $comments ) ) : ?>
 		<h6><?php printf( _n( '%s Comment', '%s Comments', $number ), number_format_i18n( $number ) ); ?>
 		<?php if ( $locale_slug ) : ?>
-			(<?php echo esc_html( $locale_slug )?>)
-
-			<a href="../..">Show all</a>
+			(<?php echo esc_html( $locale_slug )?>)		
+			<span class="comments-selector">
+				<a href="#" data-selector="all">Show all</a> | <a href="#" data-selector="<?php echo esc_attr( $locale_slug );?>"><?php echo esc_html( $locale_slug )?> only</a>
+			</span>
 		<?php endif; ?>
 		</h6>
 	<?php endif; ?>
