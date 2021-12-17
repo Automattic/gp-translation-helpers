@@ -9,7 +9,7 @@
 		<?php if ( $locale_slug ) : ?>
 			(<?php echo esc_html( $locale_slug )?>)		
 			<span class="comments-selector">
-				<a href="#" data-selector="all">Show all</a> | <a href="#" data-selector="<?php echo esc_attr( $locale_slug );?>"><?php echo esc_html( $locale_slug )?> only</a>
+				<a href="#" class="active-link" data-selector="all">Show all</a> | <a href="#" data-selector="<?php echo esc_attr( $locale_slug );?>"><?php echo esc_html( $locale_slug )?> only</a>
 			</span>
 		<?php endif; ?>
 		</h6>
