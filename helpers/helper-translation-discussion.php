@@ -151,6 +151,15 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 		// Disable subscribe to comments for now.
 		add_filter( 'option_stc_disabled', '__return_true' );
+
+		// Link comment author to WordPress.org profile
+		add_filter(
+			'get_comment_author_link',
+			function() {
+				$comment_author = get_comment_author();
+				return '<a href="https://profiles.wordpress.org/' . $comment_author . '">' . $comment_author . '</a>';
+			}
+		);
 		
 		$output = gp_tmpl_get_output(
 			'translation-discussion-comments',
