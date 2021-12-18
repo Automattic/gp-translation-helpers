@@ -38,8 +38,11 @@ class Helper_User_Info extends GP_Translation_Helper {
 				$translations_by_status[ $translation->status ] = 1;
 			}
 		}
-
-		$output .= sprintf( '<b>Stats</b>: %d total translations. %d%% accepted, %d%% rejected, %d%% waiting', $total , number_format( $translations_by_status['current'] * 100 / $total ), number_format( $translations_by_status['rejected'] * 100 / $total ), number_format( $translations_by_status['waiting'] * 100 / $total ) );
+		
+		$no_of_current = isset( $translations_by_status['current'] ) ? number_format( $translations_by_status['current'] * 100 / $total ) : 0;
+		$no_of_rejected = isset( $translations_by_status['rejected'] ) ? number_format( $translations_by_status['rejected'] * 100 / $total ) : 0;
+		$no_of_waiting = isset( $translations_by_status['waiting'] ) ? number_format( $translations_by_status['waiting'] * 100 / $total ) : 0;
+		$output .= sprintf( '<b>Stats</b>: %d total translations. %d%% accepted, %d%% rejected, %d%% waiting', $total , $no_of_current, $no_of_rejected, $no_of_waiting );
 
 		return $output;
 	}
