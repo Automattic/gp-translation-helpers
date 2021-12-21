@@ -11,6 +11,7 @@ jQuery( function( $ ) {
 		} else {
 			$comments.children().hide();
 			$comments.children( '.comment-locale-' + selector ).show();
+			$comments.children( '.comment-locale-' + selector ).next('ul').show();
 		}
 		return false;
 	} );
