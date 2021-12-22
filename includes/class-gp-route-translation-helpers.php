@@ -80,50 +80,6 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		remove_action( 'comment_form_top', 'rosetta_comment_form_support_hint' );
 
 		add_filter(
-			'comment_reply_link',
-			function( $link, $args, $comment, $post ) use ( $project, $translation_set, $original ) {
-	
-				$permalink = $this->get_permalink($project->path, $original->id, $translation_set->slug, $translation_set->locale);
-
-				$data_attributes = array(
-					'commentid'      => $comment->comment_ID,
-					'postid'         => $post->ID,
-					'belowelement'   => $args['add_below'] . '-' . $comment->comment_ID,
-					'respondelement' => $args['respond_id'],
-					'replyto'        => sprintf( $args['reply_to_text'], $comment->comment_author ),
-				);
-
-				$data_attribute_string = '';
-
-				foreach ( $data_attributes as $name => $value ) {
-					$data_attribute_string .= " data-${name}=\"" . esc_attr( $value ) . '"';
-				}
-
-				$data_attribute_string = trim( $data_attribute_string );
-
-				$link = sprintf(
-					"<a rel='nofollow' class='comment-reply-link' href='%s' %s aria-label='%s'>%s</a>",
-					esc_url(
-						add_query_arg(
-							array(
-								'replytocom'      => $comment->comment_ID,
-								'unapproved'      => false,
-								'moderation-hash' => false,
-							),
-							$permalink
-						)
-					) . '#' . $args['respond_id'],
-					$data_attribute_string,
-					esc_attr( sprintf( $args['reply_to_text'], $comment->comment_author ) ),
-					$args['reply_text']
-				);
-				return $args['before'] . $link . $args['after'];
-			},
-			10,
-			4
-		);
-
-		add_filter(
 			'get_comment_author_link',
 			function() {
 				$comment_author = get_comment_author();
@@ -206,7 +162,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		}
 
 		$permalink = $this->get_permalink($project->path, $original_id, $set_slug, $locale_slug);
-		
+
 		$args = array(
 			'project_id'     => $project->id,
 			'locale_slug'    => $locale_slug,
