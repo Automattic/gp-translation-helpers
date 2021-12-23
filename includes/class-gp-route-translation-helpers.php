@@ -42,8 +42,6 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			);
 			$locales_with_comments = $this->get_locales_with_comments( $comments );
 		}
-
-
 		$row_id = $original_id;
 		$translation = null;
 		if ( $translation_id ) {
@@ -120,6 +118,18 @@ class GP_Route_Translation_Helpers extends GP_Route {
 
 		$sections = $this->get_translation_helper_sections( $project->id, $original_id, $locale_slug, $translation_set_slug, $translation_id, $translation );
 
+		$translations       = GP::$translation->find_many_no_map(
+			array(
+				'status'      => 'current',
+				'original_id' => $original_id,
+			)
+		);
+		$no_of_translations = count( $translations );
+
+		add_action( 'gp_head', function() use ( $original, $no_of_translations ){
+			echo '<meta property="og:title" content="' . esc_html( $original->singular ) .' | ' . $no_of_translations . ' translations" />';
+		} );
+		
 		$this->tmpl( 'original-permalink', get_defined_vars() );
 	}
 

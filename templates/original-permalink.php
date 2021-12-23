@@ -25,6 +25,7 @@ wp_localize_script(
 );
 gp_enqueue_style( 'gp-discussion-css' );
 gp_tmpl_header();
+gp_head();
 
 ?>
 
