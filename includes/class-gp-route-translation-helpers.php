@@ -127,9 +127,9 @@ class GP_Route_Translation_Helpers extends GP_Route {
 		$no_of_translations = count( $translations );
 
 		add_action( 'gp_head', function() use ( $original, $no_of_translations ){
-			echo '<meta property="og:title" content="' . esc_html( $original->singular ) .' | ' . $no_of_translations . ' translations" />';
+			echo '<meta property="og:title" content="' . esc_html( $original->singular ) . ' | ' . $no_of_translations . ' translations" />';
 		} );
-		
+
 		$this->tmpl( 'original-permalink', get_defined_vars() );
 	}
 
