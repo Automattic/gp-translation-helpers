@@ -37,6 +37,17 @@ class GP_Translation_Helpers {
 			5
 		);
 
+		//Prevent remote POST to comment forms
+		add_filter( 
+			'preprocess_comment', 
+			function( $commentdata ){
+				if ( ! $commentdata['user_ID'] ) {
+					die( 'User not authorized!' );
+				}
+				return $commentdata;
+			}
+		);
+
 		$this->helpers = self::load_helpers();
 	}
 
