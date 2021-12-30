@@ -42,7 +42,7 @@ class Helper_History extends GP_Translation_Helper {
 
 	function async_output_callback( $translations ) {
 		if ( $translations ) {
-			$output = '<table>';
+			$output = '<table id="translation-history-table">';
 			$output .= '<thead>';
 			$output .= '<tr><th>Date</th><th>Translation</th><th>Added by</th><th>Last modified by</th>';
 			$output .= '</thead>';

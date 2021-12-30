@@ -19,6 +19,11 @@
 	border-bottom: 2px solid #ccc;
 	white-space: nowrap;
 }
+
+ul.helpers-tabs {
+	padding-left: 14px !important;
+}
+
 .helpers-tabs li {
 	background: #eee;
 	color: #222;
@@ -58,4 +63,22 @@
 	display: inline-block;
 	padding-left: 4px;
 	opacity: 0.6;
+}
+
+#translation-history-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+#translation-history-table thead tr th {
+	font-size: 1rem;
+	font-weight: 900 !important;
+	padding: 10px;
+	background: #f9f9f9;
+	border: 1px solid rgb(0 0 0 / 5%);
+}
+
+#translation-history-table tbody tr td {
+	padding: 10px;
+	border: 1px solid rgb(0 0 0 / 5%);
 }
