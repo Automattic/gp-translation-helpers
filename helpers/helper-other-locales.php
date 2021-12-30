@@ -60,6 +60,9 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 	.other-locales {
 		list-style: none;
 	}
+	ul.other-locales {
+		padding-left: 0;
+	}
 	.other-locales li {
 		clear:both;
 	}
