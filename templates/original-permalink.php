@@ -30,11 +30,35 @@ gp_head();
 ?>
 
 <div id="original" class="clear">
-<h1><?php echo esc_html( $original->singular ); ?></h1>
+<h1>
+    <?php
+    if ($original->plural) esc_attr_e('Singular: ');
+    esc_html_e( $original->singular );
+	if ($original->plural) {
+        echo '<br>';
+		esc_html_e('Plural: ');
+		esc_html_e( $original->plural );
+	}
+    ?>
+</h1>
 <?php if ( $translation ) : ?>
 	<p>
 		<?php echo esc_html( ucfirst( $translation->status ) ); ?> translation:
-		<strong><?php echo esc_html( $translation->translation_0 ); ?></strong>
+        <?php if ( ( '' == $translation->translation_1 ) && ( '' == $translation->translation_2 ) &&
+                   ( '' == $translation->translation_3 ) && ( '' == $translation->translation_4 ) &&
+                   ( '' == $translation->translation_5 ) ) : ?>
+		    <strong><?php echo esc_html( $translation->translation_0 ); ?></strong>
+        <?php else : ?>
+            <ul id="translation-list">
+            <?php for ($i=0; $i<=5; $i++): ?>
+                <?php if ( '' != $translation->{'translation_' . $i} ) : ?>
+                    <li>
+                        <?php esc_html_e( $translation->{'translation_' . $i} ) ?>
+                    </li>
+                <?php endif ?>
+            <?php endfor ?>
+            </ul>
+        <?php endif ?>
 	</p>
 <?php elseif ( $existing_translations ) : ?>
 	<?php foreach ( $existing_translations as $e ) : var_dump( $e );?>

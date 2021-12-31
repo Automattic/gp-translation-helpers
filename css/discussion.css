@@ -11,6 +11,10 @@
 	margin: 14px;
 }
 
+#original ul#translation-list {
+	margin-left: 1rem;
+}
+
 .helper-translation-discussion {
 	position:relative;
 	min-height: 600px;
