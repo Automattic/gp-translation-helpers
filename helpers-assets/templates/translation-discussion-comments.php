@@ -31,9 +31,10 @@
 		comment_form( $args = array(
 			'title_reply'          => __( 'Discuss this string' ),
 			'title_reply_to'       => __( 'Reply to %s' ),
-			'title_reply_before'   => '<h6 id="reply-title" class="discuss-title">',
-			'title_reply_after'    => '</h6>',
+			'title_reply_before'   => '<h5 id="reply-title" class="discuss-title">',
+			'title_reply_after'    => '</h5>',
 			'id_form'              => 'commentform-' . $post_id,
+			'cancel_reply_link'     => "<span></span>",
 			'comment_notes_after'  => implode( "\n",
 				array(
 					'<input type="hidden" name="comment_locale" value="' . esc_attr( $locale_slug ) . '" />',
