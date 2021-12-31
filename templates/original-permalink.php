@@ -61,10 +61,24 @@ gp_head();
         <?php endif ?>
 	</p>
 <?php elseif ( $existing_translations ) : ?>
-	<?php foreach ( $existing_translations as $e ) : var_dump( $e );?>
+	<?php foreach ( $existing_translations as $e ) : ?>
 		<p>
-			<?php echo esc_html( ucfirst( $e->translation_status ) ); ?> translation:
-			<strong><?php echo esc_html( $e->translations[0] ); ?></strong>
+			<?php echo esc_html( ucfirst( $e->status ) ); ?> translation:
+            <?php if ( ( '' == $e->translation_1 ) && ( '' == $e->translation_2 ) &&
+                       ( '' == $e->translation_3 ) && ( '' == $e->translation_4 ) &&
+                       ( '' == $e->translation_5 ) ) : ?>
+                <strong><?php echo esc_html( $e->translation_0 ); ?></strong>
+            <?php else : ?>
+                <ul id="translation-list">
+                    <?php for ($i=0; $i<=5; $i++): ?>
+                        <?php if ( '' != $e->{'translation_' . $i} ) : ?>
+                            <li>
+                                <?php esc_html_e( $e->{'translation_' . $i} ) ?>
+                            </li>
+                        <?php endif ?>
+                    <?php endfor ?>
+                </ul>
+            <?php endif ?>
 		</p>
 	<?php endforeach; ?>
 <?php endif; ?>
