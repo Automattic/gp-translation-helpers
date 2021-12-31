@@ -81,6 +81,10 @@ gp_head();
             <?php endif ?>
 		</p>
 	<?php endforeach; ?>
+<?php else : ?>
+    <p>
+        <?php esc_html_e( 'This string has no translation in this language.' );?>
+    </p>
 <?php endif; ?>
 <div class="translations" row="<?php echo esc_attr( $row_id . ( $translation ? '-' . $translation->id : '' ) ); ?>" replytocom="<?php echo esc_attr( gp_get( 'replytocom' ) ); ?>" >
 <div class="translation-helpers">
