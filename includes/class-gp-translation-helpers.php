@@ -89,7 +89,7 @@ class GP_Translation_Helpers {
 		wp_register_style( 'gp-translation-helpers-css', plugins_url( 'css/translation-helpers.css', __DIR__ ) );
 		gp_enqueue_style( 'gp-translation-helpers-css' );
 
-		wp_register_script( 'gp-translation-helpers', plugins_url( './js/translation-helpers.js', __DIR__ ), array( 'gp-editor' ), '2017-02-09' );
+		wp_register_script( 'gp-translation-helpers', plugins_url( '/js/translation-helpers.js', __DIR__ ), array( 'gp-editor' ), '2017-02-09' );
 		gp_enqueue_scripts( array( 'gp-translation-helpers' ) );
 
 		wp_localize_script( 'gp-translation-helpers', '$gp_translation_helpers_settings', $translation_helpers_settings );

@@ -17,6 +17,7 @@ jQuery( function( $ ) {
 	} );
 	$('.helper-translation-discussion').on( 'submit', '.comment-form', function( e ){
 		e.preventDefault();
+		e.stopImmediatePropagation();
 		var $commentform = $( e.target );
 		var formdata = {
 			content: $commentform.find('textarea[name=comment]').val(),

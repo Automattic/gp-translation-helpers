@@ -45,14 +45,27 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 	function async_output_callback( $translations ) {
 		$output = '<ul class="other-locales">';
 		foreach ( $translations as $locale => $translation ) {
-			$output .= sprintf( '<li><span class="locale">%s</span>%s</li>', $locale, esc_translation( $translation->translation_0 ) );
+			if ( ( '' == $translation->translation_1 ) && ( '' == $translation->translation_2 ) &&
+			     ( '' == $translation->translation_3 ) && ( '' == $translation->translation_4 ) &&
+			     ( '' == $translation->translation_5 ) ) {
+				$output .= sprintf( '<li><span class="locale unique">%s</span>%s</li>', $locale, esc_translation( $translation->translation_0 ) );
+			} else {
+				$output .= sprintf( '<li><span class="locale">%s</span>', $locale );
+				$output .= '<ul>';
+				for ( $i = 0; $i <= 5; $i ++ ) {
+					if ( '' != $translation->{'translation_' . $i} ) {
+						$output .= sprintf( '<li>%s</li>', esc_translation( $translation->{'translation_' . $i} ) );
+					}
+				}
+				$output .= '</ul>';
+				$output .= '</li>';
+			}
 		}
-		$output .= '</ul>';
-		return $output;
+			$output .= '</ul>';
+			return $output;
 	}
-
 	function empty_content() {
-		return 'No other locales have translated this string yet.';
+		esc_html( 'No other locales have translated this string yet.' );
 	}
 
 	function get_css() {
@@ -60,8 +73,21 @@ class Helper_Other_Locales extends GP_Translation_Helper {
 	.other-locales {
 		list-style: none;
 	}
+	ul.other-locales {
+		padding-left: 0;
+	}
 	.other-locales li {
 		clear:both;
+	}
+	ul.other-locales li {
+		display: flex;
+	}
+	ul.other-locales li ul li {
+		display: list-item;
+		list-style: disc;
+	}
+	span.locale.unique {
+		margin-right: 26px;
 	}
 	.other-locales .locale {
 		display: inline-block;
