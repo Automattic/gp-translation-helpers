@@ -11,7 +11,8 @@
 			<?php
 				$countLocaleComments = 0;
 				foreach ( $comments as $comment ) {
-					if ( $locale_slug == get_comment_meta( $comment->comment_ID, 'locale', true ) ) {
+					$comment_locale = get_comment_meta( $comment->comment_ID, 'locale', true );
+					if ( $locale_slug == $comment_locale ) {
 						$countLocaleComments++ ;
 					}
 				}	
