@@ -8,7 +8,7 @@
 }
 
 #original p {
-	margin: 14px;
+	margin: 14px 26px 14px 14px;
 }
 
 #original ul#translation-list {
@@ -81,4 +81,32 @@ h6 {
 }
 .active-link{
 	font-weight: bold;
+}
+.discussion-wrapper textarea#comment {
+	width: 100%;
+	margin-top: 15px;
+}
+.discussion-wrapper .submit {
+	margin: 0 5px 0 0;
+	background: #2271b1;
+	border-color: #2271b1;
+	color: #fff;
+	text-decoration: none;
+	text-shadow: none;
+	font-size: 13px;
+	line-height: 2.15384615;
+	min-height: 30px;
+	padding: 0 10px;
+	cursor: pointer;
+	border-width: 1px;
+	border-style: solid;
+	-webkit-appearance: none;
+	border-radius: 3px;
+	white-space: nowrap;
+	box-sizing: border-box;
+}
+.discussion-wrapper .submit:hover {
+	background: #135e96;
+	border-color: #135e96;
+	color: #fff;
 }
