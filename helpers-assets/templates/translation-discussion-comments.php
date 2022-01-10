@@ -7,9 +7,18 @@
 	<?php if ( $number = count( $comments ) ) : ?>
 		<h6><?php printf( _n( '%s Comment', '%s Comments', $number ), number_format_i18n( $number ) ); ?>
 		<?php if ( $locale_slug ) : ?>
-			(<?php echo esc_html( $locale_slug )?>)		
+			(<?php echo esc_html( $locale_slug )?>)
+			<?php
+				$countLocaleComments = 0;
+				foreach ( $comments as $comment ) {
+					$comment_locale = get_comment_meta( $comment->comment_ID, 'locale', true );
+					if ( $locale_slug == $comment_locale ) {
+						$countLocaleComments++ ;
+					}
+				}	
+			?>			
 			<span class="comments-selector">
-				<a href="#" class="active-link" data-selector="all">Show all</a> | <a href="#" data-selector="<?php echo esc_attr( $locale_slug );?>"><?php echo esc_html( $locale_slug )?> only</a>
+				<a href="#" class="active-link" data-selector="all">Show all (<?php echo esc_html( $number ); ?>)</a> | <a href="#" data-selector="<?php echo esc_attr( $locale_slug );?>"><?php echo esc_html( $locale_slug );?> only (<?php echo esc_html( $countLocaleComments ); ?>)</a>
 			</span>
 		<?php endif; ?>
 		</h6>
