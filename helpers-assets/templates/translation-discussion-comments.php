@@ -18,7 +18,7 @@
 				}	
 			?>			
 			<span class="comments-selector">
-				<a href="#" class="active-link" data-selector="all">Show all (<?php echo $number; ?>)</a> | <a href="#" data-selector="<?php echo esc_attr( $locale_slug );?>"><?php echo esc_html( $locale_slug );?> only (<?php echo $countLocaleComments; ?>)</a>
+				<a href="#" class="active-link" data-selector="all">Show all (<?php echo esc_html( $number ); ?>)</a> | <a href="#" data-selector="<?php echo esc_attr( $locale_slug );?>"><?php echo esc_html( $locale_slug );?> only (<?php echo esc_html( $countLocaleComments ); ?>)</a>
 			</span>
 		<?php endif; ?>
 		</h6>
