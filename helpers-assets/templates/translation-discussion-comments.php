@@ -36,6 +36,30 @@
 		?>
 	</ul><!-- .discussion-list -->
 	<?php
+	add_action( 
+		'comment_form_logged_in_after', 
+		function() use ( $locale_slug ) {
+			$english_name_for_locale = '' ;
+			$language_question = '';
+
+			if ( $locale_slug ) {
+				$english_name_for_locale = GP_Locales::by_slug( $locale_slug )->english_name;
+				$language_question = '<option value="question">Question about translating to ' . esc_html( $english_name_for_locale ) . '</option>';
+			}
+
+			echo '<p class="comment-form-url">
+					<label for="comment_topic">Topic </label>
+					<select name="comment_topic" id="comment_topic">
+						<option value="typo">Typo in the English text</option>
+						<option value="context">Where does this string appear? (more context)</option>' .
+						$language_question .
+					'</select>
+				</p>';
+		},
+		10,
+		2 
+	);
+	
 	if ( is_user_logged_in() ) {
 		comment_form( $args = array(
 			'title_reply'          => __( 'Discuss this string' ),
