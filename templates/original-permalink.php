@@ -32,12 +32,15 @@ gp_head();
 <div id="original" class="clear">
 <h1>
     <?php
-    if ($original->plural) esc_attr_e('Singular: ');
-    esc_html_e( $original->singular );
-	if ($original->plural) {
-        echo '<br>';
-		esc_html_e('Plural: ');
-		esc_html_e( $original->plural );
+    if ( $original->plural ) {
+    	esc_html_e( 'Singular: ' );
+    }
+
+    echo esc_html( $original->singular );
+	if ( $original->plural ) {
+        echo '<br />';
+		esc_html_e( 'Plural: ' );
+		echo esc_html( $original->plural );
 	}
     ?>
 </h1>
