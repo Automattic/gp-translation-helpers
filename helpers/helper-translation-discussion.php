@@ -52,6 +52,12 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			'single'       => true,
 			'show_in_rest' => true,
 		) );
+
+		register_meta( 'comment', 'comment_topic', array(
+			'description'  => 'Reason for the comment',
+			'single'       => true,
+			'show_in_rest' => true,
+		) );
 	}
 
 	public function comment_moderation( $approved, $commentdata ) {

@@ -48,6 +48,22 @@ class GP_Translation_Helpers {
 			}
 		);
 
+		add_action( 
+			'comment_form_logged_in_after', 
+			function() { 
+				echo '<p class="comment-form-url">
+						<label for="url">Topic </label>
+						<select name="comment_topic">
+							<option value="typo">Typo in the English text</option>
+							<option value="context">Where does this string appear? (more context)</option>
+							<option value="question">Question about translating to language</option>
+						</select>
+					</p>';
+			},
+			10,
+			2 
+		);
+
 		$this->helpers = self::load_helpers();
 	}
 

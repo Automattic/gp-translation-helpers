@@ -25,7 +25,8 @@ jQuery( function( $ ) {
 			post: $commentform.attr('id').split( '-' )[ 1 ],
 			meta: {
 				translation_id : $commentform.find('input[name=translation_id]').val(),
-				locale         : $commentform.find('input[name=comment_locale]').val()
+				locale         : $commentform.find('input[name=comment_locale]').val(),
+				comment_topic  : $commentform.find('select[name=comment_topic]').val(),
 			}
 		}
 		$.ajax( {
