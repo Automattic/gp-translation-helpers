@@ -53,10 +53,11 @@
 
 			echo '<p class="comment-form-url">
 					<label for="comment_topic">Topic </label>
-					<select name="comment_topic" id="comment_topic">
+					<select required name="comment_topic" id="comment_topic">
+						<option value="">Select topic</option>
 						<option value="typo">Typo in the English text</option>
-    						<option value="context">Where does this string appear? (more context)</option>' .
-							$language_question .
+    					<option value="context">Where does this string appear? (more context)</option>' .
+						$language_question .
 					'</select>
     			</p>';
 		},
