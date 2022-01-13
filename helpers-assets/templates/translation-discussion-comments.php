@@ -52,7 +52,7 @@
 				}
 			}
 
-			echo '<p class="comment-form-url">
+			echo '<p class="comment-form-topic">
 					<label for="comment_topic">Topic </label>
 					<select required name="comment_topic" id="comment_topic">
 						<option value="">Select topic</option>
