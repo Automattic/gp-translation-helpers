@@ -43,7 +43,6 @@
 	add_action(
 		'comment_form_logged_in_after',
 		function () use ( $locale_slug ) {
-			$english_name_for_locale = '';
 			$language_question       = '';
 
 			if ( $locale_slug ) {
