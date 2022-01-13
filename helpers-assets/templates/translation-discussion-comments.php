@@ -47,8 +47,10 @@
 			$language_question       = '';
 
 			if ( $locale_slug ) {
-				$english_name_for_locale = GP_Locales::by_slug( $locale_slug )->english_name;
-				$language_question       = '<option value="question">Question about translating to ' . esc_html( $english_name_for_locale ) . '</option>';
+				$gp_locale = GP_Locales::by_slug( $locale_slug );
+				if ( $gp_locale ) {
+					$language_question       = '<option value="question">Question about translating to ' . esc_html( $gp_locale->english_name ) . '</option>';
+				}
 			}
 
 			echo '<p class="comment-form-url">
