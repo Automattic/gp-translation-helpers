@@ -209,7 +209,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 	public function sanitize_comment_topic( $comment_topic ) {
 		if ( ! in_array( $comment_topic, array( 'typo', 'context', 'question' ) ) ) {
-			$comment_topic = 'invalid topic';
+			$comment_topic = 'unknown';
 		}
 		return $comment_topic;
 
