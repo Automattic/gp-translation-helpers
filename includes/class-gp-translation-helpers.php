@@ -47,7 +47,7 @@ class GP_Translation_Helpers {
 				return $commentdata;
 			}
 		);
-
+		
 		$this->helpers = self::load_helpers();
 	}
 

@@ -25,9 +25,21 @@ jQuery( function( $ ) {
 			post: $commentform.attr('id').split( '-' )[ 1 ],
 			meta: {
 				translation_id : $commentform.find('input[name=translation_id]').val(),
-				locale         : $commentform.find('input[name=comment_locale]').val()
+				locale         : $commentform.find('input[name=comment_locale]').val(),
+				comment_topic  : $commentform.find('select[name=comment_topic]').val(),
 			}
 		}
+
+		if ( formdata.meta.locale ) {
+			/**
+			 * Set the locale to an empty string if option selected has value 'typo' or 'context'
+			 * to force comment to be posted to the English discussion page 
+			 */
+			if ( formdata.meta.comment_topic === 'typo' || formdata.meta.comment_topic === 'context' ) {
+				formdata.meta.locale = '';
+			}
+		}
+		
 		$.ajax( {
 			url: wpApiSettings.root + 'wp/v2/comments',
 			method: 'POST',

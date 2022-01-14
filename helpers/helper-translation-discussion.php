@@ -2,14 +2,14 @@
 
 class Helper_Translation_Discussion extends GP_Translation_Helper {
 
-	public $priority = 0;
-	public $title = 'Discussion';
+	public $priority          = 0;
+	public $title             = 'Discussion';
 	public $has_async_content = true;
 
-	const POST_TYPE = 'gth_original';
-	const POST_STATUS = 'publish';
-	const LINK_TAXONOMY = 'gp_original_id';
-	const URL_SLUG = 'discuss';
+	const POST_TYPE          = 'gth_original';
+	const POST_STATUS        = 'publish';
+	const LINK_TAXONOMY      = 'gp_original_id';
+	const URL_SLUG           = 'discuss';
 	const ORIGINAL_ID_PREFIX = 'original-';
 
 	function after_constructor() {
@@ -22,36 +22,57 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			self::LINK_TAXONOMY,
 			array(),
 			array(
-				'public' => false,
+				'public'  => false,
 				'show_ui' => false,
 			)
 		);
 
 		$post_type_args = array(
-			'supports'            => array( 'comments' ),
-			'show_ui'             => false,
-			'show_in_menu'        => false,
-			'show_in_admin_bar'   => false,
-			'show_in_nav_menus'   => false,
-			'can_export'          => false,
-			'has_archive'         => false,
-			'show_in_rest'        => true,
-			'taxonomies'          => array( self::LINK_TAXONOMY ),
+			'supports'          => array( 'comments' ),
+			'show_ui'           => false,
+			'show_in_menu'      => false,
+			'show_in_admin_bar' => false,
+			'show_in_nav_menus' => false,
+			'can_export'        => false,
+			'has_archive'       => false,
+			'show_in_rest'      => true,
+			'taxonomies'        => array( self::LINK_TAXONOMY ),
 		);
 
 		register_post_type( self::POST_TYPE, $post_type_args );
 
-		register_meta( 'comment', 'translation_id', array(
-			'description'  => 'Translation that was displayed when the comment was posted',
-			'single'       => true,
-			'show_in_rest' => true,
-		) );
+		// TODO Add sanitize_callback
+		register_meta(
+			'comment',
+			'translation_id',
+			array(
+				'description'  => 'Translation that was displayed when the comment was posted',
+				'single'       => true,
+				'show_in_rest' => true,
+			)
+		);
 
-		register_meta( 'comment', 'locale', array(
-			'description'  => 'Locale slug associated with a string comment',
-			'single'       => true,
-			'show_in_rest' => true,
-		) );
+		// TODO Add sanitize_callback
+		register_meta(
+			'comment',
+			'locale',
+			array(
+				'description'  => 'Locale slug associated with a string comment',
+				'single'       => true,
+				'show_in_rest' => true,
+			)
+		);
+
+		register_meta(
+			'comment',
+			'comment_topic',
+			array(
+				'description'       => 'Reason for the comment',
+				'single'            => true,
+				'show_in_rest'      => true,
+				'sanitize_callback' => array( $this, 'sanitize_comment_topic' ),
+			)
+		);
 	}
 
 	public function comment_moderation( $approved, $commentdata ) {
@@ -134,9 +155,9 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	public function get_async_content() {
 		return get_comments(
 			array(
-				'post_id' => self::get_shadow_post( $this->data['original_id'] ),
-				'status' => 'approve',
-				'type' => 'comment',
+				'post_id'            => self::get_shadow_post( $this->data['original_id'] ),
+				'status'             => 'approve',
+				'type'               => 'comment',
 				'include_unapproved' => array( get_current_user_id() ),
 			)
 		);
@@ -160,14 +181,14 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 				return '<a href="https://profiles.wordpress.org/' . $comment_author . '">' . $comment_author . '</a>';
 			}
 		);
-		
+
 		$output = gp_tmpl_get_output(
 			'translation-discussion-comments',
 			array(
-				'comments' => $comments,
-				'post_id' => self::get_shadow_post( $this->data['original_id'] ),
-				'translation_id' => isset( $this->data['translation_id'] ) ? $this->data['translation_id'] : null,
-				'locale_slug' => $this->data['locale_slug'],
+				'comments'           => $comments,
+				'post_id'            => self::get_shadow_post( $this->data['original_id'] ),
+				'translation_id'     => isset( $this->data['translation_id'] ) ? $this->data['translation_id'] : null,
+				'locale_slug'        => $this->data['locale_slug'],
 				'original_permalink' => $this->data['permalink'],
 			),
 			$this->assets_dir . 'templates'
@@ -185,6 +206,14 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	public function get_js() {
 		return file_get_contents( $this->assets_dir . 'js/translation-discussion.js' );
 	}
+
+	public function sanitize_comment_topic( $comment_topic ) {
+		if ( ! in_array( $comment_topic, array( 'typo', 'context', 'question' ) ) ) {
+			$comment_topic = 'unknown';
+		}
+		return $comment_topic;
+
+	}
 }
 
 function gth_discussion_get_original_id_from_post( $post_id ) {
@@ -200,7 +229,7 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 	$current_translation_id = $args['translation_id'];
 	$comment_translation_id = get_comment_meta( $comment->comment_ID, 'translation_id', true );
 	?>
-<li class="<?php echo esc_attr( 'comment-locale-' . $comment_locale );?>">
+<li class="<?php echo esc_attr( 'comment-locale-' . $comment_locale ); ?>">
 	<article id="comment-<?php comment_ID(); ?>" class="comment">
 		<div class="comment-avatar">
 			<?php echo get_avatar( $comment, 25 ); ?>
@@ -221,7 +250,7 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 					<a href="<?php echo esc_attr( $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale ); ?></a>
 				<?php elseif ( $current_locale && $current_locale !== $comment_locale ) : ?>
 					<a href="<?php echo esc_attr( '../../' . $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale ); ?></a>
-				<?php else: ?>
+				<?php else : ?>
 					<?php echo esc_html( $comment_locale ); ?>
 			<?php endif; ?>
 			</div>
@@ -248,15 +277,15 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 							'respondelement' => $args['respond_id'],
 							'replyto'        => sprintf( $args['reply_to_text'], $comment->comment_author ),
 						);
-		
+
 						$data_attribute_string = '';
-		
+
 						foreach ( $data_attributes as $name => $value ) {
 							$data_attribute_string .= " data-${name}=\"" . esc_attr( $value ) . '"';
 						}
-		
+
 						$data_attribute_string = trim( $data_attribute_string );
-		
+
 						$link = sprintf(
 							"<a rel='nofollow' class='comment-reply-link' href='%s' %s aria-label='%s'>%s</a>",
 							esc_url(
@@ -279,12 +308,17 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 					4
 				);
 
-				comment_reply_link( array_merge( $args, array(
-					'depth'     => $depth,
-					'max_depth' => $args['max_depth'],
-					'before'    => '<span class="alignright">',
-					'after'     => '</span>',
-				) ) );
+				comment_reply_link(
+					array_merge(
+						$args,
+						array(
+							'depth'     => $depth,
+							'max_depth' => $args['max_depth'],
+							'before'    => '<span class="alignright">',
+							'after'     => '</span>',
+						)
+					)
+				);
 				?>
 			</div><!-- .comment-author .vcard -->
 			<?php if ( $comment->comment_approved == '0' ) : ?>
@@ -292,7 +326,7 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 			<?php endif; ?>
 			<?php if ( $comment_translation_id && $comment_translation_id !== $current_translation_id ) : ?>
 				<?php $translation = GP::$translation->get( $comment_translation_id ); ?>
-				<em>Translation: <?php echo esc_translation( $translation->translation_0 );?></em>
+				<em>Translation: <?php echo esc_translation( $translation->translation_0 ); ?></em>
 			<?php endif; ?>
 		</footer>
 	</article><!-- #comment-## -->
