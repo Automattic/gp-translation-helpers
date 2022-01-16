@@ -52,14 +52,14 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			)
 		);
 
-		// TODO Add sanitize_callback
 		register_meta(
 			'comment',
 			'locale',
 			array(
-				'description'  => 'Locale slug associated with a string comment',
-				'single'       => true,
-				'show_in_rest' => true,
+				'description'       => 'Locale slug associated with a string comment',
+				'single'            => true,
+				'show_in_rest'      => true,
+				'sanitize_callback' => array( $this, 'sanitize_comment_locale' ),
 			)
 		);
 
@@ -214,6 +214,16 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		return $comment_topic;
 
 	}
+
+	public function sanitize_comment_locale( $comment_locale ) {
+		$gp_locales     = new GP_Locales();
+		$all_gp_locales = array_keys( $gp_locales->locales );
+
+		if ( ! in_array( $comment_locale, $all_gp_locales ) ) {
+			$comment_locale = 'unknown';
+		}
+		return $comment_locale;
+	}
 }
 
 function gth_discussion_get_original_id_from_post( $post_id ) {
@@ -244,7 +254,7 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 		}
 		echo '<time datetime=" ' . get_comment_time( 'c' ) . '">' . $time . '</time>';
 		?>
-		<?php if ( $comment_locale ) : ?>
+		<?php if ( $comment_locale && $comment_locale !== 'unknown' ) : ?>
 			<div class="comment-locale">Locale:
 				<?php if ( ! $current_locale ) : ?>
 					<a href="<?php echo esc_attr( $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale ); ?></a>
