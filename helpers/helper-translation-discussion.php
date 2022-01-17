@@ -41,25 +41,25 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 		register_post_type( self::POST_TYPE, $post_type_args );
 
-		// TODO Add sanitize_callback
 		register_meta(
 			'comment',
 			'translation_id',
 			array(
-				'description'  => 'Translation that was displayed when the comment was posted',
-				'single'       => true,
-				'show_in_rest' => true,
+				'description'       => 'Translation that was displayed when the comment was posted',
+				'single'            => true,
+				'show_in_rest'      => true,
+				'sanitize_callback' => array( $this, 'sanitize_translation_id' ),
 			)
 		);
 
-		// TODO Add sanitize_callback
 		register_meta(
 			'comment',
 			'locale',
 			array(
-				'description'  => 'Locale slug associated with a string comment',
-				'single'       => true,
-				'show_in_rest' => true,
+				'description'       => 'Locale slug associated with a string comment',
+				'single'            => true,
+				'show_in_rest'      => true,
+				'sanitize_callback' => array( $this, 'sanitize_comment_locale' ),
 			)
 		);
 
@@ -213,6 +213,25 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		}
 		return $comment_topic;
 
+	}
+
+	public function sanitize_comment_locale( $comment_locale ) {
+		$gp_locales     = new GP_Locales();
+		$all_gp_locales = array_keys( $gp_locales->locales );
+
+		if ( ! in_array( $comment_locale, $all_gp_locales ) ) {
+			$comment_locale = '';
+		}
+		return $comment_locale;
+	}
+
+	public function sanitize_translation_id( $translation_id ) {
+		if ( ! is_numeric( $translation_id ) ) {
+			if ( $translation_id > 0 && ! GP::$translation->get( $translation_id ) ) {
+				wp_die( 'Invalid translation ID' );
+			}
+		}
+		return $translation_id;
 	}
 }
 
