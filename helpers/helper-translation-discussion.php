@@ -329,7 +329,7 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 				<em>Translation: <?php echo esc_translation( $translation->translation_0 ); ?></em>
 			<?php endif; ?>
             <div class="clear"></div>
-            <div class="comment-reply-<?php echo $comment->comment_ID; ?>">
+            <div id="comment-reply-<?php echo $comment->comment_ID; ?>" style="display: none;">
             <?php
             if ( is_user_logged_in() ) {
 	            comment_form(
