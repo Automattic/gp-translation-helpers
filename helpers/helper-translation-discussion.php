@@ -220,7 +220,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		$all_gp_locales = array_keys( $gp_locales->locales );
 
 		if ( ! in_array( $comment_locale, $all_gp_locales ) ) {
-			$comment_locale = 'unknown';
+			$comment_locale = '';
 		}
 		return $comment_locale;
 	}
@@ -261,7 +261,7 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 		}
 		echo '<time datetime=" ' . get_comment_time( 'c' ) . '">' . $time . '</time>';
 		?>
-		<?php if ( $comment_locale && $comment_locale !== 'unknown' ) : ?>
+		<?php if ( $comment_locale ) : ?>
 			<div class="comment-locale">Locale:
 				<?php if ( ! $current_locale ) : ?>
 					<a href="<?php echo esc_attr( $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale ); ?></a>
