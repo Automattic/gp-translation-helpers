@@ -51,7 +51,7 @@ article.comment p {
 article.comment footer {
 	overflow: hidden;
 	font-size: 0.8rem;
-	font-style: italic;
+	font-style: normal;
 }
 article.comment time {
 	font-style: italic;
