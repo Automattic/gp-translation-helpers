@@ -227,7 +227,9 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 	public function sanitize_translation_id( $translation_id ) {
 		if ( ! is_numeric( $translation_id ) ) {
-			wp_die( 'Invalid translation ID' );
+			if ( $translation_id > 0 && ! GP::$translation->get( $translation_id ) ) {
+				wp_die( 'Invalid translation ID' );
+			}
 		}
 		return $translation_id;
 	}
