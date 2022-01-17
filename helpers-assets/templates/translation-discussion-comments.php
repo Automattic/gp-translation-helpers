@@ -53,7 +53,7 @@
 			}
 
 			echo '<p class="comment-form-topic">
-					<label for="comment_topic">Topic </label>
+					<label for="comment_topic">Topic <span class="required" aria-hidden="true">*</span></label>
 					<select required name="comment_topic" id="comment_topic">
 						<option value="">Select topic</option>
 						<option value="typo">Typo in the English text</option>
