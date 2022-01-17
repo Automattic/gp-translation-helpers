@@ -1,0 +1,20 @@
+{
+  "name": "gp-translation-helpers",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Helpers to discuss the translations in GlotPress.",
+  "author": "The GlotPress Contributors",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://glotpress.blog/",
+  "repository": "git+https://github.com/GlotPress/gp-translation-helpers.git",
+  "bugs": {
+    "url": "https://github.com/GlotPress/gp-translation-helpers/issues"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^19.2.2"
+  },
+  "scripts": {
+    "lint:js": "wp-scripts lint-js",
+    "lint:js-fix": "wp-scripts lint-js --fix"
+  }
+}
