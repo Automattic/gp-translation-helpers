@@ -82,11 +82,11 @@ $gp.translation_helpers = (
 					$gp.translation_helpers.tab_select( $( this ) );
 					return false;
 				},
-                reply_comment_form: function ( event ) {
-                    event.preventDefault();
+				reply_comment_form: function ( event ) {
+					event.preventDefault();
 					$gp.translation_helpers.reply_comment_form( $( this ) );
-                    return false;
-               },
+					return false;
+				},
 	}
 		}
 	}( jQuery )
