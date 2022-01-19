@@ -65,12 +65,12 @@ $gp.translation_helpers = (
 				$("#"+tab_id).addClass('current');
 			},
 			reply_comment_form: function( $comment ) {
-				var commentId = $comment.attr('data-commentid') ;
-				$('#comment-reply-' + commentId).toggle();
-				if ('Reply' === $comment.text()) {
-					$comment.text('Cancel Reply');
+				var commentId = $comment.attr( 'data-commentid' );
+				$( '#comment-reply-' + commentId ).toggle();
+				if ( 'Reply' === $comment.text() ) {
+					$comment.text( 'Cancel Reply' );
 				} else {
-					$comment.text('Reply');
+					$comment.text( 'Reply' );
 				}
 			},
 			hooks: {
