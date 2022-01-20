@@ -357,7 +357,7 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 			}
 			?>
 			</div>
-        </footer>
+		</footer>
 	</article><!-- #comment-## -->
 </li>
 	<?php
