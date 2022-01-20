@@ -11,7 +11,8 @@ $gp.translation_helpers = (
 			install_hooks: function() {
 				$( $gp.translation_helpers.table )
 					.on( 'beforeShow', '.editor', $gp.translation_helpers.hooks.initial_fetch )
-					.on( 'click', '.helpers-tabs li', $gp.translation_helpers.hooks.tab_select );
+					.on( 'click', '.helpers-tabs li', $gp.translation_helpers.hooks.tab_select )
+					.on( 'click', 'a.comment-reply-link', $gp.translation_helpers.hooks.reply_comment_form );
 			},
 			initial_fetch : function( $element ) {
 				var $helpers = $element.find('.translation-helpers');
@@ -63,6 +64,15 @@ $gp.translation_helpers = (
 				$tab.addClass('current');
 				$("#"+tab_id).addClass('current');
 			},
+			reply_comment_form: function( $comment ) {
+				var commentId = $comment.attr( 'data-commentid' );
+				$( '#comment-reply-' + commentId ).toggle();
+				if ( 'Reply' === $comment.text() ) {
+					$comment.text( 'Cancel Reply' );
+				} else {
+					$comment.text( 'Reply' );
+				}
+			},
 			hooks: {
 				initial_fetch: function() {
 					$gp.translation_helpers.initial_fetch( $( this ) );
@@ -71,8 +81,13 @@ $gp.translation_helpers = (
 				tab_select: function() {
 					$gp.translation_helpers.tab_select( $( this ) );
 					return false;
-				}
-			}
+				},
+				reply_comment_form: function ( event ) {
+					event.preventDefault();
+					$gp.translation_helpers.reply_comment_form( $( this ) );
+					return false;
+				},
+	}
 		}
 	}( jQuery )
 );

@@ -347,6 +347,35 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 				<?php $translation = GP::$translation->get( $comment_translation_id ); ?>
 				<em>Translation: <?php echo esc_translation( $translation->translation_0 ); ?></em>
 			<?php endif; ?>
+			<div class="clear"></div>
+			<div id="comment-reply-<?php echo $comment->comment_ID; ?>" style="display: none;">
+			<?php
+			if ( is_user_logged_in() ) {
+				comment_form(
+					$args = array(
+						'title_reply'         => __( 'Discuss this string' ),
+						'title_reply_to'      => __( 'Reply to %s' ),
+						'title_reply_before'  => '<h5 id="reply-title" class="discuss-title">',
+						'title_reply_after'   => '</h5>',
+						'id_form'             => 'commentform-' . $comment->comment_post_ID,
+						'cancel_reply_link'   => '<span></span>',
+						'comment_notes_after' => implode(
+							"\n",
+							array(
+								'<input type="hidden" name="comment_parent" value="' . esc_attr( $comment->comment_ID ) . '" />',
+								'<input type="hidden" name="comment_locale" value="' . esc_attr( $args['locale_slug'] ) . '" />',
+								'<input type="hidden" name="translation_id" value="' . esc_attr( $args['translation_id'] ) . '" />',
+								'<input type="hidden" name="redirect_to" value="' . esc_url( $args['original_permalink'] ) . '" />',
+							)
+						),
+					),
+					$comment->comment_post_ID
+				);
+			} else {
+				echo sprintf( __( 'You have to be <a href="%s">logged in</a> to comment.' ), wp_login_url() );
+			}
+			?>
+			</div>
 		</footer>
 	</article><!-- #comment-## -->
 </li>
