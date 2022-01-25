@@ -82,12 +82,14 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 
 	public function rewrite_original_post_type_permalink( $post_link, $post ) {
 		static $cache = array();
-		$params = array();
-		wp_parse_str( wp_parse_url( $post_link, PHP_URL_QUERY ), $params );
-		if ( isset( $params[ self::POST_TYPE ] ) ) {
-			$post_id = intval( $params[ self::POST_TYPE ] );
-			$original_id = self::get_original_from_post_id( $post_id );
-			if ( $original_id && ! isset( $cache[ $original_id ] ) ) {
+
+		if ( self::POST_TYPE !== $post->post_type ) {
+			return $post_link;
+		}
+
+		if ( ! isset( $cache[ $post->ID ] ) ) {
+			$original_id = self::get_original_from_post_id( $post->ID );
+			if ( $original_id ) {
 				$original = GP::$original->get( $original_id );
 				if ( $original ) {
 					$project = GP::$project->get( $original->project_id );
@@ -95,10 +97,10 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 						$post_link = GP_Route_Translation_Helpers::get_permalink( $project->path, $original_id );
 					}
 				}
-				$cache[ $original_id ] = $post_link;
-			} else {
-				$post_link = $cache[ $original_id ];
 			}
+			$cache[ $post->ID ] = $post_link;
+		} else {
+			$post_link = $cache[ $post->ID ];
 		}
 		return $post_link;
 	}
