@@ -15,6 +15,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	function after_constructor() {
 		$this->register_post_type_and_taxonomy();
 		add_filter( 'pre_comment_approved', array( $this, 'comment_moderation' ), 10, 2 );
+		add_filter( 'post_type_link', array( $this, 'rewrite_original_post_type_permalink' ), 10, 2 );
 	}
 
 	public function register_post_type_and_taxonomy() {
@@ -24,6 +25,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			array(
 				'public'  => false,
 				'show_ui' => false,
+				'rewrite' => false,
 			)
 		);
 
@@ -37,6 +39,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			'has_archive'       => false,
 			'show_in_rest'      => true,
 			'taxonomies'        => array( self::LINK_TAXONOMY ),
+			'rewrite' => false,
 		);
 
 		register_post_type( self::POST_TYPE, $post_type_args );
@@ -60,6 +63,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 				'single'            => true,
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( $this, 'sanitize_comment_locale' ),
+				'rewrite' => false,
 			)
 		);
 
@@ -71,8 +75,32 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 				'single'            => true,
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( $this, 'sanitize_comment_topic' ),
+				'rewrite' => false,
 			)
 		);
+	}
+
+	public function rewrite_original_post_type_permalink( $post_link, $post ) {
+		static $cache = array();
+		$params = array();
+		wp_parse_str( wp_parse_url( $post_link, PHP_URL_QUERY ), $params );
+		if ( isset( $params[ self::POST_TYPE ] ) ) {
+			$post_id = intval( $params[ self::POST_TYPE ] );
+			$original_id = self::get_original_from_post_id( $post_id );
+			if ( $original_id && ! isset( $cache[ $original_id ] ) ) {
+				$original = GP::$original->get( $original_id );
+				if ( $original ) {
+					$project = GP::$project->get( $original->project_id );
+					if ( $project ) {
+						$post_link = GP_Route_Translation_Helpers::get_permalink( $project->path, $original_id );
+					}
+				}
+				$cache[ $original_id ] = $post_link;
+			} else {
+				$post_link = $cache[ $original_id ];
+			}
+		}
+		return $post_link;
 	}
 
 	public function comment_moderation( $approved, $commentdata ) {
