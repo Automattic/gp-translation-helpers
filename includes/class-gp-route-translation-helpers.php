@@ -171,7 +171,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			$this->die_with_404();
 		}
 
-		$permalink = self::get_permalink($project->path, $original_id, $set_slug, $locale_slug);
+		$permalink = self::get_permalink( $project->path, $original_id, $set_slug, $locale_slug );
 
 		$args = array(
 			'project_id'     => $project->id,
