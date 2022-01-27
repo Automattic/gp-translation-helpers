@@ -15,6 +15,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	function after_constructor() {
 		$this->register_post_type_and_taxonomy();
 		add_filter( 'pre_comment_approved', array( $this, 'comment_moderation' ), 10, 2 );
+		add_filter( 'post_type_link', array( $this, 'rewrite_original_post_type_permalink' ), 10, 2 );
 	}
 
 	public function register_post_type_and_taxonomy() {
@@ -24,6 +25,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			array(
 				'public'  => false,
 				'show_ui' => false,
+				'rewrite' => false,
 			)
 		);
 
@@ -37,6 +39,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			'has_archive'       => false,
 			'show_in_rest'      => true,
 			'taxonomies'        => array( self::LINK_TAXONOMY ),
+			'rewrite' => false,
 		);
 
 		register_post_type( self::POST_TYPE, $post_type_args );
@@ -60,6 +63,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 				'single'            => true,
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( $this, 'sanitize_comment_locale' ),
+				'rewrite' => false,
 			)
 		);
 
@@ -71,8 +75,44 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 				'single'            => true,
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( $this, 'sanitize_comment_topic' ),
+				'rewrite' => false,
 			)
 		);
+	}
+
+	public function rewrite_original_post_type_permalink( $post_link, $post ) {
+		static $cache = array();
+
+		if ( self::POST_TYPE !== $post->post_type ) {
+			return $post_link;
+		}
+
+		if ( isset( $cache[ $post->ID ] ) ) {
+			return $cache[ $post->ID ];
+		}
+
+		// Cache the error case and overwrite it later if we succeed.
+		$cache[ $post->ID ] = $post_link;
+
+		$original_id = self::get_original_from_post_id( $post->ID );
+		if ( ! $original_id ) {
+			return $cache[ $post->ID ];
+		}
+
+		$original = GP::$original->get( $original_id );
+		if ( ! $original ) {
+			return $cache[ $post->ID ];
+		}
+
+		$project = GP::$project->get( $original->project_id );
+		if ( ! $project ) {
+			return $cache[ $post->ID ];
+		}
+
+		// We were able to gather all information, let's put it in the cache.
+		$cache[ $post->ID ] = GP_Route_Translation_Helpers::get_permalink( $project->path, $original_id );
+
+		return $cache[ $post->ID ];
 	}
 
 	public function comment_moderation( $approved, $commentdata ) {
