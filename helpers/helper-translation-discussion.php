@@ -87,22 +87,32 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			return $post_link;
 		}
 
-		if ( ! isset( $cache[ $post->ID ] ) ) {
-			$original_id = self::get_original_from_post_id( $post->ID );
-			if ( $original_id ) {
-				$original = GP::$original->get( $original_id );
-				if ( $original ) {
-					$project = GP::$project->get( $original->project_id );
-					if ( $project ) {
-						$post_link = GP_Route_Translation_Helpers::get_permalink( $project->path, $original_id );
-					}
-				}
-			}
-			$cache[ $post->ID ] = $post_link;
-		} else {
-			$post_link = $cache[ $post->ID ];
+		if ( isset( $cache[ $post->ID ] ) ) {
+			return $cache[ $post->ID ];
 		}
-		return $post_link;
+
+		// Cache the error case and overwrite it later if we succeed.
+		$cache[ $post->ID ] = $post_link;
+
+		$original_id = self::get_original_from_post_id( $post->ID );
+		if ( ! $original_id ) {
+			return $cache[ $post->ID ];
+		}
+
+		$original = GP::$original->get( $original_id );
+		if ( ! $original ) {
+			return $cache[ $post->ID ];
+		}
+
+		$project = GP::$project->get( $original->project_id );
+		if ( ! $project ) {
+			return $cache[ $post->ID ];
+		}
+
+		// We were able to gather all information, let's put it in the cache.
+		$cache[ $post->ID ] = GP_Route_Translation_Helpers::get_permalink( $project->path, $original_id );
+
+		return $cache[ $post->ID ];
 	}
 
 	public function comment_moderation( $approved, $commentdata ) {
