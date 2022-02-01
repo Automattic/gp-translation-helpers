@@ -46,3 +46,9 @@ To automatically try to resolve the JavaScript code standards errors, use:
 ```
 npm run lint:js-fix
 ```
+
+## Changelog
+
+### [0.0.1] 2017-03-29
+
+Forked version from https://github.com/Automattic/gp-translation-helpers
