@@ -1,22 +1,90 @@
 <?php
-
+/**
+ * Helper that manages and shows the discussions
+ *
+ * @package gp-translation-helpers
+ * @since 0.0.1
+ */
 class Helper_Translation_Discussion extends GP_Translation_Helper {
 
-	public $priority          = 0;
-	public $title             = 'Discussion';
+	/**
+	 * Helper priority.
+	 *
+	 * @since 0.0.1
+	 * @var int
+	 */
+	public $priority = 0;
+
+	/**
+	 * Helper title.
+	 *
+	 * @since 0.0.1
+	 * @var string
+	 */
+	public $title = 'Discussion';
+
+	/**
+	 * Indicates whether the helper loads asynchronous content or not.
+	 *
+	 * @since 0.0.1
+	 * @var bool
+	 */
 	public $has_async_content = true;
 
-	const POST_TYPE          = 'gth_original';
-	const POST_STATUS        = 'publish';
-	const LINK_TAXONOMY      = 'gp_original_id';
-	const URL_SLUG           = 'discuss';
+	/**
+	 * The post type used to store the comments.
+	 *
+	 * @var string
+	 */
+	const POST_TYPE = 'gth_original';
+
+	/**
+	 * The comment post status. Creates it as published.
+	 *
+	 * @var string
+	 */
+	const POST_STATUS = 'publish';
+
+	/**
+	 * The taxonomy key.
+	 *
+	 * @var string
+	 */
+	const LINK_TAXONOMY = 'gp_original_id';
+
+	/**
+	 *
+	 * @var string
+	 */
+	const URL_SLUG = 'discuss';
+
+	/**
+	 *
+	 * @var string
+	 */
 	const ORIGINAL_ID_PREFIX = 'original-';
 
-	function after_constructor() {
+	/**
+	 * Registers the post type, its taxonomy, the comments' metadata and adds a filter to moderate the comments.
+	 *
+	 * Method executed just after the constructor.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @return void
+	 */
+	public function after_constructor() {
 		$this->register_post_type_and_taxonomy();
 		add_filter( 'pre_comment_approved', array( $this, 'comment_moderation' ), 10, 2 );
 	}
 
+	/**
+	 * Registers the post type with its taxonomy and the comments' metadata.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @return void
+	 */
 	public function register_post_type_and_taxonomy() {
 		register_taxonomy(
 			self::LINK_TAXONOMY,
@@ -75,7 +143,20 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		);
 	}
 
-	public function comment_moderation( $approved, $commentdata ) {
+	/**
+	 * Updates the comment's approval status before it is set.
+	 *
+	 * It only updates the approved status if the user has previous translations.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @param int|string|WP_Error $approved    The approval status. Accepts 1, 0, 'spam', 'trash',
+	 *                                         or WP_Error.
+	 * @param array               $commentdata Comment data.
+	 *
+	 * @return bool|int|string|WP_Error|null
+	 */
+	public function comment_moderation( $approved, array $commentdata ) {
 		global $wpdb;
 
 		// If the comment is already approved, we're good.
@@ -83,7 +164,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			return $approved;
 		}
 
-		// We only care on comments on our specific post type
+		// We only care on comments on our specific post type.
 		if ( self::POST_TYPE !== get_post_type( $commentdata['comment_post_ID'] ) ) {
 			return $approved;
 		}
@@ -102,7 +183,16 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		return $approved;
 	}
 
-	public static function get_original_from_post_id( $post_id ) {
+	/**
+	 * Gets the slug for the post ID.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @param int $post_id  The post ID.
+	 *
+	 * @return false|string
+	 */
+	public static function get_original_from_post_id( int $post_id ) {
 		$terms = wp_get_object_terms( $post_id, self::LINK_TAXONOMY, array( 'number' => 1 ) );
 		if ( empty( $terms ) ) {
 			return false;
@@ -111,7 +201,16 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		return $terms[0]->slug;
 	}
 
-	public static function get_shadow_post( $original_id ) {
+	/**
+	 * Gets the post id for the comments and stores it in the cache.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @param int $original_id  The original id for the string to translate. E.g. "2440".
+	 *
+	 * @return int|WP_Error
+	 */
+	public static function get_shadow_post( int $original_id ) {
 		$cache_key = self::LINK_TAXONOMY . '_' . $original_id;
 
 		if ( true || false === ( $post_id = wp_cache_get( $cache_key ) ) ) {
@@ -152,7 +251,14 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		return $post_id;
 	}
 
-	public function get_async_content() {
+	/**
+	 * Gets the comments for the post.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @return array
+	 */
+	public function get_async_content(): array {
 		return get_comments(
 			array(
 				'post_id'            => self::get_shadow_post( $this->data['original_id'] ),
@@ -163,7 +269,16 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		);
 	}
 
-	public function async_output_callback( $comments ) {
+	/**
+	 * Shows the discussion template with the comment form.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @param array $comments   The comments to display.
+	 *
+	 * @return false|string
+	 */
+	public function async_output_callback( array $comments ) {
 		// Remove comment likes for now (or forever :) ).
 		remove_filter( 'comment_text', 'comment_like_button', 12 );
 
@@ -173,7 +288,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		// Disable subscribe to comments for now.
 		add_filter( 'option_stc_disabled', '__return_true' );
 
-		// Link comment author to WordPress.org profile
+		// Link comment author to WordPress.org profile.
 		add_filter(
 			'get_comment_author_link',
 			function() {
@@ -196,26 +311,72 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		return $output;
 	}
 
+	/**
+	 * Gets the content/string to return when a helper has no results.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @return false|string
+	 */
 	public function empty_content() {
 		return $this->async_output_callback( array() );
 	}
 
+	/**
+	 * Gets additional CSS required by the helper.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @return bool|string
+	 */
 	public function get_css() {
 		return file_get_contents( $this->assets_dir . 'css/translation-discussion.css' );
 	}
+
+	/**
+	 * Gets additional JavaScript required by the helper.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @return bool|string
+	 */
 	public function get_js() {
 		return file_get_contents( $this->assets_dir . 'js/translation-discussion.js' );
 	}
 
-	public function sanitize_comment_topic( $comment_topic ) {
-		if ( ! in_array( $comment_topic, array( 'typo', 'context', 'question' ) ) ) {
+	/**
+	 * Sets the comment_topic meta_key as "unknown" if is not in the accepted values.
+	 *
+	 * Used as sanitize callback in the register_meta for the "comment" object type,
+	 * 'comment_topic' meta_key
+	 *
+	 * @since 0.0.2
+	 *
+	 * @param string $comment_topic The meta_value for the meta_key "comment_topic".
+	 *
+	 * @return string
+	 */
+	public function sanitize_comment_topic( string $comment_topic ): string {
+		if ( ! in_array( $comment_topic, array( 'typo', 'context', 'question' ), true ) ) {
 			$comment_topic = 'unknown';
 		}
 		return $comment_topic;
 
 	}
 
-	public function sanitize_comment_locale( $comment_locale ) {
+	/**
+	 * Sets the comment_topic meta_key as empty ("") if is not in the accepted values.
+	 *
+	 * Used as sanitize callback in the register_meta for the "comment" object type,
+	 * "locale" meta_key
+	 *
+	 * @since 0.0.2
+	 *
+	 * @param string $comment_locale     The meta_value for the meta_key "locale".
+	 *
+	 * @return string
+	 */
+	public function sanitize_comment_locale( string $comment_locale ): string {
 		$gp_locales     = new GP_Locales();
 		$all_gp_locales = array_keys( $gp_locales->locales );
 
@@ -225,7 +386,19 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		return $comment_locale;
 	}
 
-	public function sanitize_translation_id( $translation_id ) {
+	/**
+	 * Kills WordPress execution and displays HTML page with an error message if the translation id is incorrect.
+	 *
+	 * Used as sanitize callback in the register_meta for the "comment" object type,
+	 * "locale" meta_key
+	 *
+	 * @since 0.0.2
+	 *
+	 * @param int $translation_id   The id for the translation showed when the comment was made.
+	 *
+	 * @return int
+	 */
+	public function sanitize_translation_id( int $translation_id ): int {
 		if ( ! is_numeric( $translation_id ) ) {
 			if ( $translation_id > 0 && ! GP::$translation->get( $translation_id ) ) {
 				wp_die( 'Invalid translation ID' );
@@ -235,12 +408,32 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	}
 }
 
-function gth_discussion_get_original_id_from_post( $post_id ) {
+/**
+ * Gets the slug for the post ID.
+ *
+ * @since 0.0.1
+ *
+ * @param int $post_id  The id of the post.
+ *
+ * @return false|string
+ */
+function gth_discussion_get_original_id_from_post( int $post_id ) {
 	return Helper_Translation_Discussion::get_original_from_post_id( $post_id );
 }
 
-function gth_discussion_callback( $comment, $args, $depth ) {
-	$GLOBALS['comment'] = $comment;
+/**
+ * Callback for the wp_list_comments() function in the helper-translation-discussion.php template.
+ *
+ * @since 0.0.1
+ *
+ * @param WP_Comment $comment   The comment object.
+ * @param array      $args      Formatting options.
+ * @param int        $depth     The depth of the new comment.
+ *
+ * @return void
+ */
+function gth_discussion_callback( WP_Comment $comment, array $args, int $depth ) {
+	$GLOBALS['comment'] = $comment;// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
 	$comment_locale = get_comment_meta( $comment->comment_ID, 'locale', true );
 	$current_locale = $args['locale_slug'];
@@ -257,11 +450,13 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 		<?php
 		// Older than a week, show date; otherwise show __ time ago.
 		if ( current_time( 'timestamp' ) - get_comment_time( 'U' ) > 604800 ) {
+			/* translators: 1: Date , 2: Time */
 			$time = sprintf( _x( '%1$s at %2$s', '1: date, 2: time' ), get_comment_date(), get_comment_time() );
 		} else {
+			/* translators: Human readable time difference */
 			$time = sprintf( __( '%1$s ago' ), human_time_diff( get_comment_time( 'U' ), current_time( 'timestamp' ) ) );
 		}
-		echo '<time datetime=" ' . get_comment_time( 'c' ) . '">' . $time . '</time>';
+		echo '<time datetime=" ' . get_comment_time( 'c' ) . '">' . esc_html( $time ) . '</time>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		?>
 		<?php if ( $comment_locale ) : ?>
 			<div class="comment-locale">Locale:
@@ -282,7 +477,8 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 					printf(
 						'<a href="%1$s">%2$s</a>',
 						esc_url( get_comment_link( $comment->comment_parent ) ),
-						sprintf( __( 'in reply to %s' ), get_comment_author( $comment->comment_parent ) )
+						/* translators: The author of the current comment */
+						sprintf( esc_attr( __( 'in reply to %s' ) ), esc_html( get_comment_author( $comment->comment_parent ) ) )
 					);
 				}
 
@@ -340,21 +536,22 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 				);
 				?>
 			</div><!-- .comment-author .vcard -->
-			<?php if ( $comment->comment_approved == '0' ) : ?>
-				<em><?php _e( 'Your comment is awaiting moderation.' ); ?></em>
+			<?php if ( '0' === $comment->comment_approved ) : ?>
+				<p><em><?php esc_html_e( 'Your comment is awaiting moderation.' ); ?></em></p>
 			<?php endif; ?>
 			<?php if ( $comment_translation_id && $comment_translation_id !== $current_translation_id ) : ?>
 				<?php $translation = GP::$translation->get( $comment_translation_id ); ?>
 				<em>Translation: <?php echo esc_translation( $translation->translation_0 ); ?></em>
 			<?php endif; ?>
 			<div class="clear"></div>
-			<div id="comment-reply-<?php echo $comment->comment_ID; ?>" style="display: none;">
+			<div id="comment-reply-<?php echo esc_attr( $comment->comment_ID ); ?>" style="display: none;">
 			<?php
 			if ( is_user_logged_in() ) {
 				comment_form(
-					$args = array(
-						'title_reply'         => __( 'Discuss this string' ),
-						'title_reply_to'      => __( 'Reply to %s' ),
+					array(
+						'title_reply'         => esc_html__( 'Discuss this string' ),
+						/* translators: username */
+						'title_reply_to'      => esc_html__( 'Reply to %s' ),
 						'title_reply_before'  => '<h5 id="reply-title" class="discuss-title">',
 						'title_reply_after'   => '</h5>',
 						'id_form'             => 'commentform-' . $comment->comment_post_ID,
@@ -372,7 +569,8 @@ function gth_discussion_callback( $comment, $args, $depth ) {
 					$comment->comment_post_ID
 				);
 			} else {
-				echo sprintf( __( 'You have to be <a href="%s">logged in</a> to comment.' ), wp_login_url() );
+				/* translators: Log in URL. */
+				echo sprintf( __( 'You have to be <a href="%s">logged in</a> to comment.' ), esc_html( wp_login_url() ) );
 			}
 			?>
 			</div>
