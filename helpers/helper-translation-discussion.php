@@ -34,33 +34,38 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	/**
 	 * The post type used to store the comments.
 	 *
-	 * @var string
+	 * @since 0.0.1
+     * @var string
 	 */
 	const POST_TYPE = 'gth_original';
 
 	/**
 	 * The comment post status. Creates it as published.
 	 *
-	 * @var string
+	 * @since 0.0.1
+     * @var string
 	 */
 	const POST_STATUS = 'publish';
 
 	/**
 	 * The taxonomy key.
 	 *
-	 * @var string
+	 * @since 0.0.1
+     * @var string
 	 */
 	const LINK_TAXONOMY = 'gp_original_id';
 
 	/**
 	 *
-	 * @var string
+	 * @since 0.0.1
+     * @var string
 	 */
 	const URL_SLUG = 'discuss';
 
 	/**
 	 *
-	 * @var string
+	 * @since 0.0.1
+     * @var string
 	 */
 	const ORIGINAL_ID_PREFIX = 'original-';
 
