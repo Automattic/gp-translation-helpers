@@ -245,7 +245,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 			$this->die_with_404();
 		}
 
-		$permalink = $this->get_permalink( $project->path, $original_id, $set_slug, $locale_slug );
+		$permalink = self::get_permalink( $project->path, $original_id, $set_slug, $locale_slug );
 
 		$args = array(
 			'project_id'           => $project->id,
@@ -311,7 +311,7 @@ class GP_Route_Translation_Helpers extends GP_Route {
 	 *
 	 * @return string                   The full permalink.
 	 */
-	public function get_permalink( string $project_path, ?int $original_id, string $set_slug = null, string $locale_slug = null ): string {
+	public static function get_permalink( string $project_path, ?int $original_id, string $set_slug = null, string $locale_slug = null ): string {
 		$permalink = '/projects/' . $project_path . '/' . $original_id;
 		if ( $set_slug && $locale_slug ) {
 			$permalink .= '/' . $locale_slug . '/' . $set_slug;

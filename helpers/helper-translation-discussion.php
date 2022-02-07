@@ -35,7 +35,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	 * The post type used to store the comments.
 	 *
 	 * @since 0.0.1
-     * @var string
+	 * @var string
 	 */
 	const POST_TYPE = 'gth_original';
 
@@ -43,7 +43,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	 * The comment post status. Creates it as published.
 	 *
 	 * @since 0.0.1
-     * @var string
+	 * @var string
 	 */
 	const POST_STATUS = 'publish';
 
@@ -51,21 +51,21 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	 * The taxonomy key.
 	 *
 	 * @since 0.0.1
-     * @var string
+	 * @var string
 	 */
 	const LINK_TAXONOMY = 'gp_original_id';
 
 	/**
 	 *
 	 * @since 0.0.1
-     * @var string
+	 * @var string
 	 */
 	const URL_SLUG = 'discuss';
 
 	/**
 	 *
 	 * @since 0.0.1
-     * @var string
+	 * @var string
 	 */
 	const ORIGINAL_ID_PREFIX = 'original-';
 
@@ -81,6 +81,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	public function after_constructor() {
 		$this->register_post_type_and_taxonomy();
 		add_filter( 'pre_comment_approved', array( $this, 'comment_moderation' ), 10, 2 );
+		add_filter( 'post_type_link', array( $this, 'rewrite_original_post_type_permalink' ), 10, 2 );
 	}
 
 	/**
@@ -97,6 +98,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			array(
 				'public'  => false,
 				'show_ui' => false,
+				'rewrite' => false,
 			)
 		);
 
@@ -110,6 +112,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			'has_archive'       => false,
 			'show_in_rest'      => true,
 			'taxonomies'        => array( self::LINK_TAXONOMY ),
+			'rewrite'           => false,
 		);
 
 		register_post_type( self::POST_TYPE, $post_type_args );
@@ -133,6 +136,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 				'single'            => true,
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( $this, 'sanitize_comment_locale' ),
+				'rewrite'           => false,
 			)
 		);
 
@@ -144,8 +148,54 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 				'single'            => true,
 				'show_in_rest'      => true,
 				'sanitize_callback' => array( $this, 'sanitize_comment_topic' ),
+				'rewrite'           => false,
 			)
 		);
+	}
+
+	/**
+	 * Gets the permalink and stores in the cache.
+	 *
+	 * @since 0.0.2
+	 *
+	 * @param string  $post_link The post's permalink.
+	 * @param WP_Post $post      The post in question.
+	 *
+	 * @return mixed|string
+	 */
+	public function rewrite_original_post_type_permalink( string $post_link, WP_Post $post ) {
+		static $cache = array();
+
+		if ( self::POST_TYPE !== $post->post_type ) {
+			return $post_link;
+		}
+
+		if ( isset( $cache[ $post->ID ] ) ) {
+			return $cache[ $post->ID ];
+		}
+
+		// Cache the error case and overwrite it later if we succeed.
+		$cache[ $post->ID ] = $post_link;
+
+		$original_id = self::get_original_from_post_id( $post->ID );
+		if ( ! $original_id ) {
+			return $cache[ $post->ID ];
+		}
+
+		$original = GP::$original->get( $original_id );
+		if ( ! $original ) {
+			return $cache[ $post->ID ];
+		}
+
+		$project = GP::$project->get( $original->project_id );
+		if ( ! $project ) {
+			return $cache[ $post->ID ];
+		}
+
+		// We were able to gather all information, let's put it in the cache.
+		$cache[ $post->ID ] = GP_Route_Translation_Helpers::get_permalink( $project->path, $original_id );
+
+		return $cache[ $post->ID ];
 	}
 
 	/**
@@ -236,7 +286,7 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 			);
 
 			if ( ! empty( $gp_posts ) ) {
-				$post_id = $gp_posts[0]->ID;
+						$post_id = $gp_posts[0]->ID;
 			} else {
 				$post_id = wp_insert_post(
 					array(
@@ -297,8 +347,8 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 		add_filter(
 			'get_comment_author_link',
 			function() {
-				$comment_author = get_comment_author();
-				return '<a href="https://profiles.wordpress.org/' . $comment_author . '">' . $comment_author . '</a>';
+					$comment_author = get_comment_author();
+					return '<a href="https://profiles.wordpress.org/' . $comment_author . '">' . $comment_author . '</a>';
 			}
 		);
 
@@ -413,30 +463,30 @@ class Helper_Translation_Discussion extends GP_Translation_Helper {
 	}
 }
 
-/**
- * Gets the slug for the post ID.
- *
- * @since 0.0.1
- *
- * @param int $post_id  The id of the post.
- *
- * @return false|string
- */
+	/**
+	 * Gets the slug for the post ID.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @param int $post_id  The id of the post.
+	 *
+	 * @return false|string
+	 */
 function gth_discussion_get_original_id_from_post( int $post_id ) {
 	return Helper_Translation_Discussion::get_original_from_post_id( $post_id );
 }
 
-/**
- * Callback for the wp_list_comments() function in the helper-translation-discussion.php template.
- *
- * @since 0.0.1
- *
- * @param WP_Comment $comment   The comment object.
- * @param array      $args      Formatting options.
- * @param int        $depth     The depth of the new comment.
- *
- * @return void
- */
+	/**
+	 * Callback for the wp_list_comments() function in the helper-translation-discussion.php template.
+	 *
+	 * @since 0.0.1
+	 *
+	 * @param WP_Comment $comment   The comment object.
+	 * @param array      $args      Formatting options.
+	 * @param int        $depth     The depth of the new comment.
+	 *
+	 * @return void
+	 */
 function gth_discussion_callback( WP_Comment $comment, array $args, int $depth ) {
 	$GLOBALS['comment'] = $comment;// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
@@ -446,100 +496,100 @@ function gth_discussion_callback( WP_Comment $comment, array $args, int $depth )
 	$current_translation_id = $args['translation_id'];
 	$comment_translation_id = get_comment_meta( $comment->comment_ID, 'translation_id', true );
 	?>
-<li class="<?php echo esc_attr( 'comment-locale-' . $comment_locale ); ?>">
+	<li class="<?php echo esc_attr( 'comment-locale-' . $comment_locale ); ?>">
 	<article id="comment-<?php comment_ID(); ?>" class="comment">
-		<div class="comment-avatar">
-			<?php echo get_avatar( $comment, 25 ); ?>
-		</div><!-- .comment-avatar -->
-		<?php printf( '<cite class="fn">%s</cite>', get_comment_author_link( $comment->comment_ID ) ); ?>
-		<?php
-		// Older than a week, show date; otherwise show __ time ago.
-		if ( current_time( 'timestamp' ) - get_comment_time( 'U' ) > 604800 ) {
-			/* translators: 1: Date , 2: Time */
-			$time = sprintf( _x( '%1$s at %2$s', '1: date, 2: time' ), get_comment_date(), get_comment_time() );
-		} else {
-			/* translators: Human readable time difference */
-			$time = sprintf( __( '%1$s ago' ), human_time_diff( get_comment_time( 'U' ), current_time( 'timestamp' ) ) );
-		}
-		echo '<time datetime=" ' . get_comment_time( 'c' ) . '">' . esc_html( $time ) . '</time>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		?>
-		<?php if ( $comment_locale ) : ?>
-			<div class="comment-locale">Locale:
+	<div class="comment-avatar">
+	<?php echo get_avatar( $comment, 25 ); ?>
+	</div><!-- .comment-avatar -->
+	<?php printf( '<cite class="fn">%s</cite>', get_comment_author_link( $comment->comment_ID ) ); ?>
+	<?php
+	// Older than a week, show date; otherwise show __ time ago.
+	if ( current_time( 'timestamp' ) - get_comment_time( 'U' ) > 604800 ) {
+		/* translators: 1: Date , 2: Time */
+		$time = sprintf( _x( '%1$s at %2$s', '1: date, 2: time' ), get_comment_date(), get_comment_time() );
+	} else {
+		/* translators: Human readable time difference */
+		$time = sprintf( __( '%1$s ago' ), human_time_diff( get_comment_time( 'U' ), current_time( 'timestamp' ) ) );
+	}
+	echo '<time datetime=" ' . get_comment_time( 'c' ) . '">' . esc_html( $time ) . '</time>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	?>
+	<?php if ( $comment_locale ) : ?>
+	<div class="comment-locale">Locale:
 				<?php if ( ! $current_locale ) : ?>
 					<a href="<?php echo esc_attr( $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale ); ?></a>
 				<?php elseif ( $current_locale && $current_locale !== $comment_locale ) : ?>
 					<a href="<?php echo esc_attr( '../../' . $comment_locale . '/default' ); ?>"><?php echo esc_html( $comment_locale ); ?></a>
 				<?php else : ?>
 					<?php echo esc_html( $comment_locale ); ?>
-			<?php endif; ?>
-			</div>
-		<?php endif; ?>
-		<div class="comment-content" dir="auto"><?php comment_text(); ?></div>
-		<footer>
-			<div class="comment-author vcard">
-				<?php
-				if ( $comment->comment_parent ) {
-					printf(
-						'<a href="%1$s">%2$s</a>',
-						esc_url( get_comment_link( $comment->comment_parent ) ),
-						/* translators: The author of the current comment */
-						sprintf( esc_attr( __( 'in reply to %s' ) ), esc_html( get_comment_author( $comment->comment_parent ) ) )
+	<?php endif; ?>
+	</div>
+	<?php endif; ?>
+	<div class="comment-content" dir="auto"><?php comment_text(); ?></div>
+	<footer>
+	<div class="comment-author vcard">
+			<?php
+			if ( $comment->comment_parent ) {
+				printf(
+					'<a href="%1$s">%2$s</a>',
+					esc_url( get_comment_link( $comment->comment_parent ) ),
+					/* translators: The author of the current comment */
+					sprintf( esc_attr( __( 'in reply to %s' ) ), esc_html( get_comment_author( $comment->comment_parent ) ) )
+				);
+			}
+
+			add_filter(
+				'comment_reply_link',
+				function( $link, $args, $comment, $post ) {
+					$data_attributes = array(
+						'commentid'      => $comment->comment_ID,
+						'postid'         => $post->ID,
+						'belowelement'   => $args['add_below'] . '-' . $comment->comment_ID,
+						'respondelement' => $args['respond_id'],
+						'replyto'        => sprintf( $args['reply_to_text'], $comment->comment_author ),
 					);
-				}
 
-				add_filter(
-					'comment_reply_link',
-					function( $link, $args, $comment, $post ) {
-						$data_attributes = array(
-							'commentid'      => $comment->comment_ID,
-							'postid'         => $post->ID,
-							'belowelement'   => $args['add_below'] . '-' . $comment->comment_ID,
-							'respondelement' => $args['respond_id'],
-							'replyto'        => sprintf( $args['reply_to_text'], $comment->comment_author ),
-						);
+					$data_attribute_string = '';
 
-						$data_attribute_string = '';
+					foreach ( $data_attributes as $name => $value ) {
+						$data_attribute_string .= " data-${name}=\"" . esc_attr( $value ) . '"';
+					}
 
-						foreach ( $data_attributes as $name => $value ) {
-							$data_attribute_string .= " data-${name}=\"" . esc_attr( $value ) . '"';
-						}
+					$data_attribute_string = trim( $data_attribute_string );
 
-						$data_attribute_string = trim( $data_attribute_string );
+					$link = sprintf(
+						"<a rel='nofollow' class='comment-reply-link' href='%s' %s aria-label='%s'>%s</a>",
+						esc_url(
+							add_query_arg(
+								array(
+									'replytocom'      => $comment->comment_ID,
+									'unapproved'      => false,
+									'moderation-hash' => false,
+								),
+								$args['original_permalink']
+							)
+						) . '#' . $args['respond_id'],
+						$data_attribute_string,
+						esc_attr( sprintf( $args['reply_to_text'], $comment->comment_author ) ),
+						$args['reply_text']
+					);
+					return $args['before'] . $link . $args['after'];
+				},
+				10,
+				4
+			);
 
-						$link = sprintf(
-							"<a rel='nofollow' class='comment-reply-link' href='%s' %s aria-label='%s'>%s</a>",
-							esc_url(
-								add_query_arg(
-									array(
-										'replytocom'      => $comment->comment_ID,
-										'unapproved'      => false,
-										'moderation-hash' => false,
-									),
-									$args['original_permalink']
-								)
-							) . '#' . $args['respond_id'],
-							$data_attribute_string,
-							esc_attr( sprintf( $args['reply_to_text'], $comment->comment_author ) ),
-							$args['reply_text']
-						);
-						return $args['before'] . $link . $args['after'];
-					},
-					10,
-					4
-				);
-
-				comment_reply_link(
-					array_merge(
-						$args,
-						array(
-							'depth'     => $depth,
-							'max_depth' => $args['max_depth'],
-							'before'    => '<span class="alignright">',
-							'after'     => '</span>',
-						)
+			comment_reply_link(
+				array_merge(
+					$args,
+					array(
+						'depth'     => $depth,
+						'max_depth' => $args['max_depth'],
+						'before'    => '<span class="alignright">',
+						'after'     => '</span>',
 					)
-				);
-				?>
+				)
+			);
+			?>
 			</div><!-- .comment-author .vcard -->
 			<?php if ( '0' === $comment->comment_approved ) : ?>
 				<p><em><?php esc_html_e( 'Your comment is awaiting moderation.' ); ?></em></p>

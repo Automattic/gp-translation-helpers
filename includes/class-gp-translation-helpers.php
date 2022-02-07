@@ -111,8 +111,7 @@ class GP_Translation_Helpers {
 	 * @return array
 	 */
 	public function translation_row_template_more_links( array $more_links, GP_Project $project, GP_Locale $locale, GP_Translation_Set $translation_set, Translation_Entry $translation ): array {
-		$route_translation_helpers = new GP_Route_Translation_Helpers();
-		$permalink                 = $route_translation_helpers->get_permalink( $project->path, $translation->original_id, $translation_set->slug, $translation_set->locale );
+		$permalink = GP_Route_Translation_Helpers::get_permalink( $project->path, $translation->original_id, $translation_set->slug, $translation_set->locale );
 
 		$more_links['discussion'] = '<a href="' . esc_url( $permalink ) . '">Discussion</a>';
 
