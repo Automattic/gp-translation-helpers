@@ -303,7 +303,7 @@ class GP_Translation_Helpers {
 				$css = $translation_helper->get_css();
 				if ( $css ) {
 					echo '/* Translation Helper:  ' . esc_js( $translation_helper->get_title() ) . ' */' . "\n";
-					echo $css . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo esc_html( $css ) . "\n";
 				}
 			}
 			?>
