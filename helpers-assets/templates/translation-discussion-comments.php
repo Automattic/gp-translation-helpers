@@ -63,7 +63,7 @@
 						<option value="">Select topic</option>
 						<option value="typo">Typo in the English text</option>
     					<option value="context">Where does this string appear? (more context)</option>' .
-						$language_question . //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						wp_kses( $language_question, array( 'option' => array( 'value' => true ) ) ) .
 					'</select>
     			</p>';
 		},
