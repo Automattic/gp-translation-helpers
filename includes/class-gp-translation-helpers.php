@@ -200,8 +200,6 @@ class GP_Translation_Helpers {
 			'helper-translation-discussion.php',
 			'helper-other-locales.php',
 			'helper-translation-history.php',
-			// 'helper-translation-memory.php',
-			'helper-user-info.php',
 		);
 
 		foreach ( $helpers_files as $helper ) {

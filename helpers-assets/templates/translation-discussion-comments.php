@@ -5,12 +5,17 @@
 ?>
 <div class="discussion-wrapper">
 	<?php if ( $number = count( $comments ) ) : ?>
-		<h6><?php printf( _n( '%s Comment', '%s Comments', $number ), number_format_i18n( $number ) ); ?>
+
+		<h6>
+			<?php
+			/* translators: number of comments. */
+			printf( _n( '%s Comment', '%s Comments', $number ), number_format_i18n( $number ) );
+			?>
 		<?php if ( $locale_slug ) : ?>
 			(<?php echo esc_html( $locale_slug ); ?>)
 			<?php
 			$countLocaleComments = 0;
-			foreach ( $comments as $comment ) {
+			foreach ( $comments as $comment ) { //phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 				$comment_locale = get_comment_meta( $comment->comment_ID, 'locale', true );
 				if ( $locale_slug == $comment_locale ) {
 					$countLocaleComments++;
@@ -43,12 +48,12 @@
 	add_action(
 		'comment_form_logged_in_after',
 		function () use ( $locale_slug ) {
-			$language_question       = '';
+			$language_question = '';
 
 			if ( $locale_slug ) {
 				$gp_locale = GP_Locales::by_slug( $locale_slug );
 				if ( $gp_locale ) {
-					$language_question       = '<option value="question">Question about translating to ' . esc_html( $gp_locale->english_name ) . '</option>';
+					$language_question = '<option value="question">Question about translating to ' . esc_html( $gp_locale->english_name ) . '</option>';
 				}
 			}
 
@@ -58,7 +63,7 @@
 						<option value="">Select topic</option>
 						<option value="typo">Typo in the English text</option>
     					<option value="context">Where does this string appear? (more context)</option>' .
-						$language_question .
+						$language_question . //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					'</select>
     			</p>';
 		},
@@ -70,6 +75,7 @@
 		comment_form(
 			$args = array(
 				'title_reply'         => __( 'Discuss this string' ),
+				/* translators: username */
 				'title_reply_to'      => __( 'Reply to %s' ),
 				'title_reply_before'  => '<h5 id="reply-title" class="discuss-title">',
 				'title_reply_after'   => '</h5>',
@@ -87,7 +93,8 @@
 			$post_id
 		);
 	} else {
-		echo sprintf( __( 'You have to be <a href="%s">logged in</a> to comment.' ), wp_login_url() );
+		/* translators: Log in URL. */
+		echo sprintf( __( 'You have to be <a href="%s">logged in</a> to comment.' ), esc_html( wp_login_url() ) );
 	}
 
 	?>
