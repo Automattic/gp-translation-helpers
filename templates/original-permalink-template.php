@@ -39,7 +39,7 @@
 										<?php if ( $translations_by_locale ) : ?>
 											<ul class="suggestions-list">
 											<?php
-											foreach ( $translations_by_locale as $locale => $translation ) : // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+											foreach ( $translations_by_locale as $_locale => $translation ) :
 												?>
 
 												<li>
