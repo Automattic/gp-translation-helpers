@@ -45,7 +45,7 @@
 												<li>
 													<div class="translation-suggestion with-tooltip" tabindex="0" role="button" aria-pressed="false" aria-label="Copy translation">
 														<span class="translation-suggestion__translation">
-															<?php echo esc_html( strtoupper( $locale ) ) . ' - ' . esc_html( $translation ); ?>
+															<?php echo esc_html( strtoupper( $_locale ) ) . ' - ' . esc_html( $translation ); ?>
 														</span>
 													</div>
 												</li>
